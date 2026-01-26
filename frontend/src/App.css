@@ -1,7 +1,22 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+
+:root {
+  --color-primary: #388e3c; /* Green */
+  --color-primary-light: #66bb6a;
+  --color-primary-dark: #1b5e20;
+  --color-accent: #ffd700; /* Gold */
+  --color-accent-dark: #bfa100;
+  --color-background: #f5f5f5;
+  --color-surface: #ffffff;
+  --color-text: #222;
+  --color-text-inverse: #fff;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: Roboto, sans-serif;
 }
 
 body {

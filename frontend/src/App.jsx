@@ -3,16 +3,14 @@ import "./App.css";
 
 // Pages
 import LandingPage from "./pages/landingPage";
-import RegisterPage from "./pages/registerPage";
-import LoginPage from "./pages/loginPage";
+import LoginRegisterPage from "./pages/loginRegisterPage";
 
 function App() {
   return (
     <>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/Register" element={<RegisterPage />} />
-        <Route path="/Login" element={<LoginPage />} />
+        <Route path="/loginRegister" element={<LoginRegisterPage />} />
       </Routes>
     </>
   );
