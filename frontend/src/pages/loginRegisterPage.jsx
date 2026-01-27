@@ -3,7 +3,7 @@ import "./styles/loginRegisterPage.css";
 import { useState } from "react";
 
 const LoginRegisterPage = () => {
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
 
   const changeForm = () => {
     setIsLogin((prev) => !prev);
@@ -11,7 +11,20 @@ const LoginRegisterPage = () => {
 
   return (
     <div className="centerContainer">
-      <div className="authWrapper">
+      <div className={`authWrapper ${isLogin ? "right" : ""}`}>
+        <div className="formCover">
+          {isLogin ? (
+            <div className="formCoverWrapperLeft">
+              <h1>Don't have an account yet?</h1>
+              <button onClick={changeForm}>Sign Up</button>
+            </div>
+          ) : (
+            <div className="formCoverWrapperRight">
+              <h1>Already have an account?</h1>
+              <button onClick={changeForm}>Sign In</button>
+            </div>
+          )}
+        </div>
         {/* Register Form */}
         <form className="authFormReg">
           <h1>Register</h1>

@@ -12,9 +12,12 @@
   border-radius: 20px;
   width: 50%;
   height: 60%;
+  min-width: 800px;
+  min-height: 500px;
   background: var(--color-surface);
   display: grid;
   grid-template-columns: 1fr 1fr;
+  position: relative;
 }
 
 /* Register Form */
@@ -24,7 +27,6 @@
   flex-direction: column;
   justify-content: center;
   gap: 15px;
-  border-right: 1px solid var(--color-primary);
   width: 100%;
   height: 100%;
   min-height: 0;
@@ -33,20 +35,21 @@
 .authFormReg h1 {
   text-align: center;
   color: var(--color-primary);
+  font-size: var(--main-title);
 }
 
 .authFormReg label {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  font-size: 1rem;
+  font-size: var(--semi-title);
   font-weight: 800;
   color: var(--color-primary-dark);
 }
 
 .authFormReg label input {
   padding: 10px;
-  font-size: 1rem;
+  font-size: var(--semi-title);
   border: 1px solid var(--color-primary-light);
   border-radius: 5px;
   background: var(--color-surface);
@@ -60,8 +63,8 @@
   border-radius: 50px;
   padding: 10px;
   width: 50%;
-  margin: 40px auto 0 auto;
-  font-size: 1rem;
+  margin: 20px auto 0 auto;
+  font-size: var(--semi-title);
   cursor: pointer;
   font-weight: bold;
   transition: 0.2s ease-in-out;
@@ -88,6 +91,7 @@
 .authFormLog h1 {
   text-align: center;
   color: var(--color-primary);
+  font-size: var(--main-title);
 }
 
 .authFormLog label {
@@ -101,7 +105,7 @@
 
 .authFormLog label input {
   padding: 10px;
-  font-size: 1rem;
+  font-size: var(--semi-title);
   border: 1px solid var(--color-primary-light);
   border-radius: 5px;
   background: var(--color-surface);
@@ -115,8 +119,8 @@
   border-radius: 50px;
   padding: 10px;
   width: 50%;
-  margin: 40px auto 0 auto;
-  font-size: 1rem;
+  margin: 20px auto 0 auto;
+  font-size: var(--semi-title);
   cursor: pointer;
   font-weight: bold;
   transition: 0.2s ease-in-out;
@@ -126,4 +130,93 @@
   background: var(--color-accent);
   color: var(--color-primary-dark);
   border: 2px solid var(--color-primary-dark);
+}
+
+/* transitions animation and cover */
+.formCover {
+  background: var(--color-primary);
+  padding: 40px;
+  border-radius: 20px;
+  width: 50%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 3;
+  transition: 0.4s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.formCoverWrapperLeft,
+.formCoverWrapperRight {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+  text-align: center;
+}
+
+.formCoverWrapperLeft h1,
+.formCoverWrapperLeft button {
+  animation: slideRight 0.3s ease-in;
+}
+.formCoverWrapperRight h1,
+.formCoverWrapperRight button {
+  animation: slideLeft 0.3s ease-in;
+}
+
+.formCover h1 {
+  font-style: italic;
+  font-size: var(--main-title);
+  color: var(--color-accent);
+}
+
+.formCover button {
+  border: 2px solid var(--color-primary-dark);
+  background: var(--color-accent);
+  color: var(--color-primary-dark);
+  border-radius: 50px;
+  padding: 10px;
+  width: 50%;
+  margin: 20px auto 0 auto;
+  font-size: var(--semi-title);
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s ease-in-out;
+}
+
+.formCover button:hover {
+  background: var(--color-primary-dark);
+  color: white;
+  border: 2px solid var(--color-accent);
+}
+
+.authWrapper.right .formCover {
+  transform: translateX(-100%);
+}
+
+@keyframes slideLeft {
+  from {
+    transform: translateX(-30%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideRight {
+  from {
+    transform: translateX(30%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
