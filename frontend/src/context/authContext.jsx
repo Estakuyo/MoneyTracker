@@ -10,11 +10,14 @@ export const AuthProvider = ({ children }) => {
 
   const login = async ({ username, password }) => {
     try {
-      const res = await fetch(import.meta.env.BACKEND_URL + authApi.loginApi, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
+      const res = await fetch(
+        import.meta.env.VITE_BACKEND_URL + authApi.loginApi,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        },
+      );
       const data = await res.json();
 
       if (!res.ok) {
@@ -32,7 +35,7 @@ export const AuthProvider = ({ children }) => {
   const register = async ({ email, username, password }) => {
     try {
       const res = await fetch(
-        import.meta.env.BACKEND_URL + authApi.registerApi,
+        import.meta.env.VITE_BACKEND_URL + authApi.registerApi,
         {
           method: "POST",
           headers: {
@@ -53,8 +56,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const logout = () => {
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem("token");
+  };
+
   return (
-    <UserContext.Provider value={{ token, user, login, register }}>
+    <UserContext.Provider value={{ token, user, login, register, logout }}>
       {children}
     </UserContext.Provider>
   );

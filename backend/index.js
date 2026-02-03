@@ -1,12 +1,19 @@
 require("dotenv").config();
 const db = require("./config/db_connection");
 const express = require("express");
+const cors = require("cors");
 const app = express();
 
 // Import Routes
 const authRoutes = require("./routes/authRoutes");
 
 // Middleware
+app.use(
+  cors({
+    credentials: true,
+    origin: process.env.FRONTEND_URL,
+  }),
+);
 app.use(express.json()); // Parses JSON to readable data
 
 // Use routes

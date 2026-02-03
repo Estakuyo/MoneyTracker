@@ -1,9 +1,12 @@
 import "./styles/loginRegisterPage.css";
-
-import { useState } from "react";
+import { UserContext } from "../context/authContext";
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
 const LoginRegisterPage = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const { register, login } = useContext(UserContext);
+  const navigate = useNavigate();
 
   // User fields
   const [email, setEmail] = useState("");
@@ -15,18 +18,29 @@ const LoginRegisterPage = () => {
     setIsLogin((prev) => !prev);
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     if (confirmPassword !== password) {
       console.log({ error: "Password does not match" });
       return;
     }
+    try {
+      await register({ email, username, password });
+      setIsLogin((prev) => !prev);
+    } catch (error) {
+      console.log(error);
+    }
     console.log({ email, username });
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log({ username, message: "Logged In Successful" });
+    try {
+      await login({ username, password });
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
