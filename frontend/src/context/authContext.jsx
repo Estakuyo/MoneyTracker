@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data?.message || "Login Failed");
+        throw new Error(data?.error || "Login Failed");
       }
 
       setUser(data.user);
@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data?.message || "Registration Failed");
+        throw new Error(data?.error || "Registration Failed");
       }
 
       return data;

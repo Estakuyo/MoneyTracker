@@ -16,6 +16,10 @@ const LoginRegisterPage = () => {
 
   const changeForm = () => {
     setIsLogin((prev) => !prev);
+    setEmail("");
+    setUsername("");
+    setPassword("");
+    setConfirmPassword("");
   };
 
   const handleRegister = async (e) => {
@@ -26,7 +30,7 @@ const LoginRegisterPage = () => {
     }
     try {
       await register({ email, username, password });
-      setIsLogin((prev) => !prev);
+      changeForm();
     } catch (error) {
       console.log(error);
     }
@@ -77,6 +81,7 @@ const LoginRegisterPage = () => {
             <input
               name="username"
               type="text"
+              value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
           </label>
@@ -86,6 +91,7 @@ const LoginRegisterPage = () => {
             <input
               name="password"
               type="password"
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </label>
@@ -95,6 +101,7 @@ const LoginRegisterPage = () => {
             <input
               name="confirmPassword"
               type="password"
+              value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </label>
@@ -110,6 +117,7 @@ const LoginRegisterPage = () => {
             <input
               name="username"
               type="text"
+              value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
           </label>
@@ -119,6 +127,7 @@ const LoginRegisterPage = () => {
             <input
               name="password"
               type="password"
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </label>

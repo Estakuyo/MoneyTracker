@@ -4,6 +4,7 @@ const {
   registerAccount,
 } = require("./queries/authQueries");
 const { signToken, verfiyToken } = require("../helpers/jwt");
+const { hashPassword, comparePassword } = require("../helpers/bcrypt");
 
 const register = async (req, res) => {
   try {
@@ -13,8 +14,9 @@ const register = async (req, res) => {
     if (users.length > 0) {
       return res.status(401).json({ error: "Account already exists" });
     }
+    const hashedPassword = await hashPassword(password);
 
-    const user = registerAccount(email, username, password);
+    const user = registerAccount(email, username, hashedPassword);
     return res.status(200).json({ user, message: "Registered Successfully" });
   } catch (err) {
     res.status(500).json(err);
@@ -31,8 +33,9 @@ const login = async (req, res) => {
     }
 
     const user = users[0];
+    const isPasswordValid = await comparePassword(password, user.password);
 
-    if (user.password !== password) {
+    if (!isPasswordValid) {
       return res.status(401).json({ error: "Incorrect Credentials" });
     }
 
