@@ -27,26 +27,28 @@ const Register = () => {
   };
 
   return (
-    <div>
-      <form onSubmit={handleRegister}>
-        <h1>Register</h1>
+    <div className="h-screen w-screen flex justify-center items-center">
+      <form onSubmit={handleRegister} className="auth-form">
+        <h1 className="auth-header">Register</h1>
 
-        <label>
+        <label className="flex flex-col">
           Email
           <input
             name="email"
             type="email"
             onChange={(e) => setEmail(e.target.value)}
+            className="input-field"
           />
         </label>
 
-        <label>
+        <label className="flex flex-col">
           Username
           <input
             name="username"
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            className="input-field"
           />
         </label>
 
@@ -57,6 +59,7 @@ const Register = () => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            className="input-field"
           />
         </label>
 
@@ -67,12 +70,19 @@ const Register = () => {
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
+            className="input-field"
           />
         </label>
 
-        <button type="submit">Register</button>
-        <p>
-          Already have an account? <a href="/login">Login</a>
+        <button type="submit" className="auth-btn">
+          Register
+        </button>
+        <p className="text-center text-slate-600">
+          Already have an account?
+          <br />{" "}
+          <a href="/login" className="hover:underline text-blue-500">
+            Login
+          </a>
         </p>
       </form>
     </div>

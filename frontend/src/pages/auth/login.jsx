@@ -21,11 +21,8 @@ const Login = () => {
 
   return (
     <div className="h-screen w-screen flex justify-center items-center">
-      <form
-        onSubmit={handleLogin}
-        className="border border-slate-300 shadow-2xl rounded-2xl flex flex-col py-6 px-8 gap-4 w-4/5 max-w-md"
-      >
-        <h1 className="m-4 text-center font-bold text-2xl">Sign In</h1>
+      <form onSubmit={handleLogin} className="auth-form">
+        <h1 className="auth-header">Sign In</h1>
 
         <label className="flex flex-col">
           Username
@@ -49,12 +46,12 @@ const Login = () => {
           />
         </label>
 
-        <button type="submit" className="mx-auto mt-6 mb-4 auth-btn">
+        <button type="submit" className="auth-btn">
           Login
         </button>
         <p className="text-center text-slate-600">
           Don't have an account? <br />
-          <a href="/register" className="underline text-blue-500">
+          <a href="/register" className="hover:underline text-blue-500">
             Register
           </a>
         </p>
