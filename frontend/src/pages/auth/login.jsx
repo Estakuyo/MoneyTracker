@@ -20,31 +20,44 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <form onSubmit={handleLogin}>
-        <h1>Login</h1>
+    <div className="h-screen w-screen flex justify-center items-center">
+      <form
+        onSubmit={handleLogin}
+        className="border border-slate-300 shadow-2xl rounded-2xl flex flex-col py-6 px-8 gap-4 w-4/5 max-w-md"
+      >
+        <h1 className="m-4 text-center font-bold text-2xl">Sign In</h1>
 
-        <label>
+        <label className="flex flex-col">
           Username
           <input
             name="username"
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            className="input-field"
           />
         </label>
 
-        <label>
+        <label className="flex flex-col">
           Password
           <input
             name="password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            className="input-field"
           />
         </label>
 
-        <button type="submit">Login</button>
+        <button type="submit" className="mx-auto mt-6 mb-4 auth-btn">
+          Login
+        </button>
+        <p className="text-center text-slate-600">
+          Don't have an account? <br />
+          <a href="/register" className="underline text-blue-500">
+            Register
+          </a>
+        </p>
       </form>
     </div>
   );

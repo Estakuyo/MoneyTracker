@@ -1,2 +1,27 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
-@import "talwindcss";
+@import "tailwindcss";
+
+@theme {
+}
+
+@layer base {
+  * {
+    font-family: Roboto;
+  }
+
+  body {
+    background-color: var(--color-light-bg);
+    color: var(--color-text-primary);
+  }
+}
+
+@layer components {
+  .input-field {
+    @apply w-full border border-slate-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500/30
+    focus:border-blue-500;
+  }
+
+  .auth-btn {
+    @apply py-2 px-4 border bg-blue-500 rounded-2xl text-lg text-white w-25 hover:bg-blue-600 active:bg-blue-700 cursor-pointer;
+  }
+}
