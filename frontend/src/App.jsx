@@ -9,11 +9,13 @@ import Home from "./pages/home";
 import Expenses from "./pages/expenses";
 import Savings from "./pages/savings";
 import Earnings from "./pages/earnings";
+import Sidebar from "./components/sidebar";
 
 function App() {
   return (
     <>
       <AuthProvider>
+        <Sidebar />
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />

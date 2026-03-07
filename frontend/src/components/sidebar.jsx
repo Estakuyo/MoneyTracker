@@ -1,22 +1,61 @@
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Home, BanknoteArrowDown, PiggyBank, HandCoins } from "lucide-react";
+
 const Sidebar = () => {
+  const location = useLocation();
+  const [isCollapse, setIsCollapse] = useState(true);
+
+  if (
+    location.pathname === "/" ||
+    location.pathname === "/login" ||
+    location.pathname === "/register"
+  ) {
+    return <></>;
+  }
+
   return (
-    <div className="fixed left-0 border h-screen w-60 md:w-70">
-      <h1 className="my-30 text-center">MoneyTracker</h1>
-      <ul>
-        <li className="py-5 pl-10 border">
-          <a href="/home">Home</a>
-        </li>
-        <li className="py-5 pl-10 border">
-          <a href="/expenses">Expenses</a>
-        </li>
-        <li className="py-5 pl-10 border">
-          <a href="/savings">Savings</a>
-        </li>
-        <li className="py-5 pl-10 border">
-          <a href="/earnings">Earnings</a>
-        </li>
+    <div
+      className={`fixed left-0 shadow-xl h-screen w-60 md:w-70 bg-primary-600`}
+    >
+      <h1 className="my-20 text-center title text-white">
+        Money<span className="text-success-500">Tracker</span>
+      </h1>
+      <ul className="text-white">
+        <Link to="/home">
+          <li
+            className={`sidebar-options ${location.pathname == "/home" ? "bg-accent-500" : ""}`}
+          >
+            <Home />
+            Home
+          </li>
+        </Link>
+        <Link to="/expenses">
+          <li
+            className={`sidebar-options ${location.pathname == "/expenses" ? "bg-accent-500" : ""}`}
+          >
+            <BanknoteArrowDown />
+            Expenses
+          </li>
+        </Link>
+        <Link to="/savings">
+          <li
+            className={`sidebar-options ${location.pathname == "/savings" ? "bg-accent-500" : ""}`}
+          >
+            <PiggyBank />
+            Savings
+          </li>
+        </Link>
+        <Link to="/earnings">
+          <li
+            className={`sidebar-options ${location.pathname == "/earnings" ? "bg-accent-500" : ""}`}
+          >
+            <HandCoins />
+            Earnings
+          </li>
+        </Link>
       </ul>
-      <button className="border absolute bottom-0 left-0 right-0 w-4/5 mx-auto mb-10">
+      <button className="absolute bottom-0 left-0 right-0 w-4/5 mx-auto mb-10 button bg-red-600 text-white hover:bg-red-700">
         Logout
       </button>
     </div>
