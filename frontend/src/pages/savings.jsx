@@ -1,9 +1,9 @@
-import Sidebar from "../components/sidebar";
+import Card from "../components/card";
 
 const Savings = () => {
   return (
     <div className="middle">
-      <h1>Savings Page</h1>
+      <Card className="w-sm" title={"Savings"} />
     </div>
   );
 };

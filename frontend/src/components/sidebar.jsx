@@ -34,7 +34,6 @@ const Sidebar = () => {
 
       <div
         className={`fixed left-0 shadow-xl h-screen w-70 bg-primary-600 z-40 
-          md:translate-x-0 
           transition-transform duration-300 ease-in-out 
           ${isCollapse ? "-translate-x-full md:translate-x-0" : "translate-x-0"}`}
       >
