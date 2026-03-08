@@ -2,7 +2,7 @@ import Card from "../components/card";
 
 const Expenses = () => {
   return (
-    <div className="middle">
+    <div className="main-wrapper">
       <Card className="w-sm" title={"Expenses"} />
     </div>
   );

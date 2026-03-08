@@ -69,8 +69,8 @@
 }
 
 @layer components {
-  .middle {
-    @apply flex justify-center items-center h-screen w-full md:w-[calc(100%-280px)] md:ml-70;
+  .main-wrapper {
+    @apply h-screen w-full md:w-[calc(100%-280px)] md:ml-70;
   }
 
   .input-field {

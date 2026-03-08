@@ -1,4 +1,4 @@
-const Card = ({ title, children, className = "" }) => {
+const Card = ({ title, children, className = "", button }) => {
   return (
     <div className={`bg-white rounded-lg shadow-lg p-6 ${className}`}>
       {title && (
@@ -6,7 +6,10 @@ const Card = ({ title, children, className = "" }) => {
           {title}
         </h2>
       )}
-      <div className="card-content">{children}</div>
+      <div>
+        {children}
+        {button}
+      </div>
     </div>
   );
 };
