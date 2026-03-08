@@ -21,40 +21,56 @@ const Login = () => {
 
   return (
     <div className="h-screen w-screen flex justify-center items-center">
-      <form onSubmit={handleLogin} className="auth-form">
-        <h1 className="auth-header">Sign In</h1>
+      <form
+        onSubmit={handleLogin}
+        className="auth-form backdrop-blur-sm bg-primary-600/90 animate-slide-up"
+      >
+        <h1 className="auth-header text-white mb-2 animate-fade-in-delay-1">
+          Welcome Back
+        </h1>
+        <p className="text-center text-primary-100 text-sm mb-4 animate-fade-in-delay-1">
+          Sign in to continue to MoneyTracker
+        </p>
 
-        <label className="flex flex-col">
-          Username
+        <label className="flex flex-col gap-2 animate-fade-in-delay-2">
+          <span className="text-sm font-medium text-primary-50">Username</span>
           <input
             name="username"
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="input-field"
+            placeholder="Enter your username"
+            required
+            className="input-field bg-white/95 text-gray-800 placeholder:text-gray-400"
           />
         </label>
 
-        <label className="flex flex-col">
-          Password
+        <label className="flex flex-col gap-2 animate-fade-in-delay-2">
+          <span className="text-sm font-medium text-primary-50">Password</span>
           <input
             name="password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="input-field"
+            placeholder="Enter your password"
+            required
+            className="input-field bg-white/95 text-gray-800 placeholder:text-gray-400"
           />
         </label>
 
-        <button type="submit" className="auth-btn">
-          Login
+        <button type="submit" className="auth-btn animate-fade-in-delay-3">
+          Sign In
         </button>
-        <p className="text-center text-slate-600">
-          Don't have an account? <br />
-          <a href="/register" className="hover:underline text-blue-500">
-            Register
+
+        <div className="text-center text-primary-100 text-sm border-t border-primary-400/30 pt-4 animate-fade-in-delay-4">
+          Don't have an account?{" "}
+          <a
+            href="/register"
+            className="font-semibold text-accent-400 hover:text-accent-300 hover:underline transition-colors"
+          >
+            Create Account
           </a>
-        </p>
+        </div>
       </form>
     </div>
   );

@@ -74,12 +74,13 @@
   }
 
   .input-field {
-    @apply w-full border border-slate-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500/30
-    focus:border-blue-500;
+    @apply w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent-400/50
+    focus:border-accent-500 transition-all duration-200;
   }
 
   .auth-form {
-    @apply border border-slate-300 shadow-2xl rounded-2xl flex flex-col py-6 px-8 gap-4 w-4/5 max-w-md;
+    @apply bg-primary-500 shadow-2xl rounded-2xl flex flex-col py-8 px-10 gap-5 w-11/12 max-w-md
+    text-white border border-primary-400/20;
   }
 
   .auth-header {
@@ -87,8 +88,9 @@
   }
 
   .auth-btn {
-    @apply mx-auto mt-6 mb-4 py-2 px-4 border bg-blue-500 rounded-2xl text-lg text-white w-25 
-  hover:bg-blue-600 active:bg-blue-700 cursor-pointer;
+    @apply w-full mt-2 mb-2 py-3 px-6 bg-accent-500 rounded-xl text-base font-semibold text-white 
+  hover:bg-accent-600 active:bg-accent-700 hover:shadow-lg active:scale-[0.98] cursor-pointer 
+  transition-all duration-200;
   }
 
   .title {
@@ -103,5 +105,45 @@
   .button {
     @apply rounded-2xl py-3 px-6 font-semibold text-base cursor-pointer transition-all duration-200 
     shadow-md hover:shadow-lg active:scale-95;
+  }
+
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.5s ease-out;
+  }
+
+  .animate-fade-in-delay-1 {
+    animation: fade-in 0.5s ease-out 0.1s both;
+  }
+
+  .animate-fade-in-delay-2 {
+    animation: fade-in 0.5s ease-out 0.2s both;
+  }
+
+  .animate-fade-in-delay-3 {
+    animation: fade-in 0.5s ease-out 0.3s both;
+  }
+
+  .animate-fade-in-delay-4 {
+    animation: fade-in 0.5s ease-out 0.4s both;
   }
 }
