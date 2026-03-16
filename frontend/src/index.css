@@ -70,7 +70,7 @@
 
 @layer components {
   .main-wrapper {
-    @apply w-full md:w-[calc(100%-280px)] md:ml-70;
+    @apply md:w-[calc(100%-280px)] md:ml-70;
   }
 
   .input-field {

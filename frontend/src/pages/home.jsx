@@ -79,7 +79,7 @@ const Home = () => {
               />
               <Line dataKey={"expense"} strokeWidth={2} stroke="red" />
               <Line dataKey={"savings"} strokeWidth={2} stroke="darkgreen" />
-              <Line dataKey={"earnings"} strokeWidth={2} stroke="green" />
+              <Line dataKey={"earnings"} strokeWidth={2} stroke="lightgreen" />
               <Legend
                 verticalAlign="top"
                 height={40}
@@ -94,36 +94,87 @@ const Home = () => {
 
       <Card
         className="w-full"
-        title={"Total Expenses"}
+        title={"Expenses"}
         button={
           <Button
             title={"Add Expense"}
             className="bg-error-500 hover:bg-error-700"
           />
         }
-      />
+      >
+        <div className="flex flex-col gap-6">
+          <h1 className="text-md font-semibold text-gray-500">
+            Total Overall Expenses
+          </h1>
+          <h1 className="text-5xl text-error-600 font-bold">₱1,800</h1>
+          <div className="flex justify-between">
+            <div className="flex flex-col">
+              <p className="font-bold text-gray-800">+₱500</p>
+              <p className="font-semibold text-gray-500">This Month</p>
+            </div>
+            <div className="flex gap-2 items-end">
+              <p className="font-bold text-gray-800">5</p>
+              <p className="font-semibold text-gray-500">Expenses Added</p>
+            </div>
+          </div>
+        </div>
+      </Card>
 
       <Card
         className="w-full"
-        title={"Total Earnings"}
+        title={"Earnings"}
         button={
           <Button
             title={"Add Earning"}
             className="bg-success-500 hover:bg-success-700"
           />
         }
-      />
+      >
+        <div className="flex flex-col gap-6">
+          <h1 className="text-md font-semibold text-gray-500">
+            Total Overall Earnings
+          </h1>
+          <h1 className="text-5xl text-success-600 font-bold">₱1,800</h1>
+          <div className="flex justify-between">
+            <div className="flex flex-col">
+              <p className="font-bold text-gray-800">+₱500</p>
+              <p className="font-semibold text-gray-500">This Month</p>
+            </div>
+            <div className="flex gap-2 items-end">
+              <p className="font-bold text-gray-800">5</p>
+              <p className="font-semibold text-gray-500">Earnings Added</p>
+            </div>
+          </div>
+        </div>
+      </Card>
 
       <Card
         className="w-full"
-        title={"Total Savings"}
+        title={"Savings"}
         button={
           <Button
             title={"Add Saving"}
             className="bg-success-500 hover:bg-success-700"
           />
         }
-      />
+      >
+        <div className="flex flex-col gap-6">
+          <h1 className="text-md font-semibold text-gray-500">
+            Total Overall Savings
+          </h1>
+          <h1 className="text-5xl text-success-600 font-bold">₱1,800</h1>
+          <div className="flex justify-between">
+            <div className="flex flex-col">
+              <p className="font-bold text-gray-800">+₱500</p>
+              <p className="font-semibold text-gray-500">This Month</p>
+            </div>
+            <div className="flex gap-2 items-end">
+              <p className="font-bold text-gray-800">5</p>
+              <p className="font-semibold text-gray-500">Savings Added</p>
+            </div>
+          </div>
+        </div>
+      </Card>
     </div>
   );
 };
