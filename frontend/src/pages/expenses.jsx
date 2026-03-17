@@ -6,9 +6,27 @@ const Expenses = () => {
     <div className="main-wrapper px-10 py-20 flex flex-col md:grid gap-5 md:py-10">
       <Card className="w-full" title={"Total Expense"} />
 
-      <Card className="w-full" title={"Categories"} />
+      <Card
+        className="w-full"
+        title={"Categories"}
+        button={
+          <Button
+            className="bg-secondary-500 hover:bg-accent-700"
+            title={"Add Category"}
+          />
+        }
+      />
 
-      <Card className="w-full" title={"Expenses"} />
+      <Card
+        className="w-full"
+        title={"Expenses"}
+        button={
+          <Button
+            className="bg-secondary-500 hover:bg-accent-700"
+            title={"Add Expense"}
+          />
+        }
+      />
 
       <Card className="w-full col-span-3" title={"Expense Chart"} />
     </div>
