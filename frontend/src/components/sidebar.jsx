@@ -52,6 +52,7 @@ const Sidebar = () => {
           <Link to="/home">
             <li
               className={`sidebar-options ${location.pathname == "/home" ? "bg-accent-500" : ""}`}
+              onClick={() => setIsCollapse(true)}
             >
               <Home />
               Home
@@ -60,6 +61,7 @@ const Sidebar = () => {
           <Link to="/expenses">
             <li
               className={`sidebar-options ${location.pathname == "/expenses" ? "bg-accent-500" : ""}`}
+              onClick={() => setIsCollapse(true)}
             >
               <BanknoteArrowDown />
               Expenses
@@ -68,6 +70,7 @@ const Sidebar = () => {
           <Link to="/savings">
             <li
               className={`sidebar-options ${location.pathname == "/savings" ? "bg-accent-500" : ""}`}
+              onClick={() => setIsCollapse(true)}
             >
               <PiggyBank />
               Savings
@@ -76,6 +79,7 @@ const Sidebar = () => {
           <Link to="/earnings">
             <li
               className={`sidebar-options ${location.pathname == "/earnings" ? "bg-accent-500" : ""}`}
+              onClick={() => setIsCollapse(true)}
             >
               <HandCoins />
               Earnings

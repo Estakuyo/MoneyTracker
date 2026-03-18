@@ -10,6 +10,39 @@ const Expenses = () => {
     { name: "Beer", amount: 300 },
   ];
 
+  const sampleExpenses = [
+    {
+      name: "Lunch",
+      amount: 90,
+      date: "05/05/2025",
+      category: sampleCategories[0].name,
+    },
+    {
+      name: "Groceries",
+      amount: 1200,
+      date: "05/02/2025",
+      category: sampleCategories[0].name,
+    },
+    {
+      name: "Fuel",
+      amount: 800,
+      date: "05/03/2025",
+      category: sampleCategories[1].name,
+    },
+    {
+      name: "ThursDate",
+      amount: 999,
+      date: "04/30/2025",
+      category: sampleCategories[3].name,
+    },
+    {
+      name: "Smirnoff",
+      amount: 350,
+      date: "05/06/2025",
+      category: sampleCategories[4].name,
+    },
+  ];
+
   return (
     <div className="main-wrapper px-10 py-20 flex flex-col md:grid gap-5 md:py-10">
       <Card className="w-full" title={"Total Expense"}>
@@ -37,14 +70,21 @@ const Expenses = () => {
           />
         }
       >
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col">
           {sampleCategories.map((category, index) => (
             <div
               key={index}
-              className="flex justify-between font-medium text-lg text-gray-500"
+              className="flex items-center justify-between gap-4 py-4 border-b last:border-b-0"
             >
-              <p>{category.name}</p>
-              <p className="text-error-500">{category.amount}</p>
+              <div>
+                <p className="font-medium text-lg text-gray-500">
+                  {category.name}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="font-bold text-error-500">{category.amount}</p>
+                <p className="text-gray-500 text-sm">Total</p>
+              </div>
             </div>
           ))}
         </div>
@@ -59,7 +99,29 @@ const Expenses = () => {
             title={"View Expenses"}
           />
         }
-      />
+      >
+        <div className="flex flex-col">
+          {sampleExpenses.map((expense, index) => (
+            <div
+              key={index}
+              className="flex items-center justify-between gap-4 py-3 border-b last:border-b-0"
+            >
+              <div>
+                <p className="font-medium text-lg text-gray-500">
+                  {expense.name}
+                </p>
+                <p className="mt-1 inline-block text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded">
+                  {expense.category}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="font-bold text-error-500">{expense.amount}</p>
+                <p className="text-gray-500 text-sm">{expense.date}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
 
       <Card className="w-full col-span-3" title={"Expense Chart"} />
     </div>
