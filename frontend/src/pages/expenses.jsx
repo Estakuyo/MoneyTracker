@@ -1,5 +1,14 @@
 import Card from "../components/card";
 import Button from "../components/button";
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+} from "recharts";
 
 const Expenses = () => {
   const sampleCategories = [
@@ -71,7 +80,7 @@ const Expenses = () => {
         }
       >
         <div className="flex flex-col">
-          {sampleCategories.map((category, index) => (
+          {sampleCategories.slice(0, 3).map((category, index) => (
             <div
               key={index}
               className="flex items-center justify-between gap-4 py-4 border-b last:border-b-0"
@@ -101,7 +110,7 @@ const Expenses = () => {
         }
       >
         <div className="flex flex-col">
-          {sampleExpenses.map((expense, index) => (
+          {sampleExpenses.slice(0, 3).map((expense, index) => (
             <div
               key={index}
               className="flex items-center justify-between gap-4 py-3 border-b last:border-b-0"
@@ -123,7 +132,26 @@ const Expenses = () => {
         </div>
       </Card>
 
-      <Card className="w-full col-span-3" title={"Expense Chart"} />
+      <Card className="w-full col-span-3" title={"Expense Per Day"}>
+        <div style={{ width: "100%", height: 300 }} className="px-4 py-4">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              data={sampleExpenses}
+              margin={{ top: 10, right: 30, left: 0, bottom: 10 }}
+            >
+              <CartesianGrid />
+              <YAxis width={40} fontSize={"12px"} fontWeight={800} />
+              <Tooltip />
+              <Line
+                type="monotone"
+                dataKey="amount"
+                stroke="#ef4444"
+                strokeWidth={3}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </Card>
     </div>
   );
 };

@@ -77,9 +77,24 @@ const Home = () => {
                 angle={-30}
                 textAnchor="end"
               />
-              <Line dataKey={"expense"} strokeWidth={2} stroke="red" />
-              <Line dataKey={"savings"} strokeWidth={2} stroke="darkgreen" />
-              <Line dataKey={"earnings"} strokeWidth={2} stroke="lightgreen" />
+              <Line
+                type="monotone"
+                dataKey={"expense"}
+                strokeWidth={3}
+                stroke="red"
+              />
+              <Line
+                type="monotone"
+                dataKey={"savings"}
+                strokeWidth={3}
+                stroke="darkgreen"
+              />
+              <Line
+                type="monotone"
+                dataKey={"earnings"}
+                strokeWidth={3}
+                stroke="lightgreen"
+              />
               <Legend
                 verticalAlign="top"
                 height={40}
