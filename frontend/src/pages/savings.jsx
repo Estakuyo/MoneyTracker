@@ -1,7 +1,15 @@
 import Card from "../components/card";
 import Button from "../components/button";
+import ProgressBar from "../components/bar";
 
 const Savings = () => {
+  const sampleGoals = [
+    { name: "Emergency Fund", amount: 10000, saved: 6500 },
+    { name: "Vacation", amount: 3000, saved: 1500 },
+    { name: "New Laptop", amount: 80000, saved: 20000 },
+    { name: "Motorcycle Maintenance", amount: 20000, saved: 5000 },
+    { name: "Home Renovation", amount: 50000, saved: 10000 },
+  ];
   return (
     <div className="main-wrapper px-10 py-20 flex flex-col md:grid gap-5 md:py-10">
       <Card className="w-full" title={"Total Savings"}>
@@ -28,7 +36,19 @@ const Savings = () => {
             className="bg-success-500 hover:bg-success-700"
           />
         }
-      />
+      >
+        <div className="flex flex-col gap-10">
+          {sampleGoals.slice(0, 3).map((goal, index) => (
+            <div className="flex flex-col gap-2" key={index}>
+              <ProgressBar
+                goal={goal.name}
+                value={goal.saved}
+                max={goal.amount}
+              />
+            </div>
+          ))}
+        </div>
+      </Card>
 
       <Card
         className="w-full"
