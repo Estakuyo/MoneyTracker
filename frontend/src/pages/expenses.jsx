@@ -58,6 +58,8 @@ const Expenses = () => {
     { day: "Wednesday", amount: 15 },
     { day: "Thursday", amount: 20 },
     { day: "Friday", amount: 25 },
+    { day: "Saturday", amount: 30 },
+    { day: "Sunday", amount: 35 },
   ];
 
   return (
@@ -143,10 +145,7 @@ const Expenses = () => {
       <Card className="w-full col-span-3" title={"Expense Per Day"}>
         <div style={{ width: "100%", height: 300 }} className="px-4 py-4">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={sampleChart}
-              margin={{ top: 10, right: 30, left: 0, bottom: 10 }}
-            >
+            <BarChart data={sampleChart}>
               <CartesianGrid />
               <XAxis
                 dataKey="day"
