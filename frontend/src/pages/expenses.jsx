@@ -2,8 +2,8 @@ import Card from "../components/card";
 import Button from "../components/button";
 import {
   ResponsiveContainer,
-  BarChart,
-  Bar,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   Tooltip,
@@ -53,13 +53,13 @@ const Expenses = () => {
   ];
 
   const sampleChart = [
-    { day: "Monday", amount: 5 },
-    { day: "Tuesday", amount: 10 },
-    { day: "Wednesday", amount: 15 },
-    { day: "Thursday", amount: 20 },
-    { day: "Friday", amount: 25 },
-    { day: "Saturday", amount: 30 },
-    { day: "Sunday", amount: 35 },
+    { amount: 5 },
+    { amount: 10 },
+    { amount: 15 },
+    { amount: 20 },
+    { amount: 25 },
+    { amount: 30 },
+    { amount: 35 },
   ];
 
   return (
@@ -142,24 +142,20 @@ const Expenses = () => {
         </div>
       </Card>
 
-      <Card className="w-full col-span-3" title={"Expense Per Day"}>
+      <Card className="w-full col-span-3" title={"Expense History"}>
         <div style={{ width: "100%", height: 300 }} className="px-4 py-4">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={sampleChart}>
+            <LineChart data={sampleChart}>
               <CartesianGrid />
-              <XAxis
-                dataKey="day"
-                width={40}
-                fontSize={"12px"}
-                fontWeight={800}
-                tickFormatter={(d) => d.slice(0, 2)}
-                angle={-30}
-                textAnchor="end"
-              />
-              <YAxis width={40} fontSize={"12px"} fontWeight={800} />
               <Tooltip />
-              <Bar dataKey="amount" fill="#ef4444" />
-            </BarChart>
+              <Line
+                type="monotone"
+                dataKey="amount"
+                stroke="#ef4444"
+                strokeWidth={3}
+                dot={false}
+              />
+            </LineChart>
           </ResponsiveContainer>
         </div>
       </Card>
