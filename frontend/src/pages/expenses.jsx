@@ -52,7 +52,7 @@ const Expenses = () => {
     },
   ];
 
-  const sampleChart = [
+  const sampleDataChart = [
     { amount: 5 },
     { amount: 10 },
     { amount: 15 },
@@ -143,10 +143,10 @@ const Expenses = () => {
       </Card>
 
       <Card className="w-full col-span-3" title={"Expense History"}>
-        <div style={{ width: "100%", height: 300 }} className="px-4 py-4">
+        <div className="w-full" style={{ height: 300 }}>
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={sampleChart}>
-              <CartesianGrid />
+            <LineChart data={sampleDataChart}>
+              <CartesianGrid strokeDasharray={"3 3"} />
               <Tooltip />
               <Line
                 type="monotone"

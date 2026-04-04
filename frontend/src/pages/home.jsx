@@ -15,85 +15,71 @@ import Card from "../components/card";
 import Button from "../components/button";
 
 const Home = () => {
-  const sampleData = [
+  const sampleDataChart = [
     {
-      data: "Monday",
+      date: "11/06/2003",
       expense: 200,
-      savings: 400,
       earnings: 600,
     },
     {
-      data: "Tuesday",
+      date: "11/07/2003",
       expense: 100,
-      savings: 500,
       earnings: 300,
     },
     {
-      data: "Wednesday",
+      date: "11/08/2003",
       expense: 900,
-      savings: 1100,
       earnings: 1500,
     },
     {
-      data: "Thursday",
+      date: "11/09/2003",
       expense: 1150,
-      savings: 600,
       earnings: 150,
     },
     {
-      data: "Friday",
+      date: "11/10/2003",
       expense: 1550,
-      savings: 150,
       earnings: 100,
     },
     {
-      data: "Saturday",
+      date: "11/11/2003",
       expense: 900,
-      savings: 990,
       earnings: 880,
     },
     {
-      data: "Sunday",
+      date: "11/12/2003",
       expense: 100,
-      savings: 500,
       earnings: 800,
     },
   ];
 
   return (
     <div className="main-wrapper px-10 py-20 flex flex-col md:grid gap-5 md:py-10">
-      <Card className="w-full col-span-3" title={"Weekly Report"}>
+      <Card className="w-full col-span-3" title={"Overall Chart Report"}>
         <div className="h-96">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={sampleData}>
-              <CartesianGrid />
+            <LineChart data={sampleDataChart}>
+              <CartesianGrid strokeDasharray={"3 3"} />
               <YAxis width={40} fontSize={"12px"} fontWeight={800} />
               <XAxis
                 width={40}
                 fontSize={"12px"}
                 fontWeight={800}
-                dataKey={"data"}
-                tickFormatter={(d) => d.slice(0, 2)}
-                angle={-30}
-                textAnchor="end"
+                dataKey={"date"}
               />
               <Line
                 type="monotone"
                 dataKey={"expense"}
                 strokeWidth={3}
                 stroke="red"
-              />
-              <Line
-                type="monotone"
-                dataKey={"savings"}
-                strokeWidth={3}
-                stroke="darkgreen"
+                dot={false}
               />
               <Line
                 type="monotone"
                 dataKey={"earnings"}
                 strokeWidth={3}
                 stroke="lightgreen"
+                dot={false}
               />
               <Legend
                 verticalAlign="top"

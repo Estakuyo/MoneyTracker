@@ -21,19 +21,35 @@ const Savings = () => {
     { name: "Home Renovation", amount: 50000, saved: 10000 },
   ];
 
-  const sampleSavingsHistoryPerMonth = [
-    { month: "Jan", balance: 4100 },
-    { month: "Feb", balance: 4600 },
-    { month: "Mar", balance: 5200 },
-    { month: "Apr", balance: 5500 },
-    { month: "May", balance: 5700 },
-    { month: "Jun", balance: 5800 },
-    { month: "Jul", balance: 6100 },
-    { month: "Aug", balance: 6300 },
-    { month: "Sep", balance: 6400 },
-    { month: "Oct", balance: 6450 },
-    { month: "Nov", balance: 6475 },
-    { month: "Dec", balance: 7000 },
+  const sampleDataChart = [
+    {
+      date: "11/06/2003",
+      amount: 400,
+    },
+    {
+      date: "11/07/2003",
+      amount: 500,
+    },
+    {
+      date: "11/08/2003",
+      amount: 1100,
+    },
+    {
+      date: "11/09/2003",
+      amount: 600,
+    },
+    {
+      date: "11/10/2003",
+      amount: 150,
+    },
+    {
+      date: "11/11/2003",
+      amount: 990,
+    },
+    {
+      date: "11/12/2003",
+      amount: 500,
+    },
   ];
 
   const sampleDropdownOptions = ["2026", "2027"];
@@ -78,29 +94,24 @@ const Savings = () => {
         </div>
       </Card>
 
-      <Card
-        className="w-full col-span-2"
-        title={"Savings History"}
-        button={<Dropdown name={"Year"} options={sampleDropdownOptions} />}
-      >
+      <Card className="w-full col-span-2" title={"Savings History"}>
         <div className="w-full" style={{ height: 300 }}>
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={sampleSavingsHistoryPerMonth}>
+            <LineChart data={sampleDataChart}>
               <CartesianGrid strokeDasharray="3 3" />
+              <YAxis width={40} fontSize={"12px"} fontWeight={800} />
               <XAxis
                 width={40}
                 fontSize={"12px"}
                 fontWeight={800}
-                dataKey={"month"}
-                tickFormatter={(d) => d.slice(0, 2)}
-                angle={-30}
-                textAnchor="end"
+                dataKey={"date"}
               />
               <Line
                 type="monotone"
-                dataKey="balance"
+                dataKey="amount"
                 stroke="darkgreen"
                 strokeWidth={3}
+                dot={false}
               />
               <Tooltip />
             </LineChart>
