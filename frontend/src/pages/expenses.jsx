@@ -8,6 +8,8 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid,
+  BarChart,
+  Bar,
 } from "recharts";
 
 const Expenses = () => {
@@ -53,13 +55,18 @@ const Expenses = () => {
   ];
 
   const sampleDataChart = [
-    { amount: 5 },
-    { amount: 10 },
-    { amount: 15 },
-    { amount: 20 },
-    { amount: 25 },
-    { amount: 30 },
-    { amount: 35 },
+    { month: "January", total: 400 },
+    { month: "February", total: 600 },
+    { month: "March", total: 800 },
+    { month: "April", total: 1000 },
+    { month: "May", total: 1200 },
+    { month: "June", total: 1400 },
+    { month: "July", total: 1600 },
+    { month: "August", total: 1800 },
+    { month: "September", total: 2000 },
+    { month: "October", total: 2200 },
+    { month: "November", total: 2400 },
+    { month: "December", total: 2600 },
   ];
 
   return (
@@ -142,20 +149,21 @@ const Expenses = () => {
         </div>
       </Card>
 
-      <Card className="w-full col-span-3" title={"Expense History"}>
+      <Card className="w-full col-span-3" title={"Monthly Expense History"}>
         <div className="w-full" style={{ height: 300 }}>
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={sampleDataChart}>
+            <BarChart data={sampleDataChart}>
               <CartesianGrid strokeDasharray={"3 3"} />
-              <Tooltip />
-              <Line
-                type="monotone"
-                dataKey="amount"
-                stroke="#ef4444"
-                strokeWidth={3}
-                dot={false}
+              <XAxis dataKey={"month"} tick={false} />
+              <YAxis
+                width="auto"
+                type="number"
+                fontSize={"12px"}
+                fontWeight={800}
               />
-            </LineChart>
+              <Bar dataKey={"total"} fill="#ef4444" radius={[10, 10, 0, 0]} />
+              <Tooltip />
+            </BarChart>
           </ResponsiveContainer>
         </div>
       </Card>

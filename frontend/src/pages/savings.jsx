@@ -99,9 +99,9 @@ const Savings = () => {
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={sampleDataChart}>
               <CartesianGrid strokeDasharray="3 3" />
-              <YAxis width={40} fontSize={"12px"} fontWeight={800} />
+              <YAxis width={"auto"} fontSize={"12px"} fontWeight={800} />
               <XAxis
-                width={40}
+                width={"auto"}
                 fontSize={"12px"}
                 fontWeight={800}
                 dataKey={"date"}
