@@ -58,6 +58,15 @@ const Sidebar = () => {
               Home
             </li>
           </Link>
+          <Link to="/earnings">
+            <li
+              className={`sidebar-options ${location.pathname == "/earnings" ? "bg-accent-500" : ""}`}
+              onClick={() => setIsCollapse(true)}
+            >
+              <HandCoins />
+              Earnings
+            </li>
+          </Link>
           <Link to="/expenses">
             <li
               className={`sidebar-options ${location.pathname == "/expenses" ? "bg-accent-500" : ""}`}
@@ -74,15 +83,6 @@ const Sidebar = () => {
             >
               <PiggyBank />
               Savings
-            </li>
-          </Link>
-          <Link to="/earnings">
-            <li
-              className={`sidebar-options ${location.pathname == "/earnings" ? "bg-accent-500" : ""}`}
-              onClick={() => setIsCollapse(true)}
-            >
-              <HandCoins />
-              Earnings
             </li>
           </Link>
         </ul>
