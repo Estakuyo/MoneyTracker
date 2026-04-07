@@ -1,8 +1,14 @@
 const db = require("../../config/db_connection");
 
-const accountExists = async (username, email) => {
-  const query = "SELECT * FROM users WHERE username = ? OR email = ?";
-  const [result] = await db.execute(query, [username, email]);
+const emailExists = async (email) => {
+  const query = "SELECT * FROM users WHERE email = ?";
+  const [result] = await db.execute(query, [email]);
+  return result;
+};
+
+const usernameExists = async (username) => {
+  const query = "SELECT * FROM users WHERE username = ?";
+  const [result] = await db.execute(query, [username]);
   return result;
 };
 
@@ -18,4 +24,4 @@ const registerAccount = async (email, username, password) => {
   return result;
 };
 
-module.exports = { accountExists, loginAccount, registerAccount };
+module.exports = { emailExists, usernameExists, loginAccount, registerAccount };

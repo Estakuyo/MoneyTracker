@@ -1,5 +1,6 @@
 const {
-  accountExists,
+  emailExists,
+  usernameExists,
   loginAccount,
   registerAccount,
 } = require("./queries/authQueries");
@@ -10,10 +11,16 @@ const register = async (req, res) => {
   try {
     const { email, username, password } = req.body;
 
-    const users = await accountExists(username, email);
-    if (users.length > 0) {
-      return res.status(401).json({ error: "Account already exists" });
+    const userEmail = await emailExists(email);
+    if (userEmail.length === 0) {
+      return res.status(401).json({ error: "Email already exists" });
     }
+
+    const userName = await usernameExists(username);
+    if (userName.length === 0) {
+      return res.status(401).json({ error: "Username already exists" });
+    }
+
     const hashedPassword = await hashPassword(password);
 
     const user = registerAccount(email, username, hashedPassword);
