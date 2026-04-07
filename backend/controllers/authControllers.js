@@ -12,12 +12,12 @@ const register = async (req, res) => {
     const { email, username, password } = req.body;
 
     const userEmail = await emailExists(email);
-    if (userEmail.length === 0) {
+    if (userEmail.length > 0) {
       return res.status(401).json({ error: "Email already exists" });
     }
 
     const userName = await usernameExists(username);
-    if (userName.length === 0) {
+    if (userName.length > 0) {
       return res.status(401).json({ error: "Username already exists" });
     }
 
