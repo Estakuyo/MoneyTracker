@@ -6,6 +6,7 @@ const app = express();
 
 // Import Routes
 const authRoutes = require("./routes/authRoutes");
+const earningsRoutes = require("./routes/earningsRoutes");
 
 // Middleware
 app.use(
@@ -18,6 +19,7 @@ app.use(express.json()); // Parses JSON to readable data
 
 // Use routes
 app.use("/api/auth", authRoutes);
+app.use("/api", earningsRoutes);
 
 // Check Database Connection
 const startServer = async () => {
