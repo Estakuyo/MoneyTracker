@@ -20,3 +20,8 @@ CREATE TABLE Transactions (
     CONSTRAINT fk_transactions_category FOREIGN KEY (category_id) REFERENCES Categories(id),
     CONSTRAINT fk_transactions_user FOREIGN KEY (user_id) REFERENCES Users(id)
 );
+
+---@block
+SELECT * FROM users;
+SELECT * FROM transactions;
+SELECT * FROM categories;

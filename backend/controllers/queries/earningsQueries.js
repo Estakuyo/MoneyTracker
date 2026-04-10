@@ -1,7 +1,21 @@
 const db = require("../../config/db_connection");
 
-const getEarnings = async () => {
-  const query = "SELECT";
+const getEarnings = async (user_id) => {
+  const query = `
+    SELECT 
+        t.id,
+        t.title,
+        t.price,
+        c.id AS category_id,
+        c.name AS category_name,
+        c.type,
+        u.username
+      FROM transactions t 
+      INNER JOIN categories c ON t.category_id = c.id
+      INNER JOIN users u ON t.user_id = u.id
+      WHERE t.user_id = ?`;
+  const [rows] = await db.execute(query, [user_id]);
+  return rows;
 };
 
 const addTransaction = async (title, price, category_id, user_id) => {
@@ -55,6 +69,7 @@ const deleteCategory = async (id, user_id) => {
 };
 
 module.exports = {
+  getEarnings,
   addTransaction,
   addCategory,
   updateTransaction,
