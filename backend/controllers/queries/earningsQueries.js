@@ -1,6 +1,6 @@
 const db = require("../../config/db_connection");
 
-const getEarnings = async (user_id) => {
+const getEarningsQuery = async (user_id) => {
   const query = `
     SELECT 
         t.id,
@@ -36,16 +36,10 @@ const addCategory = async (user_id, name, type) => {
   return result;
 };
 
-const updateTransaction = async (title, price, category_id, id, user_id) => {
+const updateTransaction = async (title, price, id, user_id) => {
   const query =
-    "UPDATE transactions SET title = ?, price = ?, category_id = ?  WHERE id = ? AND user_id = ?";
-  const [result] = await db.execute(query, [
-    title,
-    price,
-    category_id,
-    id,
-    user_id,
-  ]);
+    "UPDATE transactions SET title = ?, price = ?  WHERE id = ? AND user_id = ?";
+  const [result] = await db.execute(query, [title, price, id, user_id]);
   return result;
 };
 
@@ -62,18 +56,17 @@ const deleteTransaction = async (id, user_id) => {
   return result;
 };
 
-const deleteCategory = async (id, user_id) => {
-  const query = "DELETE FROM categories WHERE id = ? AND user_id = ?";
-  const [result] = await db.execute(query, [id, user_id]);
-  return result;
-};
+// const deleteCategory = async (id, user_id) => {
+//   const query = "DELETE FROM categories WHERE id = ? AND user_id = ?";
+//   const [result] = await db.execute(query, [id, user_id]);
+//   return result;
+// };
 
 module.exports = {
-  getEarnings,
+  getEarningsQuery,
   addTransaction,
   addCategory,
   updateTransaction,
   updateCategory,
   deleteTransaction,
-  deleteCategory,
 };
