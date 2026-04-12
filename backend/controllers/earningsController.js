@@ -5,6 +5,7 @@ const {
   deleteTransaction,
   addCategory,
   updateCategory,
+  findCategory,
 } = require("./queries/earningsQueries");
 
 const getEarnings = async (req, res) => {
@@ -29,17 +30,19 @@ const addEarnings = async (req, res) => {
     const id = req.user.id;
     const { title, price, category, type } = req.body;
 
-    const earningCategory = await addCategory(id, category, type);
-    const earnings = await addTransaction(
-      title,
-      price,
-      earningCategory.insertId,
-      id,
-    );
+    const existingCategory = await findCategory(id, category, type);
+    let categoryId;
+    if (existingCategory) {
+      categoryId = existingCategory.id;
+    } else {
+      const newCategory = await addCategory(id, category, type);
+      categoryId = newCategory.insertId;
+    }
+
+    const earnings = await addTransaction(title, price, categoryId, id);
 
     res.status(200).json({
       earnings,
-      earningCategory,
       message: "Earning added successfully.",
     });
   } catch (error) {
@@ -51,19 +54,12 @@ const updateEarnings = async (req, res) => {
   try {
     const id = req.user.id;
     const transactionId = req.params.transactionId;
-    const { title, price, categoryId, category, type } = req.body;
+    const { title, price } = req.body;
 
-    const earningCategory = await updateCategory(
-      category,
-      type,
-      categoryId,
-      id,
-    );
     const earning = await updateTransaction(title, price, transactionId, id);
 
     return res.status(200).json({
       earning,
-      earningCategory,
       message: "Earning updated successfully.",
     });
   } catch (error) {
