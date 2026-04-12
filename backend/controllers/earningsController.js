@@ -3,10 +3,9 @@ const {
   addTransaction,
   updateTransaction,
   deleteTransaction,
-  addCategory,
-  updateCategory,
-  findCategory,
 } = require("./queries/earningsQueries");
+
+const { findCategory, addCategory } = require("./queries/categoryQueries");
 
 const getEarnings = async (req, res) => {
   try {
