@@ -12,6 +12,7 @@ const getEarnings = async (req, res) => {
     const id = req.user.id;
 
     const earnings = await getEarningsQuery(id);
+
     if (earnings.length === 0) {
       return res.status(200).json({ message: "No earnings yet." });
     }
@@ -27,14 +28,20 @@ const getEarnings = async (req, res) => {
 const addEarnings = async (req, res) => {
   try {
     const id = req.user.id;
-    const { title, price, category, type } = req.body;
+    const { title, price, category } = req.body;
 
-    const existingCategory = await findCategory(id, category, type);
+    const existingCategory = await findCategory(
+      id,
+      category,
+      (type = "Earnings"),
+    );
+
     let categoryId;
+
     if (existingCategory) {
       categoryId = existingCategory.id;
     } else {
-      const newCategory = await addCategory(id, category, type);
+      const newCategory = await addCategory(id, category, (type = "Earnings"));
       categoryId = newCategory.insertId;
     }
 
