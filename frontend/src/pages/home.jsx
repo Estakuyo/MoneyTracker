@@ -98,7 +98,7 @@ const Home = () => {
         title={"Expenses"}
         button={
           <Button
-            title={"Add Expense"}
+            title={"- Add Expense"}
             className="bg-error-500 hover:bg-error-700"
           />
         }
@@ -126,7 +126,7 @@ const Home = () => {
         title={"Earnings"}
         button={
           <Button
-            title={"Add Earning"}
+            title={"+ Add Earning"}
             className="bg-success-500 hover:bg-success-700"
           />
         }
@@ -154,7 +154,7 @@ const Home = () => {
         title={"Savings"}
         button={
           <Button
-            title={"Add Saving"}
+            title={"+ Add Saving"}
             className="bg-success-500 hover:bg-success-700"
           />
         }

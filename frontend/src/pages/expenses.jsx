@@ -2,8 +2,6 @@ import Card from "../components/card";
 import Button from "../components/button";
 import {
   ResponsiveContainer,
-  LineChart,
-  Line,
   XAxis,
   YAxis,
   Tooltip,
@@ -71,7 +69,16 @@ const Expenses = () => {
 
   return (
     <div className="main-wrapper px-10 py-20 flex flex-col md:grid gap-5 md:py-10">
-      <Card className="w-full" title={"Total Expense"}>
+      <Card
+        className="w-full"
+        title={"Total Expense"}
+        button={
+          <Button
+            title={"- Add Expense"}
+            className="bg-red-500 hover:bg-red-700"
+          />
+        }
+      >
         <div className="flex flex-col justify-center items-center py-8 gap-7 text-center">
           <div className="flex flex-col gap-1">
             <p className="text-md font-semibold text-gray-500">
@@ -91,7 +98,7 @@ const Expenses = () => {
         title={"Top Category"}
         button={
           <Button
-            className="bg-secondary-500 hover:bg-accent-700"
+            className="bg-red-500 hover:bg-red-700"
             title={"View Category"}
           />
         }
@@ -121,7 +128,7 @@ const Expenses = () => {
         title={"Expenses"}
         button={
           <Button
-            className="bg-secondary-500 hover:bg-accent-700"
+            className="bg-red-500 hover:bg-red-700"
             title={"View Expenses"}
           />
         }
