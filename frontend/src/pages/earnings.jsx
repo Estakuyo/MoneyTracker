@@ -1,3 +1,6 @@
+import { useContext } from "react";
+
+import { ModalContext } from "../context/modalContext";
 import Button from "../components/button";
 import Card from "../components/card";
 import {
@@ -15,8 +18,11 @@ const Earnings = () => {
     { name: "Monthly Allowance", amount: 4000 },
     { name: "Freelance", amount: 10000 },
     { name: "OJT Allowance", amount: 7500 },
-    { name: "Girlfriend Date", amount: 1500 },
-    { name: "Beer", amount: 300 },
+    { name: "Sideline", amount: 1500 },
+    { name: "Selling", amount: 300 },
+    { name: "Gambling", amount: 500 },
+    { name: "Crypto", amount: 1000 },
+    { name: "Nakaw", amount: 5000 },
   ];
 
   const sampleEarnings = [
@@ -83,6 +89,55 @@ const Earnings = () => {
     },
   ];
 
+  const { openModal } = useContext(ModalContext);
+
+  const showCategories = () => {
+    console.log("Categories Button clicked");
+    openModal({
+      title: "Earning Categories",
+      content: (
+        <div>
+          <div className="text-center mb-2">
+            <h1 className="text-xl font-semibold text-primary-600">
+              Total Categories
+            </h1>
+            <p className="text-sm text-gray-500">
+              {sampleCategories.length} categories
+            </p>
+          </div>
+          <div className="flex flex-col">
+            {sampleCategories.map((category, index) => (
+              <div
+                key={index}
+                className="flex items-center justify-between gap-4 py-4 border-b last:border-b-0"
+              >
+                <div>
+                  <p className="font-medium text-lg text-gray-500">
+                    {category.name}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="font-bold text-success-500">
+                    {category.amount}
+                  </p>
+                  <p className="text-gray-500 text-sm">Total</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ),
+    });
+  };
+
+  const showEarnings = () => {
+    console.log("Earnings Button clicked");
+    openModal({
+      title: "Earnings",
+      content: <p>This is your earnings.</p>,
+    });
+  };
+
   return (
     <div className="main-wrapper px-10 py-20 flex flex-col md:grid gap-5 md:py-10">
       <Card className="w-full" title={"Total Earnings"}>
@@ -107,6 +162,7 @@ const Earnings = () => {
           <Button
             title={"View Category"}
             className="bg-success-500 hover:bg-success-700"
+            onClick={showCategories}
           />
         }
       >
@@ -137,6 +193,7 @@ const Earnings = () => {
           <Button
             title={"View Earnings"}
             className="bg-success-500 hover:bg-success-700"
+            onClick={showEarnings}
           />
         }
       >

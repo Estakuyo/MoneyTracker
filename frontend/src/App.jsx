@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/authContext";
+import { ModalProvider } from "./context/modalContext";
 
 // Pages
 import Landing from "./pages/landing";
@@ -15,17 +16,19 @@ function App() {
   return (
     <>
       <AuthProvider>
-        <Sidebar />
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+        <ModalProvider>
+          <Sidebar />
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
-          <Route path="/home" element={<Home />} />
-          <Route path="/expenses" element={<Expenses />} />
-          <Route path="/savings" element={<Savings />} />
-          <Route path="/earnings" element={<Earnings />} />
-        </Routes>
+            <Route path="/home" element={<Home />} />
+            <Route path="/expenses" element={<Expenses />} />
+            <Route path="/savings" element={<Savings />} />
+            <Route path="/earnings" element={<Earnings />} />
+          </Routes>
+        </ModalProvider>
       </AuthProvider>
     </>
   );

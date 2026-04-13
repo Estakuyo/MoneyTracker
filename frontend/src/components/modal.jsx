@@ -1,8 +1,8 @@
 const Modal = ({ title, children, isOpen, onClose = () => {} }) => {
   if (isOpen) {
     return (
-      <div className="z-20 fixed w-screen h-screen bg-black/50 flex justify-center items-center">
-        <div className="relative min-w-80 max-w-6/12 max-h-9/12 bg-white p-5 rounded-lg">
+      <div className="inset-0 z-20 fixed bg-black/50 flex justify-center items-center">
+        <div className="relative md:w-lg h-9/12 bg-white p-5 rounded-lg flex flex-col">
           <button
             onClick={onClose}
             aria-label="Close modal"
@@ -13,7 +13,7 @@ const Modal = ({ title, children, isOpen, onClose = () => {} }) => {
           <h1 className="text-center border-b border-gray-200 pb-2.5 text-xl font-semibold text-primary-600">
             {title}
           </h1>
-          <div>{children}</div>
+          <div className="pt-5 overflow-y-auto no-scrollbar">{children}</div>
         </div>
       </div>
     );

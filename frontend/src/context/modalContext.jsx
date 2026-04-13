@@ -3,7 +3,7 @@ import Modal from "../components/modal";
 
 export const ModalContext = createContext();
 
-export const ModalProvider = () => {
+export const ModalProvider = ({ children }) => {
   const [modalState, setModalState] = useState({
     isOpen: false,
     title: "",
