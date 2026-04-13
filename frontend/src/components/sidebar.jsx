@@ -24,14 +24,14 @@ const Sidebar = () => {
         {/* Hamburger button - only visible on mobile */}
         <button
           onClick={() => setIsCollapse(false)}
-          className={`md:hidden fixed top-4 left-4 z-50 text-white bg-primary-500 p-2 rounded-lg shadow-lg 
+          className={`md:hidden fixed top-4 left-4 z-10 text-white bg-primary-500 p-2 rounded-lg shadow-lg 
       hover:bg-success-500 transition-all duration-300 cursor-pointer ${isCollapse ? "opacity-100 visible" : "opacity-0 invisible"}`}
         >
           <Menu size={28} />
         </button>
 
         <div
-          className={`fixed left-0 shadow-xl h-screen w-70 bg-primary-600 z-40 
+          className={`fixed left-0 shadow-xl h-screen w-70 bg-primary-600 z-10 
           transition-transform duration-300 ease-in-out 
           ${isCollapse ? "-translate-x-full md:translate-x-0" : "translate-x-0"}`}
         >
