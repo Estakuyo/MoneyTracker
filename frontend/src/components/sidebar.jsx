@@ -44,7 +44,7 @@ const Sidebar = () => {
             <ChevronLeft size={24} />
           </button>
           <h1 className="mt-30 mb-20 text-center title text-white">
-            Money<span className="text-success-500">Tracker</span>
+            Money<span className="text-accent-500">Tracker</span>
           </h1>
           <ul className="text-white">
             <Link to="/home">

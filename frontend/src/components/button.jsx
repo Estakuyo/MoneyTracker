@@ -1,9 +1,14 @@
-const Button = ({ title, className = "", ...props }) => {
+const Button = ({
+  title,
+  className = "",
+  textColor = "text-white",
+  ...props
+}) => {
   return (
     <button
-      className={`p-2.5 rounded-2xl text-white font-semibold 
+      className={`p-2.5 rounded-2xl font-semibold 
         cursor-pointer shadow-sm hover:shadow-lg active:scale-90 
-        transition-all ${className}`}
+        transition-all ${textColor} ${className}`}
       {...props}
     >
       {title}
