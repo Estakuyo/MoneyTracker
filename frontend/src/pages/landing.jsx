@@ -2,12 +2,15 @@ import { BanknoteArrowUp } from "lucide-react";
 import { SquareCheckBig } from "lucide-react";
 import { PiggyBankIcon } from "lucide-react";
 import { ArrowRight } from "lucide-react";
-
 import { Dot } from "lucide-react";
+
+import { useNavigate } from "react-router-dom";
 
 import Button from "../components/button";
 
 const Landing = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="flex flex-col justify-center items-center text-white overflow-x-hidden">
       <header className="w-full fixed top-0 left-0 z-20 px-4 py-4 sm:px-8">
@@ -83,6 +86,7 @@ const Landing = () => {
               Get Started
             </span>
           }
+          onClick={() => navigate("/login")}
           className="mt-10 py-4 px-20 bg-primary-500 hover:bg-primary-600 text-xl sm:text-2xl rounded-4xl animate-slide-up-delay-2"
         />
       </section>
