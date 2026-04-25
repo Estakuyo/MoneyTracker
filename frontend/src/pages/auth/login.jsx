@@ -13,7 +13,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await login({ username, password });
-      navigate("/");
+      navigate("/home");
     } catch (error) {
       console.log(error);
     }

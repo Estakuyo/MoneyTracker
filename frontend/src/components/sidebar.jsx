@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useState, useContext } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Home,
   BanknoteArrowDown,
@@ -8,10 +8,19 @@ import {
   Menu,
   ChevronLeft,
 } from "lucide-react";
+import { UserContext } from "../context/authContext";
 
 const Sidebar = () => {
   const location = useLocation();
   const [isCollapse, setIsCollapse] = useState(true);
+
+  const { logout } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   if (
     location.pathname === "/home" ||
@@ -84,7 +93,10 @@ const Sidebar = () => {
               </li>
             </Link>
           </ul>
-          <button className="absolute bottom-0 left-0 right-0 w-4/5 mx-auto mb-10 button bg-red-600 text-white hover:bg-red-700">
+          <button
+            className="absolute bottom-0 left-0 right-0 w-4/5 mx-auto mb-10 button bg-red-600 text-white hover:bg-red-700"
+            onClick={handleLogout}
+          >
             Logout
           </button>
         </div>
