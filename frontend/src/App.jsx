@@ -12,6 +12,9 @@ import Savings from "./pages/savings";
 import Earnings from "./pages/earnings";
 import Sidebar from "./components/sidebar";
 
+// Components
+import ProtectedRoute from "./components/protectedRoute";
+
 function App() {
   return (
     <>
@@ -23,10 +26,12 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
-            <Route path="/home" element={<Home />} />
-            <Route path="/expenses" element={<Expenses />} />
-            <Route path="/savings" element={<Savings />} />
-            <Route path="/earnings" element={<Earnings />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/home" element={<Home />} />
+              <Route path="/expenses" element={<Expenses />} />
+              <Route path="/savings" element={<Savings />} />
+              <Route path="/earnings" element={<Earnings />} />
+            </Route>
           </Routes>
         </ModalProvider>
       </AuthProvider>
