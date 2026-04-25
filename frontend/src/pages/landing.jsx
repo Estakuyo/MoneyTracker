@@ -5,11 +5,22 @@ import { ArrowRight } from "lucide-react";
 import { Dot } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "../context/authContext";
 
 import Button from "../components/button";
 
 const Landing = () => {
+  const { token } = useContext(UserContext);
   const navigate = useNavigate();
+
+  const handleRedirect = () => {
+    if (token) {
+      navigate("/home");
+    } else {
+      navigate("/login");
+    }
+  };
 
   const scrollToSection = (event, sectionId) => {
     event.preventDefault();
@@ -100,7 +111,7 @@ const Landing = () => {
               Get Started
             </span>
           }
-          onClick={() => navigate("/login")}
+          onClick={handleRedirect}
           className="mt-10 py-4 px-20 bg-primary-500 hover:bg-primary-600 text-xl sm:text-2xl rounded-4xl animate-slide-up-delay-2"
         />
       </section>
