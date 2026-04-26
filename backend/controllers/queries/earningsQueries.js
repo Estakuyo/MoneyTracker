@@ -6,6 +6,7 @@ const getEarningsQuery = async (user_id) => {
         t.id,
         t.title,
         t.price,
+        t.date,
         c.id AS category_id,
         c.name AS category_name,
         c.type,
@@ -18,12 +19,13 @@ const getEarningsQuery = async (user_id) => {
   return rows;
 };
 
-const addTransaction = async (title, price, category_id, user_id) => {
+const addTransaction = async (title, price, date, category_id, user_id) => {
   const query =
-    "INSERT INTO transactions (title, price, category_id, user_id) VALUES (?, ?, ?, ?)";
+    "INSERT INTO transactions (title, price, date, category_id, user_id) VALUES (?, ?, ?, ?, ?)";
   const [result] = await db.execute(query, [
     title,
     price,
+    date,
     category_id,
     user_id,
   ]);

@@ -44,8 +44,8 @@ const addEarnings = async (req, res) => {
       const newCategory = await addCategory(id, category, (type = "Earnings"));
       categoryId = newCategory.insertId;
     }
-
-    const earnings = await addTransaction(title, price, categoryId, id);
+    const date = new Date(Date.now()).toISOString().slice(0, 10);
+    const earnings = await addTransaction(title, price, date, categoryId, id);
 
     res.status(200).json({
       earnings,
