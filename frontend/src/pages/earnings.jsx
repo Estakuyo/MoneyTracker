@@ -11,6 +11,7 @@ import {
   getEarnings,
   updateEarning,
   deleteEarning,
+  get_EarningCategories,
 } from "../services/earnings";
 
 import {
@@ -27,6 +28,7 @@ const Earnings = () => {
   const [activeModal, setActiveModal] = useState(null);
 
   const [earnings, setEarnings] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState();
@@ -43,8 +45,10 @@ const Earnings = () => {
     const loadEarnings = async () => {
       if (!token) return;
       try {
-        const data = await getEarnings({ token });
-        setEarnings(data.earnings);
+        const earningsData = await getEarnings({ token });
+        const categoriesData = await get_EarningCategories({ token });
+        setEarnings(earningsData.earnings);
+        setCategories(categoriesData.categories);
       } catch (error) {
         console.log(error);
       }
@@ -97,21 +101,21 @@ const Earnings = () => {
         }
       >
         <div className="flex flex-col">
-          {earnings.length > 0 ? (
-            earnings.slice(0, 3).map((earning, index) => (
+          {categories.length > 0 ? (
+            categories.slice(0, 3).map((category, index) => (
               <div
                 key={index}
                 className="flex items-center justify-between gap-4 py-4 border-b last:border-b-0"
               >
                 <div>
                   <p className="font-medium text-lg text-gray-500">
-                    {earning.category_name}
+                    {category.name}
                   </p>
                 </div>
-                <div className="text-right">
+                {/* <div className="text-right">
                   <p className="font-bold text-success-500">{earning.price}</p>
                   <p className="text-gray-500 text-sm">Total</p>
-                </div>
+                </div> */}
               </div>
             ))
           ) : (

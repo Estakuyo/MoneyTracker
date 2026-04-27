@@ -7,9 +7,9 @@ const findCategory = async (user_id, name, type) => {
   return rows[0];
 };
 
-const getAllCategory = async (user_id) => {
-  const query = "SELECT * FROM categories WHERE user_id = ?";
-  const [rows] = await db.execute(query, [user_id]);
+const getAllCategory = async (user_id, type) => {
+  const query = "SELECT * FROM categories WHERE user_id = ? AND type = ?";
+  const [rows] = await db.execute(query, [user_id, type]);
   return rows;
 };
 

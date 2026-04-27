@@ -5,7 +5,11 @@ const {
   deleteTransaction,
 } = require("./queries/earningsQueries");
 
-const { findCategory, addCategory } = require("./queries/categoryQueries");
+const {
+  findCategory,
+  addCategory,
+  getAllCategory,
+} = require("./queries/categoryQueries");
 
 const getEarnings = async (req, res) => {
   try {
@@ -20,6 +24,25 @@ const getEarnings = async (req, res) => {
     return res
       .status(200)
       .json({ earnings, message: "Successfully fetch user earnings." });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
+const getEarningCategories = async (req, res) => {
+  try {
+    const id = req.user.id;
+
+    const categories = await getAllCategory(id, (type = "Earnings"));
+
+    if (categories.length === 0) {
+      return res.status(200).json({ message: "No earning categories yet." });
+    }
+
+    return res.status(200).json({
+      categories,
+      message: "Successfully fetch user earning categories.",
+    });
   } catch (error) {
     res.status(500).json({ error });
   }
@@ -88,4 +111,10 @@ const deleteEarnings = async (req, res) => {
   }
 };
 
-module.exports = { getEarnings, addEarnings, updateEarnings, deleteEarnings };
+module.exports = {
+  getEarnings,
+  getEarningCategories,
+  addEarnings,
+  updateEarnings,
+  deleteEarnings,
+};
