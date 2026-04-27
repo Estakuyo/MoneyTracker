@@ -173,13 +173,7 @@ const Earnings = () => {
               <LineChart data={earnings}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <YAxis width={"auto"} fontSize={"12px"} fontWeight={800} />
-                <XAxis
-                  hide
-                  width={"auto"}
-                  fontSize={"12px"}
-                  fontWeight={800}
-                  dataKey={"date"}
-                />
+                <XAxis hide width={"auto"} fontSize={"12px"} fontWeight={800} />
                 <Line
                   type="monotone"
                   dataKey="price"
@@ -187,7 +181,12 @@ const Earnings = () => {
                   strokeWidth={3}
                   dot={false}
                 />
-                <Tooltip labelFormatter={(label) => formatDate(label)} />
+                <Tooltip
+                  labelFormatter={(index) => {
+                    const earning = earnings[index];
+                    return earning ? formatDate(earning.date) : "";
+                  }}
+                />
               </LineChart>
             </ResponsiveContainer>
           ) : (
