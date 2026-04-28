@@ -2,14 +2,14 @@ import earningsApi from "../api/earningsApi";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-export const add_Earning = async ({ title, price, category, token }) => {
+export const add_Earning = async ({ title, price, category, type, token }) => {
   const res = await fetch(backendUrl + earningsApi.addEarning, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ title, price, category }),
+    body: JSON.stringify({ title, price, category, type: "Earnings" }),
   });
   const data = await res.json();
 

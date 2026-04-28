@@ -3,23 +3,26 @@ const router = express.Router();
 
 const authMiddleware = require("../middleware/authMiddleware");
 const {
-  getEarnings,
+  getTransactions,
+  addTransaction,
+  updateTransaction,
+  deleteTransaction,
+} = require("../controllers/transactionController");
+
+const {
   getEarningCategories,
   getEarningsCategoryTotal,
-  addEarnings,
-  updateEarnings,
-  deleteEarnings,
-} = require("../controllers/earningsController");
+} = require("../controllers/categoryController");
 
-router.get("/earnings", authMiddleware, getEarnings);
-router.get("/earnings/categories", authMiddleware, getEarningCategories);
+router.get("/transaction", authMiddleware, getTransactions);
+router.get("/transaction/categories", authMiddleware, getEarningCategories);
 router.get(
-  "/earnings/categories/total",
+  "/transaction/categories/total",
   authMiddleware,
   getEarningsCategoryTotal,
 );
-router.post("/earnings", authMiddleware, addEarnings);
-router.put("/earnings/:transactionId", authMiddleware, updateEarnings);
-router.delete("/earnings/:transactionId", authMiddleware, deleteEarnings);
+router.post("/transaction", authMiddleware, addTransaction);
+router.put("/transaction/:transactionId", authMiddleware, updateTransaction);
+router.delete("/transaction/:transactionId", authMiddleware, deleteTransaction);
 
 module.exports = router;

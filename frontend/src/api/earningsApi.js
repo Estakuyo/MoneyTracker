@@ -1,10 +1,10 @@
 const earningsApi = {
-  getEarnings: "/earnings",
-  getEarningCategories: "/earnings/categories",
-  getEarningsCategoryTotal: "/earnings/categories/total",
-  addEarning: "/earnings",
-  updateEarning: "/earnings/:transactionId",
-  deleteEarning: "/earnings/:transactionId",
+  getEarnings: "/transaction?type=Earnings",
+  getEarningCategories: "/transaction/categories?type=Earnings",
+  getEarningsCategoryTotal: "/transaction/categories/total?type=Earnings",
+  addEarning: "/transaction",
+  updateEarning: "/transaction/:transactionId",
+  deleteEarning: "/transaction/:transactionId",
 };
 
 export default earningsApi;

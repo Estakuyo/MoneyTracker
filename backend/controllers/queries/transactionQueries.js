@@ -20,7 +20,13 @@ const getTransactionsQuery = async (user_id, type) => {
   return rows;
 };
 
-const addTransaction = async (title, price, date, category_id, user_id) => {
+const addTransactionQuery = async (
+  title,
+  price,
+  date,
+  category_id,
+  user_id,
+) => {
   const query =
     "INSERT INTO transactions (title, price, date, category_id, user_id) VALUES (?, ?, ?, ?, ?)";
   const [result] = await db.execute(query, [
@@ -33,14 +39,14 @@ const addTransaction = async (title, price, date, category_id, user_id) => {
   return result;
 };
 
-const updateTransaction = async (title, price, id, user_id) => {
+const updateTransactionQuery = async (title, price, id, user_id) => {
   const query =
     "UPDATE transactions SET title = ?, price = ?  WHERE id = ? AND user_id = ?";
   const [result] = await db.execute(query, [title, price, id, user_id]);
   return result;
 };
 
-const deleteTransaction = async (id, user_id) => {
+const deleteTransactionQuery = async (id, user_id) => {
   const query = "DELETE FROM transactions WHERE id = ? AND user_id = ?";
   const [result] = await db.execute(query, [id, user_id]);
   return result;
@@ -48,7 +54,7 @@ const deleteTransaction = async (id, user_id) => {
 
 module.exports = {
   getTransactionsQuery,
-  addTransaction,
-  updateTransaction,
-  deleteTransaction,
+  addTransactionQuery,
+  updateTransactionQuery,
+  deleteTransactionQuery,
 };
