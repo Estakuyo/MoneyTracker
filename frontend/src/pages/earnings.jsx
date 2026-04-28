@@ -12,6 +12,7 @@ import {
   updateEarning,
   deleteEarning,
   get_EarningCategories,
+  get_EarningsCategoryTotal,
 } from "../services/earnings";
 
 import {
@@ -27,9 +28,12 @@ import {
 const Earnings = () => {
   const [activeModal, setActiveModal] = useState(null);
 
+  // Outputs
   const [earnings, setEarnings] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [categoryTotal, setCategoryTotal] = useState([]);
 
+  // Inputs
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState();
   const [category, setCategory] = useState("");
@@ -47,8 +51,10 @@ const Earnings = () => {
       try {
         const earningsData = await getEarnings({ token });
         const categoriesData = await get_EarningCategories({ token });
+        const categoryTotalsData = await get_EarningsCategoryTotal({ token });
         setEarnings(earningsData?.earnings ?? []);
         setCategories(categoriesData?.categories ?? []);
+        setCategoryTotal(categoryTotalsData?.categoriesTotal ?? []);
       } catch (error) {
         console.log(error);
       }
@@ -81,7 +87,7 @@ const Earnings = () => {
       >
         <div className="flex flex-col justify-center items-center py-8 gap-7 text-center">
           <div className="flex flex-col gap-1">
-            <p className="text-md font-semibold text-gray-500">
+            <p className="text-base font-semibold text-gray-500">
               Total Earnings
             </p>
             <h1 className="text-5xl font-bold text-success-500">0</h1>
@@ -101,21 +107,21 @@ const Earnings = () => {
         }
       >
         <div className="flex flex-col">
-          {categories.length > 0 ? (
-            categories.slice(0, 3).map((category, index) => (
+          {categoryTotal.length > 0 ? (
+            categoryTotal.slice(0, 3).map((category, index) => (
               <div
                 key={index}
                 className="flex items-center justify-between gap-4 py-4 border-b last:border-b-0"
               >
                 <div>
                   <p className="font-medium text-lg text-gray-500">
-                    {category.name}
+                    {category.category_name}
                   </p>
                 </div>
-                {/* <div className="text-right">
-                  <p className="font-bold text-success-500">{earning.price}</p>
+                <div className="text-right">
+                  <p className="font-bold text-success-500">{category.total}</p>
                   <p className="text-gray-500 text-sm">Total</p>
-                </div> */}
+                </div>
               </div>
             ))
           ) : (
@@ -170,9 +176,9 @@ const Earnings = () => {
         </div>
       </Card>
 
-      <Card className="w-full col-span-3" title={"Earnings History"}>
+      <Card className="w-full col-span-3" title={"Earnings Chart"}>
         <div className="w-full" style={{ height: 300 }}>
-          {earnings.length > 0 ? (
+          {earnings.length > 10 ? (
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={earnings}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -194,7 +200,10 @@ const Earnings = () => {
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <Placeholder />
+            <Placeholder
+              title="Not Enough Data Yet"
+              description="Add 10 earnings to activate chart"
+            />
           )}
         </div>
       </Card>
@@ -206,27 +215,27 @@ const Earnings = () => {
         title={"Earning Categories"}
       >
         <div>
-          {earnings.length > 0 > 0 ? (
+          {categoryTotal.length > 0 ? (
             <div>
               <div className="text-center mb-2">
-                <p className="text-md text-gray-500">
-                  {earnings.length} categories
+                <p className="text-base text-gray-500">
+                  {categoryTotal.length} categories
                 </p>
               </div>
               <div className="flex flex-col">
-                {earnings.map((earning, index) => (
+                {categoryTotal.map((category, index) => (
                   <div
                     key={index}
                     className="flex items-center justify-between gap-4 py-4 border-b last:border-b-0"
                   >
                     <div>
                       <p className="font-medium text-lg text-gray-500">
-                        {earning.title}
+                        {category.category_name}
                       </p>
                     </div>
                     <div className="text-right">
                       <p className="font-bold text-success-500">
-                        {earning.price}
+                        {category.total}
                       </p>
                       <p className="text-gray-500 text-sm">Total</p>
                     </div>
@@ -253,10 +262,7 @@ const Earnings = () => {
           {earnings.length > 0 ? (
             <div>
               <div className="text-center mb-2">
-                <h1 className="text-xl font-semibold text-primary-600">
-                  Earning Transactions
-                </h1>
-                <p className="text-sm text-gray-500">
+                <p className="text-base text-gray-500">
                   {earnings.length} earnings
                 </p>
               </div>
@@ -271,7 +277,7 @@ const Earnings = () => {
                         {earning.title}
                       </p>
                       <p className="mt-1 inline-block text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded">
-                        {earning.category}
+                        {earning.category_name}
                       </p>
                     </div>
                     <div className="text-right">

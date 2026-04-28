@@ -5,6 +5,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 const {
   getEarnings,
   getEarningCategories,
+  getEarningsCategoryTotal,
   addEarnings,
   updateEarnings,
   deleteEarnings,
@@ -12,6 +13,11 @@ const {
 
 router.get("/earnings", authMiddleware, getEarnings);
 router.get("/earnings/categories", authMiddleware, getEarningCategories);
+router.get(
+  "/earnings/categories/total",
+  authMiddleware,
+  getEarningsCategoryTotal,
+);
 router.post("/earnings", authMiddleware, addEarnings);
 router.put("/earnings/:transactionId", authMiddleware, updateEarnings);
 router.delete("/earnings/:transactionId", authMiddleware, deleteEarnings);
