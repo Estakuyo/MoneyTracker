@@ -37,6 +37,23 @@ export const getEarnings = async ({ token }) => {
   return data;
 };
 
+export const getEarningsTotal = async ({ token }) => {
+  const res = await fetch(backendUrl + earningsApi.getEarningsTotal, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data?.error || "Failed to get earnings total");
+  }
+
+  return data;
+};
+
 export const get_EarningCategories = async ({ token }) => {
   const res = await fetch(backendUrl + earningsApi.getEarningCategories, {
     method: "GET",

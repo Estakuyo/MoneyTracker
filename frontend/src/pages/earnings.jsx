@@ -13,6 +13,7 @@ import {
   deleteEarning,
   get_EarningCategories,
   get_EarningsCategoryTotal,
+  getEarningsTotal,
 } from "../services/earnings";
 
 import {
@@ -30,6 +31,7 @@ const Earnings = () => {
 
   // Outputs
   const [earnings, setEarnings] = useState([]);
+  const [earningsTotal, setEarningsTotal] = useState([]);
   const [categories, setCategories] = useState([]);
   const [categoryTotal, setCategoryTotal] = useState([]);
 
@@ -50,9 +52,14 @@ const Earnings = () => {
       if (!token) return;
       try {
         const earningsData = await getEarnings({ token });
+        const earningsTotalData = await getEarningsTotal({ token });
+
         const categoriesData = await get_EarningCategories({ token });
         const categoryTotalsData = await get_EarningsCategoryTotal({ token });
-        setEarnings(earningsData?.earnings ?? []);
+
+        setEarnings(earningsData?.transactions ?? []);
+        setEarningsTotal(earningsTotalData?.transactionsTotal[0] ?? {});
+
         setCategories(categoriesData?.categories ?? []);
         setCategoryTotal(categoryTotalsData?.categoriesTotal ?? []);
       } catch (error) {
@@ -90,7 +97,9 @@ const Earnings = () => {
             <p className="text-base font-semibold text-gray-500">
               Total Earnings
             </p>
-            <h1 className="text-5xl font-bold text-success-500">0</h1>
+            <h1 className="text-5xl font-bold text-success-500">
+              {earningsTotal.total}
+            </h1>
           </div>
         </div>
       </Card>
@@ -178,7 +187,7 @@ const Earnings = () => {
 
       <Card className="w-full col-span-3" title={"Earnings Chart"}>
         <div className="w-full" style={{ height: 300 }}>
-          {earnings.length > 10 ? (
+          {earnings.length >= 10 ? (
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={earnings}>
                 <CartesianGrid strokeDasharray="3 3" />

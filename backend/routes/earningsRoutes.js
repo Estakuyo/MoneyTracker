@@ -4,6 +4,7 @@ const router = express.Router();
 const authMiddleware = require("../middleware/authMiddleware");
 const {
   getTransactions,
+  getTransactionTotalAmount,
   addTransaction,
   updateTransaction,
   deleteTransaction,
@@ -15,6 +16,7 @@ const {
 } = require("../controllers/categoryController");
 
 router.get("/transaction", authMiddleware, getTransactions);
+router.get("/transaction/total", authMiddleware, getTransactionTotalAmount);
 router.get("/transaction/categories", authMiddleware, getEarningCategories);
 router.get(
   "/transaction/categories/total",

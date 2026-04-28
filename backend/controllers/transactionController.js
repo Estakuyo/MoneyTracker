@@ -12,17 +12,47 @@ const getTransactions = async (req, res) => {
     const id = req.user.id;
     const type = req.query.type;
 
-    const earnings = await getTransactionsQuery(id, type);
+    const transactions = await getTransactionsQuery(id, type);
 
-    if (earnings.length === 0) {
-      return res.status(200).json({ message: "No earnings yet." });
+    if (transactions.length === 0) {
+      return res.status(200).json({ message: "No transactions yet." });
     }
 
     return res
       .status(200)
-      .json({ earnings, message: "Successfully fetch user transactions." });
+      .json({ transactions, message: "Successfully fetch user transactions." });
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const getTransactionTotalAmount = async (req, res) => {
+  try {
+    const id = req.user.id;
+    const type = req.query.type;
+
+    const transactionTotalAmount = await getTransactionsQuery(id, type);
+
+    const transactionTotal = transactionTotalAmount.reduce(
+      (acc, transaction) => {
+        const { user_id, username, type, price } = transaction;
+
+        if (!acc[type]) {
+          acc[type] = { user_id, username, type, total: 0 };
+        }
+
+        acc[type].total += transaction.price;
+
+        return acc;
+      },
+      {},
+    );
+
+    const transactionsTotal = Object.values(transactionTotal);
+
+    res.status(200).json({ transactionsTotal });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -42,7 +72,7 @@ const addTransaction = async (req, res) => {
       categoryId = newCategory.insertId;
     }
     const date = new Date(Date.now()).toISOString().slice(0, 10);
-    const earnings = await addTransactionQuery(
+    const transactions = await addTransactionQuery(
       title,
       price,
       date,
@@ -51,11 +81,11 @@ const addTransaction = async (req, res) => {
     );
 
     res.status(200).json({
-      earnings,
+      transactions,
       message: "Earning added successfully.",
     });
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -92,12 +122,13 @@ const deleteTransaction = async (req, res) => {
       .status(200)
       .json({ earning, message: "Earning deleted successfully." });
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500).json({ error: error.message });
   }
 };
 
 module.exports = {
   getTransactions,
+  getTransactionTotalAmount,
   addTransaction,
   updateTransaction,
   deleteTransaction,
