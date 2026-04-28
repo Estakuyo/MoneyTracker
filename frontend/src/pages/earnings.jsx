@@ -47,8 +47,8 @@ const Earnings = () => {
       try {
         const earningsData = await getEarnings({ token });
         const categoriesData = await get_EarningCategories({ token });
-        setEarnings(earningsData.earnings);
-        setCategories(categoriesData.categories);
+        setEarnings(earningsData?.earnings ?? []);
+        setCategories(categoriesData?.categories ?? []);
       } catch (error) {
         console.log(error);
       }
