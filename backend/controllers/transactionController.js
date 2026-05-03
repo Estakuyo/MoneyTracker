@@ -82,7 +82,7 @@ const addTransaction = async (req, res) => {
 
     res.status(200).json({
       transactions,
-      message: "Earning added successfully.",
+      message: "Transaction added successfully.",
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -104,7 +104,7 @@ const updateTransaction = async (req, res) => {
 
     return res.status(200).json({
       earning,
-      message: "Earning updated successfully.",
+      message: "Transaction updated successfully.",
     });
   } catch (error) {
     res.status(500).json({ error });
@@ -120,7 +120,7 @@ const deleteTransaction = async (req, res) => {
 
     return res
       .status(200)
-      .json({ earning, message: "Earning deleted successfully." });
+      .json({ earning, message: "Transaction deleted successfully." });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

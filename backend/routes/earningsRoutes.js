@@ -11,17 +11,17 @@ const {
 } = require("../controllers/transactionController");
 
 const {
-  getEarningCategories,
-  getEarningsCategoryTotal,
+  getTransactionCategories,
+  getTransactionsCategoryTotal,
 } = require("../controllers/categoryController");
 
 router.get("/transaction", authMiddleware, getTransactions);
 router.get("/transaction/total", authMiddleware, getTransactionTotalAmount);
-router.get("/transaction/categories", authMiddleware, getEarningCategories);
+router.get("/transaction/categories", authMiddleware, getTransactionCategories);
 router.get(
   "/transaction/categories/total",
   authMiddleware,
-  getEarningsCategoryTotal,
+  getTransactionsCategoryTotal,
 );
 router.post("/transaction", authMiddleware, addTransaction);
 router.put("/transaction/:transactionId", authMiddleware, updateTransaction);

@@ -2,7 +2,7 @@ const { addCategory, getAllCategory } = require("./queries/categoryQueries");
 
 const { getTransactionsQuery } = require("./queries/transactionQueries");
 
-const getEarningCategories = async (req, res) => {
+const getTransactionCategories = async (req, res) => {
   try {
     const id = req.user.id;
     const type = req.query.type;
@@ -10,19 +10,19 @@ const getEarningCategories = async (req, res) => {
     const categories = await getAllCategory(id, type);
 
     if (categories.length === 0) {
-      return res.status(200).json({ message: "No earning categories yet." });
+      return res.status(200).json({ message: "No categories yet." });
     }
 
     return res.status(200).json({
       categories,
-      message: "Successfully fetch user earning categories.",
+      message: "Successfully fetch user categories.",
     });
   } catch (error) {
     res.status(500).json({ error });
   }
 };
 
-const getEarningsCategoryTotal = async (req, res) => {
+const getTransactionsCategoryTotal = async (req, res) => {
   try {
     const id = req.user.id;
     const type = req.query.type;
@@ -49,4 +49,4 @@ const getEarningsCategoryTotal = async (req, res) => {
   }
 };
 
-module.exports = { getEarningCategories, getEarningsCategoryTotal };
+module.exports = { getTransactionCategories, getTransactionsCategoryTotal };

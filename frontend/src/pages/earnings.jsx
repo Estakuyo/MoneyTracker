@@ -47,33 +47,52 @@ const Earnings = () => {
     return date.toLocaleDateString("en-PH");
   };
 
+  const loadEarnings = async () => {
+    if (!token) return;
+    try {
+      const earningsData = await getEarnings({ token });
+      const earningsTotalData = await getEarningsTotal({ token });
+
+      const categoriesData = await get_EarningCategories({ token });
+      const categoryTotalsData = await get_EarningsCategoryTotal({ token });
+
+      setEarnings(earningsData?.transactions ?? []);
+      setEarningsTotal(earningsTotalData?.transactionsTotal[0] ?? {});
+
+      setCategories(categoriesData?.categories ?? []);
+      setCategoryTotal(categoryTotalsData?.categoriesTotal ?? []);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-    const loadEarnings = async () => {
-      if (!token) return;
-      try {
-        const earningsData = await getEarnings({ token });
-        const earningsTotalData = await getEarningsTotal({ token });
-
-        const categoriesData = await get_EarningCategories({ token });
-        const categoryTotalsData = await get_EarningsCategoryTotal({ token });
-
-        setEarnings(earningsData?.transactions ?? []);
-        setEarningsTotal(earningsTotalData?.transactionsTotal[0] ?? {});
-
-        setCategories(categoriesData?.categories ?? []);
-        setCategoryTotal(categoryTotalsData?.categoriesTotal ?? []);
-      } catch (error) {
-        console.log(error);
-      }
-    };
     loadEarnings();
   }, [token]);
+
+  const closeModal = () => {
+    setActiveModal(null);
+    setTitle("");
+    setPrice(null);
+    setCategory("");
+  };
 
   const handleAddEarning = async (e) => {
     e.preventDefault();
     try {
+      if (!title || title === null || title === "") {
+        return;
+      }
+      if (!price || price === null || price === "") {
+        return;
+      }
+      if (!category || category === null || category === "") {
+        return;
+      }
+
       await add_Earning({ title, price, category, token });
-      setActiveModal(null);
+      closeModal();
+      await loadEarnings();
     } catch (error) {
       console.log(error);
     }
@@ -92,16 +111,20 @@ const Earnings = () => {
           />
         }
       >
-        <div className="flex flex-col justify-center items-center py-8 gap-7 text-center">
-          <div className="flex flex-col gap-1">
-            <p className="text-base font-semibold text-gray-500">
-              Total Earnings
-            </p>
-            <h1 className="text-5xl font-bold text-success-500">
-              {earningsTotal.total}
-            </h1>
+        {earningsTotal.total ? (
+          <div className="flex flex-col justify-center items-center py-8 gap-7 text-center">
+            <div className="flex flex-col gap-1">
+              <p className="text-base font-semibold text-gray-500">
+                Total Earnings
+              </p>
+              <h1 className="text-5xl font-bold text-success-500">
+                {earningsTotal.total}
+              </h1>
+            </div>
           </div>
-        </div>
+        ) : (
+          <Placeholder />
+        )}
       </Card>
 
       <Card
@@ -220,7 +243,7 @@ const Earnings = () => {
       {/* Show Earning Categories Modal */}
       <Modal
         isOpen={activeModal === "categories"}
-        onClose={() => setActiveModal(null)}
+        onClose={closeModal}
         title={"Earning Categories"}
       >
         <div>
@@ -264,7 +287,7 @@ const Earnings = () => {
       {/* Show Earning Transactions Modal */}
       <Modal
         isOpen={activeModal === "earnings"}
-        onClose={() => setActiveModal(null)}
+        onClose={closeModal}
         title={"Earning Transactions"}
       >
         <div>
@@ -313,7 +336,7 @@ const Earnings = () => {
       {/* Show Add Earning Modal */}
       <Modal
         isOpen={activeModal === "add"}
-        onClose={() => setActiveModal(null)}
+        onClose={closeModal}
         title={"Add Earning"}
       >
         <form
@@ -344,11 +367,29 @@ const Earnings = () => {
             <label className="text-sm font-semibold text-gray-600">
               Category
             </label>
-            <input
-              type="text"
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-success-500"
-            />
+            {categories.length > 0 ? (
+              <>
+                <input
+                  type="text"
+                  list="earning-category-options"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  placeholder="Select or type category"
+                  className="w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-success-500"
+                />
+                <datalist id="earning-category-options">
+                  {categories.map((item) => (
+                    <option key={item.id} value={item.name} />
+                  ))}
+                </datalist>
+              </>
+            ) : (
+              <input
+                type="text"
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-success-500"
+              />
+            )}
           </div>
           <div className="flex flex-col gap-1 md:col-span-2 border-t border-gray-200 pt-2.5 mt-2.5">
             <Button
