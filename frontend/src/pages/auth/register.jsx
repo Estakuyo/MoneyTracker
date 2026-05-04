@@ -3,10 +3,15 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 
+import { validators } from "../../utils/validators";
+import { useFormErrors } from "../../hooks/useFormError";
+
 const Register = () => {
   const { register } = useContext(UserContext);
   const navigate = useNavigate();
+  const { errors, setError, clearError, clearAllErrors } = useFormErrors();
 
+  // Inputs
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -16,17 +21,26 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    if (confirmPassword !== password) {
-      console.log({ error: "Password does not match" });
-      return;
-    }
+
+    // Validate
+    const emailError = validators.email(email);
+    const usernameError = validators.username(username);
+    const passwordError = validators.password(password);
+    const confirmError = validators.confirmPassword(confirmPassword, password);
+
+    setError("email", emailError);
+    setError("username", usernameError);
+    setError("password", passwordError);
+    setError("confirmPassword", confirmError);
+
+    if (emailError || usernameError || passwordError || confirmError) return;
+
     try {
       await register({ email, username, password });
       navigate("/login");
     } catch (error) {
-      console.log(error);
+      setError("general", "Registration Failed. Try Again.");
     }
-    console.log({ email, username });
   };
 
   return (
@@ -41,6 +55,11 @@ const Register = () => {
         <p className="text-center text-primary-100 text-sm mb-4 animate-fade-in-delay-1">
           Join MoneyTracker today
         </p>
+        {errors.general && (
+          <p className="text-red-500 text-sm p-2 bg-error-200/75 rounded w-fit mx-auto">
+            {errors.general}
+          </p>
+        )}
 
         <label className="flex flex-col gap-2 animate-fade-in-delay-2">
           <span className="text-sm font-medium text-primary-50">Email</span>
@@ -49,9 +68,15 @@ const Register = () => {
             type="email"
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
-            required
-            className="input-field bg-white/95 text-gray-800 placeholder:text-gray-400"
+            className={`input-field bg-white/95 text-gray-800 placeholder:text-gray-400 ${
+              errors.email ? "border-2 border-error-400" : ""
+            }`}
           />
+          {errors.email && (
+            <p className="text-red-500 text-xs p-2 bg-error-200/75 rounded w-fit">
+              {errors.email}
+            </p>
+          )}
         </label>
 
         <label className="flex flex-col gap-2 animate-fade-in-delay-2">
@@ -62,9 +87,15 @@ const Register = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="Choose a username"
-            required
-            className="input-field bg-white/95 text-gray-800 placeholder:text-gray-400"
+            className={`input-field bg-white/95 text-gray-800 placeholder:text-gray-400 ${
+              errors.username ? "border-2 border-error-400" : ""
+            }`}
           />
+          {errors.username && (
+            <p className="text-red-500 text-xs p-2 bg-error-200/75 rounded w-fit">
+              {errors.username}
+            </p>
+          )}
         </label>
 
         <label className="flex flex-col gap-2 animate-fade-in-delay-3">
@@ -76,8 +107,9 @@ const Register = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Create a password"
-              required
-              className="input-field pr-11 bg-white/95 text-gray-800 placeholder:text-gray-400"
+              className={`input-field pr-11 bg-white/95 text-gray-800 placeholder:text-gray-400 ${
+                errors.password ? "border-2 border-error-400" : ""
+              }`}
             />
             <button
               type="button"
@@ -92,6 +124,11 @@ const Register = () => {
               )}
             </button>
           </div>
+          {errors.password && (
+            <p className="text-red-500 text-xs p-2 bg-error-200/75 rounded w-fit">
+              {errors.password}
+            </p>
+          )}
         </label>
 
         <label className="flex flex-col gap-2 animate-fade-in-delay-3">
@@ -105,8 +142,9 @@ const Register = () => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Confirm your password"
-              required
-              className="input-field pr-11 bg-white/95 text-gray-800 placeholder:text-gray-400"
+              className={`input-field pr-11 bg-white/95 text-gray-800 placeholder:text-gray-400 ${
+                errors.confirmPassword ? "border-2 border-error-400" : ""
+              }`}
             />
             <button
               type="button"
@@ -125,6 +163,11 @@ const Register = () => {
               )}
             </button>
           </div>
+          {errors.confirmPassword && (
+            <p className="text-red-500 text-xs p-2 bg-error-200/75 rounded w-fit">
+              {errors.confirmPassword}
+            </p>
+          )}
         </label>
 
         <button type="submit" className="auth-btn animate-fade-in-delay-4">
