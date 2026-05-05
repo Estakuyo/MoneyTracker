@@ -5,6 +5,7 @@ import Button from "../components/button";
 import Card from "../components/card";
 import Placeholder from "../components/placeholder";
 import Modal from "../components/modal";
+import { formatCurrency, formatDate } from "../utils/formatters";
 
 import {
   add_Earning,
@@ -41,11 +42,6 @@ const Earnings = () => {
   const [category, setCategory] = useState("");
 
   const { token } = useContext(UserContext);
-
-  const formatDate = (rawDate) => {
-    const date = new Date(rawDate);
-    return date.toLocaleDateString("en-PH");
-  };
 
   const loadEarnings = async () => {
     if (!token) return;
@@ -118,7 +114,7 @@ const Earnings = () => {
                 Total Earnings
               </p>
               <h1 className="text-5xl font-bold text-success-500">
-                {earningsTotal.total}
+                {formatCurrency(earningsTotal.total)}
               </h1>
             </div>
           </div>
@@ -151,7 +147,9 @@ const Earnings = () => {
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold text-success-500">{category.total}</p>
+                  <p className="font-bold text-success-500">
+                    {formatCurrency(category.total)}
+                  </p>
                   <p className="text-gray-500 text-sm">Total</p>
                 </div>
               </div>
@@ -192,7 +190,9 @@ const Earnings = () => {
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold text-success-500">{earning.price}</p>
+                  <p className="font-bold text-success-500">
+                    {formatCurrency(earning.price)}
+                  </p>
                   <p className="text-gray-500 text-sm">
                     {formatDate(earning.date)}
                   </p>
@@ -267,7 +267,7 @@ const Earnings = () => {
                     </div>
                     <div className="text-right">
                       <p className="font-bold text-success-500">
-                        {category.total}
+                        {formatCurrency(category.total)}
                       </p>
                       <p className="text-gray-500 text-sm">Total</p>
                     </div>
@@ -314,7 +314,7 @@ const Earnings = () => {
                     </div>
                     <div className="text-right">
                       <p className="font-bold text-success-500">
-                        {earning.price}
+                        {formatCurrency(earning.price)}
                       </p>
                       <p className="text-gray-500 text-sm">
                         {formatDate(earning.date)}

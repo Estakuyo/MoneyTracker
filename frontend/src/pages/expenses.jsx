@@ -1,9 +1,22 @@
-import { useContext } from "react";
-import { ModalContext } from "../context/modalContext";
+import { useContext, useEffect, useState } from "react";
+import { UserContext } from "../context/authContext";
 
 import Card from "../components/card";
 import Button from "../components/button";
 import Placeholder from "../components/placeholder";
+import Modal from "../components/modal";
+import { formatCurrency, formatDate } from "../utils/formatters";
+
+import {
+  add_Expenses,
+  getExpenses,
+  updateExpense,
+  deleteExpense,
+  get_ExpenseCategories,
+  get_ExpensesCategoryTotal,
+  getExpensesTotal,
+} from "../services/expenses";
+
 import {
   ResponsiveContainer,
   XAxis,
@@ -15,211 +28,71 @@ import {
 } from "recharts";
 
 const Expenses = () => {
-  const sampleCategories = [
-    // { name: "Food", amount: 500 },
-    // { name: "Gasoline", amount: 1000 },
-    // { name: "Motorcycle Maintenance", amount: 600 },
-    // { name: "Girlfriend Date", amount: 1500 },
-    // { name: "Beer", amount: 300 },
-  ];
+  const [activeModal, setActiveModal] = useState(null);
 
-  const sampleExpenses = [
-    // {
-    //   name: "Lunch",
-    //   amount: 90,
-    //   date: "05/05/2025",
-    //   category: sampleCategories[0].name,
-    // },
-    // {
-    //   name: "Groceries",
-    //   amount: 1200,
-    //   date: "05/02/2025",
-    //   category: sampleCategories[0].name,
-    // },
-    // {
-    //   name: "Fuel",
-    //   amount: 800,
-    //   date: "05/03/2025",
-    //   category: sampleCategories[1].name,
-    // },
-    // {
-    //   name: "ThursDate",
-    //   amount: 999,
-    //   date: "04/30/2025",
-    //   category: sampleCategories[3].name,
-    // },
-    // {
-    //   name: "Smirnoff",
-    //   amount: 350,
-    //   date: "05/06/2025",
-    //   category: sampleCategories[4].name,
-    // },
-  ];
+  // Outputs
+  const [expenses, setExpenses] = useState([]);
+  const [expensesTotal, setExpensesTotal] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [categoryTotal, setCategoryTotal] = useState([]);
 
-  const sampleDataChart = [
-    // { month: "January", total: 400 },
-    // { month: "February", total: 600 },
-    // { month: "March", total: 800 },
-    // { month: "April", total: 1000 },
-    // { month: "May", total: 1200 },
-    // { month: "June", total: 1400 },
-    // { month: "July", total: 1600 },
-    // { month: "August", total: 1800 },
-    // { month: "September", total: 2000 },
-    // { month: "October", total: 2200 },
-    // { month: "November", total: 2400 },
-    // { month: "December", total: 2600 },
-  ];
+  // Inputs
+  const [title, setTitle] = useState("");
+  const [price, setPrice] = useState();
+  const [category, setCategory] = useState("");
 
-  const { openModal } = useContext(ModalContext);
+  const { token } = useContext(UserContext);
 
-  const showCategories = () => {
-    openModal({
-      title: "Total Categories",
-      content: (
-        <div>
-          {sampleCategories.length > 0 ? (
-            <div>
-              <div className="text-center mb-2">
-                <p className="text-md text-gray-500">
-                  {sampleCategories.length} categories
-                </p>
-              </div>
-              <div className="flex flex-col">
-                {sampleCategories.map((category, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between gap-4 py-4 border-b last:border-b-0"
-                  >
-                    <div>
-                      <p className="font-medium text-lg text-gray-500">
-                        {category.name}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold text-success-500">
-                        {category.amount}
-                      </p>
-                      <p className="text-gray-500 text-sm">Total</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <Placeholder
-              title="No categories yet"
-              description="Add your first expense category."
-            />
-          )}
-        </div>
-      ),
-    });
+  const loadExpenses = async () => {
+    if (!token) return;
+    try {
+      const expensesData = await getExpenses({ token });
+      const expensesTotalData = await getExpensesTotal({ token });
+
+      const categoriesData = await get_ExpenseCategories({ token });
+      const categoryTotalsData = await get_ExpensesCategoryTotal({ token });
+
+      setExpenses(expensesData?.transactions ?? []);
+      setExpensesTotal(expensesTotalData?.transactionsTotal[0] ?? {});
+
+      setCategories(categoriesData?.categories ?? []);
+      setCategoryTotal(categoryTotalsData?.categoriesTotal ?? []);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const showExpenses = () => {
-    openModal({
-      title: "Expenses",
-      content: (
-        <div>
-          {sampleExpenses.length > 0 ? (
-            <div>
-              <div className="text-center mb-2">
-                <h1 className="text-xl font-semibold text-primary-600">
-                  Expense Transactions
-                </h1>
-                <p className="text-sm text-gray-500">
-                  {sampleExpenses.length} expenses
-                </p>
-              </div>
-              <div className="flex flex-col">
-                {sampleExpenses.map((expense, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between gap-4 py-3 border-b last:border-b-0"
-                  >
-                    <div>
-                      <p className="font-medium text-lg text-gray-500">
-                        {expense.name}
-                      </p>
-                      <p className="mt-1 inline-block text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded">
-                        {expense.category}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold text-success-500">
-                        {expense.amount}
-                      </p>
-                      <p className="text-gray-500 text-sm">{expense.date}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <Placeholder
-              title="No expenses yet"
-              description="Add your first expense."
-            />
-          )}
-        </div>
-      ),
-    });
+  useEffect(() => {
+    loadExpenses();
+  }, [token]);
+
+  const closeModal = () => {
+    setActiveModal(null);
+    setTitle("");
+    setPrice(null);
+    setCategory("");
   };
 
-  const addExpense = () => {
-    openModal({
-      title: "Add Expense",
-      content: (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="flex flex-col gap-1 md:col-span-2">
-            <label className="text-sm font-semibold text-gray-600">
-              Expense Name
-            </label>
-            <input
-              type="text"
-              className="w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-error-500"
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-semibold text-gray-600">
-              Amount
-            </label>
-            <input
-              type="number"
-              className="w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-error-500"
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-semibold text-gray-600">
-              Category
-            </label>
-            <input
-              type="text"
-              className="w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-error-500"
-            />
-          </div>
-          <div className="flex flex-col gap-1 md:col-span-2 border-t border-gray-200 pt-2.5 mt-2.5">
-            <Button
-              title={"Save"}
-              className="bg-error-500 hover:bg-error-700 w-full"
-            />
-          </div>
-        </div>
-      ),
-    });
+  const handleAddExpense = async (e) => {
+    e.preventDefault();
+    try {
+      if (!title || title === null || title === "") {
+        return;
+      }
+      if (!price || price === null || price === "") {
+        return;
+      }
+      if (!category || category === null || category === "") {
+        return;
+      }
+
+      await add_Expenses({ title, price, category, token });
+      closeModal();
+      await loadExpenses();
+    } catch (error) {
+      console.log(error);
+    }
   };
-
-  const totalExpenses = sampleExpenses.reduce(
-    (total, expense) => total + Number(expense.amount || 0),
-    0,
-  );
-
-  const totalExpensesDisplay = new Intl.NumberFormat("en-PH", {
-    style: "currency",
-    currency: "PHP",
-    maximumFractionDigits: 0,
-  }).format(totalExpenses);
 
   return (
     <div className="main-wrapper px-10 py-20 flex flex-col md:grid gap-5 md:py-10">
@@ -230,20 +103,24 @@ const Expenses = () => {
           <Button
             title={"- Add Expense"}
             className="bg-error-500 hover:bg-error-700"
-            onClick={addExpense}
+            onClick={() => setActiveModal("add")}
           />
         }
       >
-        <div className="flex flex-col justify-center items-center py-8 gap-7 text-center">
-          <div className="flex flex-col gap-1">
-            <p className="text-md font-semibold text-gray-500">
-              Total Expenses
-            </p>
-            <h1 className="text-5xl font-bold text-error-500">
-              {totalExpensesDisplay}
-            </h1>
+        {expensesTotal.total ? (
+          <div className="flex flex-col justify-center items-center py-8 gap-7 text-center">
+            <div className="flex flex-col gap-1">
+              <p className="text-md font-semibold text-gray-500">
+                Total Expenses
+              </p>
+              <h1 className="text-5xl font-bold text-error-500">
+                {formatCurrency(expensesTotal.total)}
+              </h1>
+            </div>
           </div>
-        </div>
+        ) : (
+          <Placeholder />
+        )}
       </Card>
 
       <Card
@@ -253,24 +130,26 @@ const Expenses = () => {
           <Button
             className="bg-error-500 hover:bg-error-700"
             title={"View Category"}
-            onClick={showCategories}
+            onClick={() => setActiveModal("categories")}
           />
         }
       >
         <div className="flex flex-col">
-          {sampleCategories.length > 0 ? (
-            sampleCategories.slice(0, 3).map((category, index) => (
+          {categoryTotal.length > 0 ? (
+            categoryTotal.slice(0, 3).map((category, index) => (
               <div
                 key={index}
                 className="flex items-center justify-between gap-4 py-4 border-b last:border-b-0"
               >
                 <div>
                   <p className="font-medium text-lg text-gray-500">
-                    {category.name}
+                    {category.category_name}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold text-error-500">{category.amount}</p>
+                  <p className="font-bold text-error-500">
+                    {formatCurrency(category.total)}
+                  </p>
                   <p className="text-gray-500 text-sm">Total</p>
                 </div>
               </div>
@@ -291,28 +170,32 @@ const Expenses = () => {
           <Button
             className="bg-error-500 hover:bg-error-700"
             title={"View Expenses"}
-            onClick={showExpenses}
+            onClick={() => setActiveModal("expenses")}
           />
         }
       >
         <div className="flex flex-col">
-          {sampleExpenses.length > 0 ? (
-            sampleExpenses.slice(0, 3).map((expense, index) => (
+          {expenses.length > 0 ? (
+            expenses.slice(0, 3).map((expense, index) => (
               <div
                 key={index}
                 className="flex items-center justify-between gap-4 py-3 border-b last:border-b-0"
               >
                 <div>
                   <p className="font-medium text-lg text-gray-500">
-                    {expense.name}
+                    {expense.title}
                   </p>
                   <p className="mt-1 inline-block text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded">
-                    {expense.category}
+                    {expense.category_name}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold text-error-500">{expense.amount}</p>
-                  <p className="text-gray-500 text-sm">{expense.date}</p>
+                  <p className="font-bold text-error-500">
+                    {formatCurrency(expense.price)}
+                  </p>
+                  <p className="text-gray-500 text-sm">
+                    {formatDate(expense.date)}
+                  </p>
                 </div>
               </div>
             ))
@@ -325,28 +208,195 @@ const Expenses = () => {
         </div>
       </Card>
 
-      <Card className="w-full col-span-3" title={"Monthly Expense History"}>
+      <Card className="w-full col-span-3" title={"Expense Chart"}>
         <div className="w-full" style={{ height: 300 }}>
-          {sampleDataChart.length > 0 ? (
+          {expenses.length >= 10 ? (
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={sampleDataChart}>
+              <BarChart data={expenses}>
                 <CartesianGrid strokeDasharray={"3 3"} />
-                <XAxis dataKey={"month"} tick={false} />
-                <YAxis
-                  width="auto"
-                  type="number"
-                  fontSize={"12px"}
-                  fontWeight={800}
+                <YAxis width="auto" fontSize={"12px"} fontWeight={800} />
+                <XAxis hide width={"auto"} fontSize={"12px"} fontWeight={800} />
+                <Bar dataKey={"price"} fill="#ef4444" radius={[10, 10, 0, 0]} />
+                <Tooltip
+                  labelFormatter={(index) => {
+                    const expense = expenses[index];
+                    return expense ? formatDate(expense.date) : "";
+                  }}
                 />
-                <Bar dataKey={"total"} fill="#ef4444" radius={[10, 10, 0, 0]} />
-                <Tooltip />
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <Placeholder />
+            <Placeholder
+              title="Not Enough Data Yet"
+              description="Add 10 expenses to activate chart"
+            />
           )}
         </div>
       </Card>
+
+      {/* Show Expense Categories Modal */}
+      <Modal
+        isOpen={activeModal === "categories"}
+        onClose={closeModal}
+        title={"Total Categories"}
+      >
+        <div>
+          {categoryTotal.length > 0 ? (
+            <div>
+              <div className="text-center mb-2">
+                <p className="text-md text-gray-500">
+                  {categoryTotal.length} categories
+                </p>
+              </div>
+              <div className="flex flex-col">
+                {categoryTotal.map((category, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between gap-4 py-4 border-b last:border-b-0"
+                  >
+                    <div>
+                      <p className="font-medium text-lg text-gray-500">
+                        {category.category_name}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold text-error-500">
+                        {formatCurrency(category.total)}
+                      </p>
+                      <p className="text-gray-500 text-sm">Total</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <Placeholder
+              title="No categories yet"
+              description="Add your first expense category."
+            />
+          )}
+        </div>
+      </Modal>
+
+      {/* Show Expenses Transactions Modal */}
+      <Modal
+        isOpen={activeModal === "expenses"}
+        onClose={closeModal}
+        title={"Expenses"}
+      >
+        <div>
+          {expenses.length > 0 ? (
+            <div>
+              <div className="text-center mb-2">
+                <h1 className="text-xl font-semibold text-primary-600">
+                  Expense Transactions
+                </h1>
+                <p className="text-sm text-gray-500">
+                  {expenses.length} expenses
+                </p>
+              </div>
+              <div className="flex flex-col">
+                {expenses.map((expense, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between gap-4 py-3 border-b last:border-b-0"
+                  >
+                    <div>
+                      <p className="font-medium text-lg text-gray-500">
+                        {expense.title}
+                      </p>
+                      <p className="mt-1 inline-block text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded">
+                        {expense.category_name}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold text-error-500">
+                        {formatCurrency(expense.price)}
+                      </p>
+                      <p className="text-gray-500 text-sm">
+                        {formatDate(expense.date)}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <Placeholder
+              title="No expenses yet"
+              description="Add your first expense."
+            />
+          )}
+        </div>
+      </Modal>
+
+      {/* Show Add Expense Modal */}
+      <Modal
+        isOpen={activeModal === "add"}
+        onClose={closeModal}
+        title={"Add Expense"}
+      >
+        <form
+          onSubmit={handleAddExpense}
+          className="grid grid-cols-1 gap-4 md:grid-cols-2"
+        >
+          <div className="flex flex-col gap-1 md:col-span-2">
+            <label className="text-sm font-semibold text-gray-600">
+              Expense Name
+            </label>
+            <input
+              type="text"
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-error-500"
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-semibold text-gray-600">
+              Amount
+            </label>
+            <input
+              type="number"
+              onChange={(e) => setPrice(e.target.value)}
+              className="w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-error-500"
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-semibold text-gray-600">
+              Category
+            </label>
+            {categories.length > 0 ? (
+              <>
+                <input
+                  type="text"
+                  list="expense-category-options"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  placeholder="Select or type category"
+                  className="w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-error-500"
+                />
+                <datalist id="expense-category-options">
+                  {categories.map((item) => (
+                    <option key={item.id} value={item.name} />
+                  ))}
+                </datalist>
+              </>
+            ) : (
+              <input
+                type="text"
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-error-500"
+              />
+            )}
+          </div>
+          <div className="flex flex-col gap-1 md:col-span-2 border-t border-gray-200 pt-2.5 mt-2.5">
+            <Button
+              title={"Save"}
+              type="submit"
+              className="bg-error-500 hover:bg-error-700 w-full"
+            />
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 };
