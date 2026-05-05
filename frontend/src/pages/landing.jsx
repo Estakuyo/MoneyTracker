@@ -176,7 +176,7 @@ const Landing = () => {
         <p className="text-base sm:text-lg text-white/80">
           Created by Estakuyo
         </p>
-        <span className="flex justify-center items-center">
+        <span className="flex flex-col justify-center items-center sm:flex-row">
           <a
             href="https://johnmartineustaquio.vercel.app"
             target="_blank"
@@ -185,7 +185,7 @@ const Landing = () => {
           >
             johnmartineustaquio.vercel.app
           </a>
-          <Dot color="#1faa59" />
+          <Dot color="#1faa59" className="hidden sm:block" />
           <a
             href="https://linkedin.com/in/johnmartineustaquio"
             target="_blank"
