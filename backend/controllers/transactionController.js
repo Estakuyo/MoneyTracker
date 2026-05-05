@@ -61,6 +61,8 @@ const addTransaction = async (req, res) => {
     const id = req.user.id;
     const { title, price, category, type } = req.body;
 
+    // IMPORTANT NOTE: type is being declared in frontend services
+
     const existingCategory = await findCategory(id, category, type);
 
     let categoryId;

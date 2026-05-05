@@ -65,7 +65,6 @@ const Login = () => {
               clearError("username");
             }}
             placeholder="Enter your username"
-            required
             className={`input-field bg-white/95 text-gray-800 placeholder:text-gray-400 ${
               errors.username ? "border-2 border-error-400" : ""
             }`}
@@ -89,7 +88,6 @@ const Login = () => {
                 clearError("password");
               }}
               placeholder="Enter your password"
-              required
               className={`input-field pr-11 bg-white/95 text-gray-800 placeholder:text-gray-400 ${
                 errors.password ? "border-2 border-error-400" : ""
               }`}
