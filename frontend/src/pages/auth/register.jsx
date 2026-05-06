@@ -33,18 +33,42 @@ const Register = () => {
     setError("password", passwordError);
     setError("confirmPassword", confirmError);
 
-    if (emailError || usernameError || passwordError || confirmError) return;
+    if (emailError) {
+      setEmail("");
+      return;
+    }
+    if (usernameError) {
+      setUsername("");
+      return;
+    }
+    if (passwordError) {
+      setPassword("");
+      return;
+    }
+    if (confirmError) {
+      setConfirmPassword("");
+      return;
+    }
 
     try {
       await register({ email, username, password });
       navigate("/login");
     } catch (error) {
-      setError("general", "Registration Failed. Try Again.");
+      setError(
+        "general",
+        error.message
+          ? "Account Already Exists"
+          : "Registration Failed. Try Again.",
+      );
+      setEmail("");
+      setUsername("");
+      setPassword("");
+      setConfirmPassword("");
     }
   };
 
   return (
-    <div className="h-screen w-screen flex justify-center items-center">
+    <div className="h-screen w-full flex justify-center items-center">
       <form
         onSubmit={handleRegister}
         className="auth-form backdrop-blur-sm bg-primary-600/90 animate-slide-up"
@@ -66,17 +90,18 @@ const Register = () => {
           <input
             name="email"
             type="email"
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              clearError("email");
+            }}
+            placeholder={errors.email ? errors.email : "Enter your email"}
             className={`input-field bg-white/95 text-gray-800 placeholder:text-gray-400 ${
-              errors.email ? "border-2 border-error-400" : ""
+              errors.email
+                ? "border-2 border-error-400 placeholder:text-red-500 placeholder:text-xs"
+                : ""
             }`}
           />
-          {errors.email && (
-            <p className="text-red-500 text-xs p-2 bg-error-200/75 rounded w-fit">
-              {errors.email}
-            </p>
-          )}
         </label>
 
         <label className="flex flex-col gap-2 animate-fade-in-delay-2">
@@ -85,17 +110,19 @@ const Register = () => {
             name="username"
             type="text"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Choose a username"
+            onChange={(e) => {
+              setUsername(e.target.value);
+              clearError("username");
+            }}
+            placeholder={
+              errors.username ? errors.username : "Choose a username"
+            }
             className={`input-field bg-white/95 text-gray-800 placeholder:text-gray-400 ${
-              errors.username ? "border-2 border-error-400" : ""
+              errors.username
+                ? "border-2 border-error-400 placeholder:text-red-500 placeholder:text-xs"
+                : ""
             }`}
           />
-          {errors.username && (
-            <p className="text-red-500 text-xs p-2 bg-error-200/75 rounded w-fit">
-              {errors.username}
-            </p>
-          )}
         </label>
 
         <label className="flex flex-col gap-2 animate-fade-in-delay-3">
@@ -105,10 +132,17 @@ const Register = () => {
               name="password"
               type={showPassword ? "text" : "password"}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Create a password"
+              onChange={(e) => {
+                setPassword(e.target.value);
+                clearError("password");
+              }}
+              placeholder={
+                errors.password ? errors.password : "Create a password"
+              }
               className={`input-field pr-11 bg-white/95 text-gray-800 placeholder:text-gray-400 ${
-                errors.password ? "border-2 border-error-400" : ""
+                errors.password
+                  ? "border-2 border-error-400 placeholder:text-red-500 placeholder:text-xs"
+                  : ""
               }`}
             />
             <button
@@ -124,11 +158,6 @@ const Register = () => {
               )}
             </button>
           </div>
-          {errors.password && (
-            <p className="text-red-500 text-xs p-2 bg-error-200/75 rounded w-fit">
-              {errors.password}
-            </p>
-          )}
         </label>
 
         <label className="flex flex-col gap-2 animate-fade-in-delay-3">
@@ -140,10 +169,19 @@ const Register = () => {
               name="confirmPassword"
               type={showConfirmPassword ? "text" : "password"}
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Confirm your password"
+              onChange={(e) => {
+                setConfirmPassword(e.target.value);
+                clearError("confirmPassword");
+              }}
+              placeholder={
+                errors.confirmPassword
+                  ? errors.confirmPassword
+                  : "Confirm your password"
+              }
               className={`input-field pr-11 bg-white/95 text-gray-800 placeholder:text-gray-400 ${
-                errors.confirmPassword ? "border-2 border-error-400" : ""
+                errors.confirmPassword
+                  ? "border-2 border-error-400 placeholder:text-red-500 placeholder:text-xs"
+                  : ""
               }`}
             />
             <button
@@ -163,11 +201,6 @@ const Register = () => {
               )}
             </button>
           </div>
-          {errors.confirmPassword && (
-            <p className="text-red-500 text-xs p-2 bg-error-200/75 rounded w-fit">
-              {errors.confirmPassword}
-            </p>
-          )}
         </label>
 
         <button type="submit" className="auth-btn animate-fade-in-delay-4">

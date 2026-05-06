@@ -25,7 +25,14 @@ const Login = () => {
     setError("username", usernameError);
     setError("password", passwordError);
 
-    if (usernameError || passwordError) return;
+    if (usernameError) {
+      setUsername("");
+      return;
+    }
+    if (passwordError) {
+      setPassword("");
+      return;
+    }
 
     try {
       await login({ username, password });
@@ -33,6 +40,8 @@ const Login = () => {
       navigate("/home");
     } catch (error) {
       setError("general", "Invalid username or password");
+      setUsername("");
+      setPassword("");
     }
   };
 
@@ -64,16 +73,15 @@ const Login = () => {
               setUsername(e.target.value);
               clearError("username");
             }}
-            placeholder="Enter your username"
+            placeholder={
+              errors.username ? errors.username : "Enter your username"
+            }
             className={`input-field bg-white/95 text-gray-800 placeholder:text-gray-400 ${
-              errors.username ? "border-2 border-error-400" : ""
+              errors.username
+                ? "border-2 border-error-400 placeholder:text-red-500 placeholder:text-xs"
+                : ""
             }`}
           />
-          {errors.username && (
-            <p className="text-red-500 text-xs p-2 bg-error-200/75 rounded w-fit">
-              {errors.username}
-            </p>
-          )}
         </label>
 
         <label className="flex flex-col gap-2 animate-fade-in-delay-2">
@@ -87,9 +95,13 @@ const Login = () => {
                 setPassword(e.target.value);
                 clearError("password");
               }}
-              placeholder="Enter your password"
+              placeholder={
+                errors.password ? errors.password : "Enter your password"
+              }
               className={`input-field pr-11 bg-white/95 text-gray-800 placeholder:text-gray-400 ${
-                errors.password ? "border-2 border-error-400" : ""
+                errors.password
+                  ? "border-2 border-error-400 placeholder:text-red-500 placeholder:text-xs"
+                  : ""
               }`}
             />
             <button
@@ -105,11 +117,6 @@ const Login = () => {
               )}
             </button>
           </div>
-          {errors.password && (
-            <p className="text-red-500 text-xs p-2 bg-error-200/75 rounded w-fit">
-              {errors.password}
-            </p>
-          )}
         </label>
 
         <button type="submit" className="auth-btn animate-fade-in-delay-3">

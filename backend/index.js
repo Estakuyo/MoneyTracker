@@ -8,6 +8,7 @@ const app = express();
 const authRoutes = require("./routes/authRoutes");
 const earningsRoutes = require("./routes/earningsRoutes");
 const expenseRoutes = require("./routes/expensesRoutes");
+const savingsRoutes = require("./routes/savingsRoutes");
 
 // Middleware
 app.use(
@@ -22,6 +23,7 @@ app.use(express.json()); // Parses JSON to readable data
 app.use("/api/auth", authRoutes);
 app.use("/api", earningsRoutes);
 app.use("/api", expenseRoutes);
+app.use("/api", savingsRoutes);
 
 // Check Database Connection
 const startServer = async () => {

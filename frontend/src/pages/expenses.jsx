@@ -238,7 +238,7 @@ const Expenses = () => {
       <Modal
         isOpen={activeModal === "categories"}
         onClose={closeModal}
-        title={"Total Categories"}
+        title={"Expense Categories"}
       >
         <div>
           {categoryTotal.length > 0 ? (
@@ -282,15 +282,12 @@ const Expenses = () => {
       <Modal
         isOpen={activeModal === "expenses"}
         onClose={closeModal}
-        title={"Expenses"}
+        title={"Expense Transactions"}
       >
         <div>
           {expenses.length > 0 ? (
             <div>
               <div className="text-center mb-2">
-                <h1 className="text-xl font-semibold text-primary-600">
-                  Expense Transactions
-                </h1>
                 <p className="text-sm text-gray-500">
                   {expenses.length} expenses
                 </p>
