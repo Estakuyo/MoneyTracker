@@ -33,20 +33,17 @@ const getTransactionTotalAmount = async (req, res) => {
 
     const transactionTotalAmount = await getTransactionsQuery(id, type);
 
-    const transactionTotal = transactionTotalAmount.reduce(
-      (acc, transaction) => {
-        const { user_id, username, type, price } = transaction;
+    const transactionTotal = {};
 
-        if (!acc[type]) {
-          acc[type] = { user_id, username, type, total: 0 };
-        }
+    for (let i = 0; i < transactionTotalAmount.length; i++) {
+      const { user_id, username, type, price } = transactionTotalAmount[i];
 
-        acc[type].total += transaction.price;
+      if (!transactionTotal[type]) {
+        transactionTotal[type] = { user_id, username, type, total: 0 };
+      }
 
-        return acc;
-      },
-      {},
-    );
+      transactionTotal[type].total += price;
+    }
 
     const transactionsTotal = Object.values(transactionTotal);
 

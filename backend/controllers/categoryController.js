@@ -29,23 +29,23 @@ const getTransactionsCategoryTotal = async (req, res) => {
 
     const categoryTotalAmount = await getTransactionsQuery(id, type);
 
-    const categoryTotal = categoryTotalAmount.reduce((acc, transaction) => {
-      const { id, user_id, category_name, price } = transaction;
+    const categoryTotal = {};
 
-      if (!acc[category_name]) {
-        acc[category_name] = { id, user_id, category_name, total: 0 };
+    for (let i = 0; i < categoryTotalAmount.length; i++) {
+      const { id, user_id, category_name, price } = categoryTotalAmount[i];
+
+      if (!categoryTotal[category_name]) {
+        categoryTotal[category_name] = { id, user_id, category_name, total: 0 };
       }
 
-      acc[category_name].total += price;
-
-      return acc;
-    }, {});
+      categoryTotal[category_name].total += price;
+    }
 
     const categoriesTotal = Object.values(categoryTotal);
 
     res.status(200).json({ categoriesTotal });
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500).json({ error: error.message });
   }
 };
 
