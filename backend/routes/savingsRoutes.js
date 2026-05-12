@@ -9,7 +9,7 @@ const {
 } = require("../controllers/savingsController");
 
 router.get("/savings", authMiddleware, getTotalSavings);
-router.post("/savings", authMiddleware, addGoals);
-router.get("/savings", authMiddleware, getGoals);
+router.post("/savings/goals", authMiddleware, addGoals);
+router.get("/savings/goals", authMiddleware, getGoals);
 
 module.exports = router;

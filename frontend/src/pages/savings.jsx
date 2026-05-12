@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 
 import Card from "../components/card";
 import Button from "../components/button";
@@ -14,50 +14,33 @@ import {
 } from "recharts";
 import Placeholder from "../components/placeholder";
 import Modal from "../components/modal";
+import { formatCurrency } from "../utils/formatters";
+
+import { getUserSavings } from "../services/savings";
+import { UserContext } from "../context/authContext";
 
 const Savings = () => {
   const [activeModal, setActiveModal] = useState(null);
 
-  const sampleSavings = [];
+  const [savings, setSavings] = useState();
 
-  const sampleGoals = [
-    // { name: "Emergency Fund", amount: 10000, saved: 6500 },
-    // { name: "Vacation", amount: 3000, saved: 1500 },
-    // { name: "New Laptop", amount: 80000, saved: 20000 },
-    // { name: "Motorcycle Maintenance", amount: 20000, saved: 5000 },
-    // { name: "Home Renovation", amount: 50000, saved: 10000 },
-  ];
+  const { token } = useContext(UserContext);
 
-  const sampleDataChart = [
-    // {
-    //   date: "11/06/2003",
-    //   amount: 400,
-    // },
-    // {
-    //   date: "11/07/2003",
-    //   amount: 500,
-    // },
-    // {
-    //   date: "11/08/2003",
-    //   amount: 1100,
-    // },
-    // {
-    //   date: "11/09/2003",
-    //   amount: 600,
-    // },
-    // {
-    //   date: "11/10/2003",
-    //   amount: 150,
-    // },
-    // {
-    //   date: "11/11/2003",
-    //   amount: 990,
-    // },
-    // {
-    //   date: "11/12/2003",
-    //   amount: 500,
-    // },
-  ];
+  const loadSavings = async () => {
+    if (!token) return;
+    try {
+      const savingsData = await getUserSavings({ token });
+
+      setSavings(savingsData.savings);
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    loadSavings();
+  }, [token]);
+
+  const sampleGoals = [];
+  const sampleDataChart = [];
 
   const closeModal = () => {
     setActiveModal(null);
@@ -66,13 +49,15 @@ const Savings = () => {
   return (
     <div className="main-wrapper px-10 py-20 flex flex-col md:grid gap-5 md:py-10">
       <Card className="w-full" title={"Total Savings"}>
-        {sampleSavings.length > 0 ? (
+        {savings ? (
           <div className="flex flex-col justify-center items-center py-8 gap-7 text-center">
             <div className="flex flex-col gap-1">
               <p className="text-md font-semibold text-gray-500">
                 Overall Savings
               </p>
-              <h1 className="text-5xl font-bold text-success-500">₱6,500</h1>
+              <h1 className="text-5xl font-bold text-success-500">
+                {formatCurrency(savings.total)}
+              </h1>
             </div>
           </div>
         ) : (

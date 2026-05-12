@@ -1,8 +1,38 @@
 const { addGoalsQuery } = require("./queries/savingsQueries");
+const { getTransactionsQuery } = require("./queries/transactionQueries");
 
 const getTotalSavings = async (req, res) => {
   try {
     const id = req.user.id;
+    const username = req.user.username;
+
+    const earningTransactions = await getTransactionsQuery(
+      id,
+      (type = "Earnings"),
+    );
+    let earningsTotal = 0;
+
+    for (let i = 0; i < earningTransactions.length; i++) {
+      const { type, price } = earningTransactions[i];
+      earningsTotal += price;
+    }
+
+    const expensesTransactions = await getTransactionsQuery(
+      id,
+      (type = "Expenses"),
+    );
+    let expensesTotal = 0;
+
+    for (let i = 0; i < expensesTransactions.length; i++) {
+      const { type, price } = expensesTransactions[i];
+      expensesTotal += price;
+    }
+
+    const total = earningsTotal - expensesTotal;
+
+    const savings = { username, total };
+
+    res.status(200).json({ savings });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
