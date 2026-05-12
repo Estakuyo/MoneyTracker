@@ -1,5 +1,4 @@
-import { useContext } from "react";
-import { ModalContext } from "../context/modalContext";
+import { useState } from "react";
 
 import Card from "../components/card";
 import Button from "../components/button";
@@ -14,8 +13,11 @@ import {
   Tooltip,
 } from "recharts";
 import Placeholder from "../components/placeholder";
+import Modal from "../components/modal";
 
 const Savings = () => {
+  const [activeModal, setActiveModal] = useState(null);
+
   const sampleSavings = [];
 
   const sampleGoals = [
@@ -57,34 +59,8 @@ const Savings = () => {
     // },
   ];
 
-  const { openModal } = useContext(ModalContext);
-
-  const showGoals = () => {
-    openModal({
-      title: "Goals",
-      content: (
-        <div>
-          {sampleGoals.length > 0 ? (
-            sampleGoals.map((goal, index) => (
-              <div className="flex flex-col gap-10 py-4">
-                <div className="flex flex-col gap-2" key={index}>
-                  <ProgressBar
-                    goal={goal.name}
-                    value={goal.saved}
-                    max={goal.amount}
-                  />
-                </div>
-              </div>
-            ))
-          ) : (
-            <Placeholder
-              title="No goals yet"
-              description="Add your first goal"
-            />
-          )}
-        </div>
-      ),
-    });
+  const closeModal = () => {
+    setActiveModal(null);
   };
 
   return (
@@ -111,7 +87,7 @@ const Savings = () => {
           <Button
             title={"View Goals"}
             className="bg-success-500 hover:bg-success-700"
-            onClick={showGoals}
+            onClick={() => setActiveModal("goals")}
           />
         }
       >
@@ -163,6 +139,33 @@ const Savings = () => {
           )}
         </div>
       </Card>
+
+      <Modal
+        isOpen={activeModal === "goals"}
+        onClose={closeModal}
+        title={"Goals"}
+      >
+        <div>
+          {sampleGoals.length > 0 ? (
+            sampleGoals.map((goal, index) => (
+              <div className="flex flex-col gap-10 py-4" key={index}>
+                <div className="flex flex-col gap-2">
+                  <ProgressBar
+                    goal={goal.name}
+                    value={goal.saved}
+                    max={goal.amount}
+                  />
+                </div>
+              </div>
+            ))
+          ) : (
+            <Placeholder
+              title="No goals yet"
+              description="Add your first goal"
+            />
+          )}
+        </div>
+      </Modal>
     </div>
   );
 };
