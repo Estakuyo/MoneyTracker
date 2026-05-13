@@ -16,7 +16,7 @@ import Placeholder from "../components/placeholder";
 import Modal from "../components/modal";
 import { formatCurrency } from "../utils/formatters";
 
-import { getUserSavings, addUserGoal } from "../services/savings";
+import { getUserSavings, addUserGoal, getUserGoals } from "../services/savings";
 import { UserContext } from "../context/authContext";
 
 const Savings = () => {
@@ -28,6 +28,7 @@ const Savings = () => {
 
   // Outputs
   const [savings, setSavings] = useState();
+  const [goals, setGoals] = useState([]);
 
   const { token } = useContext(UserContext);
 
@@ -35,16 +36,19 @@ const Savings = () => {
     if (!token) return;
     try {
       const savingsData = await getUserSavings({ token });
+      const goalsData = await getUserGoals({ token });
 
       setSavings(savingsData.savings);
-    } catch (error) {}
+      setGoals(goalsData.goals);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
     loadSavings();
   }, [token]);
 
-  const sampleGoals = [];
   const sampleDataChart = [];
 
   const closeModal = () => {
@@ -99,13 +103,13 @@ const Savings = () => {
           />
         }
       >
-        {sampleGoals.length > 0 ? (
-          sampleGoals.slice(0, 3).map((goal, index) => (
+        {goals.length > 0 ? (
+          goals.slice(0, 3).map((goal, index) => (
             <div className="flex flex-col gap-10 py-4">
               <div className="flex flex-col gap-2" key={index}>
                 <ProgressBar
-                  goal={goal.name}
-                  value={goal.saved}
+                  goal={goal.title}
+                  value={savings.total}
                   max={goal.amount}
                 />
               </div>
@@ -154,13 +158,13 @@ const Savings = () => {
         title={"Goals"}
       >
         <div>
-          {sampleGoals.length > 0 ? (
-            sampleGoals.map((goal, index) => (
+          {goals.length > 0 ? (
+            goals.map((goal, index) => (
               <div className="flex flex-col gap-10 py-4" key={index}>
                 <div className="flex flex-col gap-2">
                   <ProgressBar
-                    goal={goal.name}
-                    value={goal.saved}
+                    goal={goal.title}
+                    value={savings.total}
                     max={goal.amount}
                   />
                 </div>

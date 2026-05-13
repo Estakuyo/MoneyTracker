@@ -1,4 +1,4 @@
-const { addGoalsQuery } = require("./queries/savingsQueries");
+const { addGoalsQuery, getGoalsQuery } = require("./queries/savingsQueries");
 const { getTransactionsQuery } = require("./queries/transactionQueries");
 
 const getTotalSavings = async (req, res) => {
@@ -61,6 +61,14 @@ const addGoals = async (req, res) => {
 const getGoals = async (req, res) => {
   try {
     const id = req.user.id;
+
+    const goals = await getGoalsQuery(id);
+
+    if (goals.length === 0) {
+      return res.status(200).json({ message: "No goals yet." });
+    }
+
+    res.status(200).json({ goals, message: "Successfuly fetch user goals." });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

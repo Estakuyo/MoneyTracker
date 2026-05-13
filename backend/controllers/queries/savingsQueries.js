@@ -6,4 +6,10 @@ const addGoalsQuery = async (user_id, title, amount, status) => {
   return result;
 };
 
-module.exports = { addGoalsQuery };
+const getGoalsQuery = async (user_id) => {
+  const query = `SELECT * FROM goals WHERE user_id = ?`;
+  const [rows] = await db.execute(query, [user_id]);
+  return rows;
+};
+
+module.exports = { addGoalsQuery, getGoalsQuery };

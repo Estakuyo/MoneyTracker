@@ -36,3 +36,20 @@ export const addUserGoal = async ({ title, amount, token }) => {
 
   return data;
 };
+
+export const getUserGoals = async ({ token }) => {
+  const res = await fetch(backendUrl + savingsApi.getGoal, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = res.json();
+
+  if (!res.ok) {
+    throw new Error(data?.error || "Failed to get Goals");
+  }
+
+  return data;
+};
