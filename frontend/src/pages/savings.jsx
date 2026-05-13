@@ -16,14 +16,15 @@ import Placeholder from "../components/placeholder";
 import Modal from "../components/modal";
 import { formatCurrency } from "../utils/formatters";
 
-import { getUserSavings } from "../services/savings";
+import { getUserSavings, addUserGoal } from "../services/savings";
 import { UserContext } from "../context/authContext";
 
 const Savings = () => {
   const [activeModal, setActiveModal] = useState(null);
 
   // Inputs
-  const [goals, setGoals] = useState();
+  const [title, setTitle] = useState();
+  const [amount, setAmount] = useState();
 
   // Outputs
   const [savings, setSavings] = useState();
@@ -48,6 +49,24 @@ const Savings = () => {
 
   const closeModal = () => {
     setActiveModal(null);
+  };
+
+  const handleAddGoal = async (e) => {
+    e.preventDefault();
+    try {
+      if (!title || title === null || title === "") {
+        return;
+      }
+      if (!amount || amount === null || amount === "") {
+        return;
+      }
+
+      await addUserGoal({ title, amount, token });
+      closeModal();
+      await loadSavings();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -153,7 +172,46 @@ const Savings = () => {
               description="Add your first goal"
             />
           )}
+          <div className="flex justify-center pt-6">
+            <Button
+              title={"Add Goal"}
+              className="bg-success-500 hover:bg-success-700 w-full"
+              onClick={() => setActiveModal("add-goal")}
+            />
+          </div>
         </div>
+      </Modal>
+
+      <Modal
+        isOpen={activeModal === "add-goal"}
+        onClose={() => setActiveModal("goals")}
+        title={"Add Goal"}
+      >
+        <form onSubmit={handleAddGoal} className="grid grid-cols-2 gap-5">
+          <div>
+            <label className="text-sm font-semibold text-gray-600">Title</label>
+            <input
+              type="text"
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-primary-500"
+            />
+          </div>
+          <div>
+            <label className="text-sm font-semibold text-gray-600">
+              Amount
+            </label>
+            <input
+              type="number"
+              onChange={(e) => setAmount(e.target.value)}
+              className="w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-primary-500"
+            />
+          </div>
+          <Button
+            title={"Submit"}
+            className="bg-success-500 hover:bg-success-700 w-full col-span-2"
+            type="submit"
+          />
+        </form>
       </Modal>
     </div>
   );
