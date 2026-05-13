@@ -22,6 +22,10 @@ import { UserContext } from "../context/authContext";
 const Savings = () => {
   const [activeModal, setActiveModal] = useState(null);
 
+  // Inputs
+  const [goals, setGoals] = useState();
+
+  // Outputs
   const [savings, setSavings] = useState();
 
   const { token } = useContext(UserContext);

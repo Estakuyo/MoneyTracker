@@ -28,7 +28,14 @@ const getTotalSavings = async (req, res) => {
       expensesTotal += price;
     }
 
-    const total = earningsTotal - expensesTotal;
+    let total;
+
+    if (earningsTotal > expensesTotal) {
+      total = earningsTotal - expensesTotal;
+    }
+    if (earningsTotal < expensesTotal) {
+      total = expensesTotal - earningsTotal;
+    }
 
     const savings = { username, total };
 
