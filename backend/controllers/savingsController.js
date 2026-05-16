@@ -65,7 +65,7 @@ const getGoals = async (req, res) => {
     const goals = await getGoalsQuery(id);
 
     if (goals.length === 0) {
-      return res.status(200).json({ message: "No goals yet." });
+      return res.status(200).json({ goals });
     }
 
     res.status(200).json({ goals, message: "Successfuly fetch user goals." });
