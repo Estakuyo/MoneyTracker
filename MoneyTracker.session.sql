@@ -30,6 +30,13 @@ CREATE TABLE `Goals`(
     FOREIGN KEY (`user_id`) REFERENCES `Users`(`id`)
 );
 ---@block
+CREATE TABLE `Savings`(
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY_KEY,
+    `amount` INT NOT NULL,
+    `user_id` INT UNSIGNED NOT NULL,
+    FOREIGN KEY (`user_id`) REFERENCES `Users`(`id`)
+);
+---@block
 SHOW TABLES;
 ---@block
 SELECT *
