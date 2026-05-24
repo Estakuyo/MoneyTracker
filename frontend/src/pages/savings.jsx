@@ -14,9 +14,14 @@ import {
 } from "recharts";
 import Placeholder from "../components/placeholder";
 import Modal from "../components/modal";
-import { formatCurrency } from "../utils/formatters";
+import { formatCurrency, formatDate } from "../utils/formatters";
 
-import { getUserSavings, addUserGoal, getUserGoals } from "../services/savings";
+import {
+  getUserSavings,
+  addUserGoal,
+  getUserGoals,
+  getAllUserSavings,
+} from "../services/savings";
 import { UserContext } from "../context/authContext";
 
 const Savings = () => {
@@ -29,6 +34,7 @@ const Savings = () => {
   // Outputs
   const [savings, setSavings] = useState();
   const [goals, setGoals] = useState([]);
+  const [allSavings, setAllSavings] = useState([]);
 
   const { token } = useContext(UserContext);
 
@@ -37,9 +43,11 @@ const Savings = () => {
     try {
       const savingsData = await getUserSavings({ token });
       const goalsData = await getUserGoals({ token });
+      const allSavingsData = await getAllUserSavings({ token });
 
       setSavings(savingsData.savings);
       setGoals(goalsData.goals);
+      setAllSavings(allSavingsData.savings);
     } catch (error) {
       console.log(error);
     }
@@ -48,8 +56,6 @@ const Savings = () => {
   useEffect(() => {
     loadSavings();
   }, [token]);
-
-  const sampleDataChart = [];
 
   const closeModal = () => {
     setActiveModal(null);
@@ -125,17 +131,12 @@ const Savings = () => {
 
       <Card className="w-full col-span-2" title={"Savings History"}>
         <div className="w-full" style={{ height: 300 }}>
-          {sampleDataChart.length > 0 ? (
+          {allSavings.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={sampleDataChart}>
+              <LineChart data={allSavings}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <YAxis width={"auto"} fontSize={"12px"} fontWeight={800} />
-                <XAxis
-                  width={"auto"}
-                  fontSize={"12px"}
-                  fontWeight={800}
-                  dataKey={"date"}
-                />
+                <XAxis hide width={"auto"} fontSize={"12px"} fontWeight={800} />
                 <Line
                   type="monotone"
                   dataKey="amount"
@@ -143,7 +144,12 @@ const Savings = () => {
                   strokeWidth={3}
                   dot={false}
                 />
-                <Tooltip />
+                <Tooltip
+                  labelFormatter={(index) => {
+                    const saving = allSavings[index];
+                    return saving ? formatDate(saving.date) : "";
+                  }}
+                />
               </LineChart>
             </ResponsiveContainer>
           ) : (

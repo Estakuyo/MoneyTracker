@@ -19,6 +19,22 @@ export const getUserSavings = async ({ token }) => {
   return data;
 };
 
+export const getAllUserSavings = async ({ token }) => {
+  const res = await fetch(backendUrl + savingsApi.getAllSavings, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data?.error || "Failed to get all Savings");
+  }
+
+  return data;
+};
+
 export const addUserGoal = async ({ title, amount, token }) => {
   const res = await fetch(backendUrl + savingsApi.addGoal, {
     method: "POST",

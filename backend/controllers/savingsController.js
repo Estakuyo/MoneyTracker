@@ -2,6 +2,7 @@ const {
   addGoalsQuery,
   getGoalsQuery,
   addSavingsQuery,
+  getAllSavingsQuery,
 } = require("./queries/savingsQueries");
 const { getTransactionsQuery } = require("./queries/transactionQueries");
 
@@ -51,6 +52,18 @@ const getTotalSavings = async (req, res) => {
   }
 };
 
+const getAllSavings = async (req, res) => {
+  try {
+    const id = req.user.id;
+
+    const savings = await getAllSavingsQuery(id);
+
+    return res.status(200).json({ savings });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 const addGoals = async (req, res) => {
   try {
     const id = req.user.id;
@@ -80,4 +93,10 @@ const getGoals = async (req, res) => {
   }
 };
 
-module.exports = { getTotalSavings, trackSavings, addGoals, getGoals };
+module.exports = {
+  getTotalSavings,
+  getAllSavings,
+  trackSavings,
+  addGoals,
+  getGoals,
+};
