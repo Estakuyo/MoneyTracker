@@ -29,10 +29,10 @@ CREATE TABLE `Goals`(
     `status` BOOLEAN NOT NULL,
     FOREIGN KEY (`user_id`) REFERENCES `Users`(`id`)
 );
----@block
 CREATE TABLE `Savings`(
-    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY_KEY,
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `amount` INT NOT NULL,
+    `date` DATE NOT NULL,
     `user_id` INT UNSIGNED NOT NULL,
     FOREIGN KEY (`user_id`) REFERENCES `Users`(`id`)
 );
@@ -47,8 +47,11 @@ SELECT *
 FROM transactions;
 SELECT *
 FROM goals;
+SELECT *
+FROM savings;
 ---@block
 DROP TABLE users,
 categories,
 transactions,
-goals;
+goals,
+savings;

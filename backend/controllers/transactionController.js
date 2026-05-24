@@ -6,6 +6,7 @@ const {
 } = require("./queries/transactionQueries");
 
 const { findCategory, addCategory } = require("./queries/categoryQueries");
+const { trackSavings } = require("./savingsController");
 
 const getTransactions = async (req, res) => {
   try {
@@ -79,8 +80,11 @@ const addTransaction = async (req, res) => {
       id,
     );
 
+    const savings = await trackSavings(req.user);
+
     res.status(200).json({
       transactions,
+      savings,
       message: "Transaction added successfully.",
     });
   } catch (error) {

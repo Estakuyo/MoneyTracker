@@ -105,8 +105,8 @@ const Savings = () => {
       >
         {goals.length > 0 ? (
           goals.slice(0, 3).map((goal, index) => (
-            <div className="flex flex-col gap-10 py-4">
-              <div className="flex flex-col gap-2" key={index}>
+            <div className="flex flex-col gap-10 py-4" key={index}>
+              <div className="flex flex-col gap-2">
                 <ProgressBar
                   goal={goal.title}
                   value={savings.total}

@@ -1,45 +1,51 @@
-const { addGoalsQuery, getGoalsQuery } = require("./queries/savingsQueries");
+const {
+  addGoalsQuery,
+  getGoalsQuery,
+  addSavingsQuery,
+} = require("./queries/savingsQueries");
 const { getTransactionsQuery } = require("./queries/transactionQueries");
+
+const calculateSavingsTotal = async (userId) => {
+  const earningTransactions = await getTransactionsQuery(userId, "Earnings");
+  let earningsTotal = 0;
+
+  for (let i = 0; i < earningTransactions.length; i++) {
+    const { price } = earningTransactions[i];
+    earningsTotal += price;
+  }
+
+  const expensesTransactions = await getTransactionsQuery(userId, "Expenses");
+  let expensesTotal = 0;
+
+  for (let i = 0; i < expensesTransactions.length; i++) {
+    const { price } = expensesTransactions[i];
+    expensesTotal += price;
+  }
+
+  const total = Math.abs(earningsTotal - expensesTotal);
+
+  return { total, earningsTotal, expensesTotal };
+};
+
+const trackSavings = async (user) => {
+  const id = user.id;
+  const username = user.username;
+
+  const { total } = await calculateSavingsTotal(id);
+  const date = new Date(Date.now()).toISOString().slice(0, 10);
+  await addSavingsQuery(id, total, date);
+
+  return { username, total, date };
+};
 
 const getTotalSavings = async (req, res) => {
   try {
     const id = req.user.id;
     const username = req.user.username;
 
-    const earningTransactions = await getTransactionsQuery(
-      id,
-      (type = "Earnings"),
-    );
-    let earningsTotal = 0;
+    const { total } = await calculateSavingsTotal(id);
 
-    for (let i = 0; i < earningTransactions.length; i++) {
-      const { type, price } = earningTransactions[i];
-      earningsTotal += price;
-    }
-
-    const expensesTransactions = await getTransactionsQuery(
-      id,
-      (type = "Expenses"),
-    );
-    let expensesTotal = 0;
-
-    for (let i = 0; i < expensesTransactions.length; i++) {
-      const { type, price } = expensesTransactions[i];
-      expensesTotal += price;
-    }
-
-    let total;
-
-    if (earningsTotal > expensesTotal) {
-      total = earningsTotal - expensesTotal;
-    }
-    if (earningsTotal < expensesTotal) {
-      total = expensesTotal - earningsTotal;
-    }
-
-    const savings = { username, total };
-
-    res.status(200).json({ savings });
+    return res.status(200).json({ savings: { username, total } });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -74,4 +80,4 @@ const getGoals = async (req, res) => {
   }
 };
 
-module.exports = { getTotalSavings, addGoals, getGoals };
+module.exports = { getTotalSavings, trackSavings, addGoals, getGoals };

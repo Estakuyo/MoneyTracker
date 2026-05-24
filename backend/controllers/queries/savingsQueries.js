@@ -12,4 +12,14 @@ const getGoalsQuery = async (user_id) => {
   return rows;
 };
 
-module.exports = { addGoalsQuery, getGoalsQuery };
+const addSavingsQuery = async (user_id, amount, date) => {
+  const query = `INSERT INTO savings (user_id, amount, date) VALUES (?, ?, ?)`;
+  const [result] = await db.execute(query, [user_id, amount, date]);
+  return result;
+};
+
+module.exports = {
+  addGoalsQuery,
+  getGoalsQuery,
+  addSavingsQuery,
+};
