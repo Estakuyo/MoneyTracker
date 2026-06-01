@@ -3,8 +3,8 @@ import { UserContext } from "../context/authContext";
 
 // Chart
 import {
-  LineChart,
-  Line,
+  BarChart,
+  Bar,
   CartesianGrid,
   YAxis,
   XAxis,
@@ -17,6 +17,12 @@ import {
 import Card from "../components/card";
 import Button from "../components/button";
 import Placeholder from "../components/placeholder";
+import Modal from "../components/modal";
+
+import { getAllUserTransactions } from "../services/transactions";
+import { add_Expenses, get_ExpenseCategories } from "../services/expenses";
+import { add_Earning, get_EarningCategories } from "../services/earnings";
+import { formatDate } from "../utils/formatters";
 
 const Home = () => {
   const sampleDataChart = [];
@@ -26,20 +32,44 @@ const Home = () => {
 
   // Outputs
   const [transactions, setTransactions] = useState([]);
+  const [earningsTotal, setEarningsTotal] = useState([]);
+  const [expensesTotal, setExpensesTotal] = useState([]);
+  const [earningCategories, setEarningCategories] = useState([]);
+  const [expenseCategories, setExpenseCategories] = useState([]);
 
   // Inputs
   const [title, setTitle] = useState("");
-  const [amount, setAmount] = useState();
+  const [price, setPrice] = useState();
   const [category, setCategory] = useState("");
 
   const { token } = useContext(UserContext);
 
-  const loadExpenses = async () => {
+  const loadTransactions = async () => {
     if (!token) return;
+    try {
+      const transactionsData = await getAllUserTransactions({ token });
+      const raw = transactionsData?.transactions ?? [];
+
+      const chartData = raw.map((item) => ({
+        title: item.title,
+        date: item.date,
+        earnings: item.type === "Earnings" ? item.price : null,
+        expense: item.type === "Expenses" ? item.price : null,
+      }));
+
+      const earningCategoriesData = await get_EarningCategories({ token });
+      const expenseCategoriesData = await get_ExpenseCategories({ token });
+
+      setTransactions(chartData);
+      setEarningCategories(earningCategoriesData?.categories ?? []);
+      setExpenseCategories(expenseCategoriesData?.categories ?? []);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
-    loadEarnings();
+    loadTransactions();
   }, [token]);
 
   const closeModal = () => {
@@ -49,45 +79,61 @@ const Home = () => {
     setCategory("");
   };
 
-  const dataChart = [earnings, expenses];
+  const handleAddExpense = async (e) => {
+    e.preventDefault();
+    try {
+      if (!title || title === null || title === "") return;
+      if (!price || price === null || price === "") return;
+      if (!category || category === null || category === "") return;
+
+      await add_Expenses({ title, price, category, token });
+      closeModal();
+      await loadTransactions();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleAddEarning = async (e) => {
+    e.preventDefault();
+    try {
+      if (!title || title === null || title === "") return;
+      if (!price || price === null || price === "") return;
+      if (!category || category === null || category === "") return;
+
+      await add_Earning({ title, price, category, token });
+      closeModal();
+      await loadTransactions();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="main-wrapper px-10 py-20 flex flex-col md:grid gap-5 md:py-10">
       <Card className="w-full col-span-3" title={"Overall Chart Report"}>
         <div className="h-96">
-          {sampleDataChart.length > 0 ? (
+          {transactions.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={dataChart}>
+              <BarChart data={transactions}>
                 <CartesianGrid strokeDasharray={"3 3"} />
-                <YAxis width={"auto"} fontSize={"12px"} fontWeight={800} />
-                <XAxis
-                  width={"auto"}
-                  fontSize={"12px"}
-                  fontWeight={800}
-                  dataKey={"date"}
-                />
-                <Line
-                  type="monotone"
-                  dataKey={"expense"}
-                  strokeWidth={3}
-                  stroke="red"
-                  dot={false}
-                />
-                <Line
-                  type="monotone"
-                  dataKey={"earnings"}
-                  strokeWidth={3}
-                  stroke="lightgreen"
-                  dot={false}
-                />
+                <YAxis hide width={"auto"} fontSize={"12px"} fontWeight={800} />
+                <XAxis hide width={"auto"} fontSize={"12px"} fontWeight={800} />
+                <Bar dataKey={"expense"} fill="red" />
+                <Bar dataKey={"earnings"} fill="#1faa59" />
                 <Legend
                   verticalAlign="top"
                   height={40}
                   wrapperStyle={{ fontSize: 14 }}
                   iconSize={12}
                 />
-                <Tooltip />
-              </LineChart>
+                <Tooltip
+                  labelFormatter={(index) => {
+                    const transaction = transactions[index];
+                    return transaction ? formatDate(transaction.date) : "";
+                  }}
+                />
+              </BarChart>
             </ResponsiveContainer>
           ) : (
             <Placeholder />
@@ -102,6 +148,7 @@ const Home = () => {
           <Button
             title={"- Add Expense"}
             className="bg-error-500 hover:bg-error-700"
+            onClick={() => setActiveModal("expense")}
           />
         }
       >
@@ -140,6 +187,7 @@ const Home = () => {
           <Button
             title={"+ Add Earning"}
             className="bg-success-500 hover:bg-success-700"
+            onClick={() => setActiveModal("earning")}
           />
         }
       >
@@ -171,16 +219,7 @@ const Home = () => {
         )}
       </Card>
 
-      <Card
-        className="w-full"
-        title={"Savings"}
-        button={
-          <Button
-            title={"+ Add Saving"}
-            className="bg-success-500 hover:bg-success-700"
-          />
-        }
-      >
+      <Card className="w-full" title={"Savings"}>
         {sampleData.savings ? (
           <div className="flex flex-col gap-6">
             <h1 className="text-md font-semibold text-gray-500">
@@ -208,6 +247,85 @@ const Home = () => {
           <Placeholder />
         )}
       </Card>
+
+      {/* Unified Add Earning / Add Expense Modal */}
+      <Modal
+        isOpen={activeModal === "earning" || activeModal === "expense"}
+        onClose={closeModal}
+        title={activeModal === "earning" ? "Add Earning" : "Add Expense"}
+      >
+        {(() => {
+          const isEarning = activeModal === "earning";
+          const categories = isEarning ? earningCategories : expenseCategories;
+          const accentColor = isEarning ? "success" : "error";
+          const datalistId = isEarning
+            ? "earning-category-options"
+            : "expense-category-options";
+
+          return (
+            <form
+              onSubmit={isEarning ? handleAddEarning : handleAddExpense}
+              className="grid grid-cols-1 gap-4 md:grid-cols-2"
+            >
+              <div className="flex flex-col gap-1 md:col-span-2">
+                <label className="text-sm font-semibold text-gray-600">
+                  {isEarning ? "Earning Name" : "Expense Name"}
+                </label>
+                <input
+                  type="text"
+                  onChange={(e) => setTitle(e.target.value)}
+                  className={`w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-${accentColor}-500`}
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-sm font-semibold text-gray-600">
+                  Amount
+                </label>
+                <input
+                  type="number"
+                  onChange={(e) => setPrice(e.target.value)}
+                  className={`w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-${accentColor}-500`}
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-sm font-semibold text-gray-600">
+                  Category
+                </label>
+                {categories.length > 0 ? (
+                  <>
+                    <input
+                      type="text"
+                      list={datalistId}
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                      placeholder="Select or type category"
+                      className={`w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-${accentColor}-500`}
+                    />
+                    <datalist id={datalistId}>
+                      {categories.map((item) => (
+                        <option key={item.id} value={item.name} />
+                      ))}
+                    </datalist>
+                  </>
+                ) : (
+                  <input
+                    type="text"
+                    onChange={(e) => setCategory(e.target.value)}
+                    className={`w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-${accentColor}-500`}
+                  />
+                )}
+              </div>
+              <div className="flex flex-col gap-1 md:col-span-2 border-t border-gray-200 pt-2.5 mt-2.5">
+                <Button
+                  title={"Save"}
+                  type="submit"
+                  className={`bg-${accentColor}-500 hover:bg-${accentColor}-700 w-full`}
+                />
+              </div>
+            </form>
+          );
+        })()}
+      </Modal>
     </div>
   );
 };
