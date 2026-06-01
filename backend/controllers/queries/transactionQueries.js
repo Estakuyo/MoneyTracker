@@ -21,7 +21,15 @@ const getTransactionsQuery = async (user_id, type) => {
 };
 
 const getAllTransactionsQuery = async (user_id) => {
-  const query = `SELECT * FROM users WHERE user_id = ?`;
+  const query = `SELECT
+                    t.id,
+                    t.title,
+                    t.price,
+                    t.date,
+                    c.type
+                  FROM transactions t
+                  INNER JOIN categories c ON t.category_id = c.id
+                  WHERE t.user_id = ?`;
   const [rows] = await db.execute(query, [user_id]);
   return rows;
 };
