@@ -20,6 +20,12 @@ const getTransactionsQuery = async (user_id, type) => {
   return rows;
 };
 
+const getAllTransactionsQuery = async (user_id) => {
+  const query = `SELECT * FROM users WHERE user_id = ?`;
+  const [rows] = await db.execute(query, [user_id]);
+  return rows;
+};
+
 const addTransactionQuery = async (
   title,
   price,
@@ -54,6 +60,7 @@ const deleteTransactionQuery = async (id, user_id) => {
 
 module.exports = {
   getTransactionsQuery,
+  getAllTransactionsQuery,
   addTransactionQuery,
   updateTransactionQuery,
   deleteTransactionQuery,

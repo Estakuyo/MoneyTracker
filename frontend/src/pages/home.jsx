@@ -1,3 +1,6 @@
+import { useState, useContext, useEffect } from "react";
+import { UserContext } from "../context/authContext";
+
 // Chart
 import {
   LineChart,
@@ -16,61 +19,37 @@ import Button from "../components/button";
 import Placeholder from "../components/placeholder";
 
 const Home = () => {
-  const sampleDataChart = [
-    // {
-    //   date: "11/06/2003",
-    //   expense: 200,
-    //   earnings: 600,
-    // },
-    // {
-    //   date: "11/07/2003",
-    //   expense: 100,
-    //   earnings: 300,
-    // },
-    // {
-    //   date: "11/08/2003",
-    //   expense: 900,
-    //   earnings: 1500,
-    // },
-    // {
-    //   date: "11/09/2003",
-    //   expense: 1150,
-    //   earnings: 150,
-    // },
-    // {
-    //   date: "11/10/2003",
-    //   expense: 1550,
-    //   earnings: 100,
-    // },
-    // {
-    //   date: "11/11/2003",
-    //   expense: 900,
-    //   earnings: 880,
-    // },
-    // {
-    //   date: "11/12/2003",
-    //   expense: 100,
-    //   earnings: 800,
-    // },
-  ];
+  const sampleDataChart = [];
+  const sampleData = {};
 
-  const sampleData = {
-    // expenses: {
-    //   total: "₱1,800",
-    //   thisMonth: "+₱500",
-    //   addedCount: 5,
-    // },
-    // earnings: {
-    //   total: "₱1,800",
-    //   thisMonth: "+₱500",
-    //   addedCount: 5,
-    // },
-    // savings: {
-    //   total: "₱1,800",
-    //   thisMonth: "+₱500",
-    //   addedCount: 5,
-    // },
+  const [activeModal, setActiveModal] = useState(null);
+
+  // Outputs
+  const [transactions, setTransactions] = useState([]);
+
+  // Inputs
+  const [title, setTitle] = useState("");
+  const [amount, setAmount] = useState();
+  const [category, setCategory] = useState("");
+
+  const { token } = useContext(UserContext);
+
+  const loadExpenses = async () => {
+    if (!token) return;
   };
+
+  useEffect(() => {
+    loadEarnings();
+  }, [token]);
+
+  const closeModal = () => {
+    setActiveModal(null);
+    setTitle("");
+    setPrice(null);
+    setCategory("");
+  };
+
+  const dataChart = [earnings, expenses];
 
   return (
     <div className="main-wrapper px-10 py-20 flex flex-col md:grid gap-5 md:py-10">
@@ -78,7 +57,7 @@ const Home = () => {
         <div className="h-96">
           {sampleDataChart.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={sampleDataChart}>
+              <LineChart data={dataChart}>
                 <CartesianGrid strokeDasharray={"3 3"} />
                 <YAxis width={"auto"} fontSize={"12px"} fontWeight={800} />
                 <XAxis

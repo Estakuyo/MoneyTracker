@@ -1,5 +1,6 @@
 const {
   getTransactionsQuery,
+  getAllTransactionsQuery,
   addTransactionQuery,
   updateTransactionQuery,
   deleteTransactionQuery,
@@ -7,6 +8,22 @@ const {
 
 const { findCategory, addCategory } = require("./queries/categoryQueries");
 const { trackSavings } = require("./savingsController");
+
+const getAllTransactions = async (req, res) => {
+  try {
+    const id = req.user.id;
+
+    const transactions = await getAllTransactionsQuery(id);
+
+    if (transactions.length === 0) {
+      return res.status(200).json({ message: "No transactions yet." });
+    }
+
+    return res.status(200).json({ transactions });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 const getTransactions = async (req, res) => {
   try {
@@ -130,6 +147,7 @@ const deleteTransaction = async (req, res) => {
 };
 
 module.exports = {
+  getAllTransactions,
   getTransactions,
   getTransactionTotalAmount,
   addTransaction,
