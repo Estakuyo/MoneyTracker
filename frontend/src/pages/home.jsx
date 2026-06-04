@@ -20,9 +20,18 @@ import Placeholder from "../components/placeholder";
 import Modal from "../components/modal";
 
 import { getAllUserTransactions } from "../services/transactions";
-import { add_Expenses, get_ExpenseCategories } from "../services/expenses";
-import { add_Earning, get_EarningCategories } from "../services/earnings";
-import { formatDate } from "../utils/formatters";
+import {
+  add_Expenses,
+  get_ExpenseCategories,
+  getExpensesTotal,
+} from "../services/expenses";
+import {
+  add_Earning,
+  get_EarningCategories,
+  getEarningsTotal,
+} from "../services/earnings";
+import { getUserSavings, getUserGoals, addUserGoal } from "../services/savings";
+import { formatDate, formatCurrency } from "../utils/formatters";
 
 const Home = () => {
   const sampleDataChart = [];
@@ -34,8 +43,11 @@ const Home = () => {
   const [transactions, setTransactions] = useState([]);
   const [earningsTotal, setEarningsTotal] = useState([]);
   const [expensesTotal, setExpensesTotal] = useState([]);
+  const [savingsTotal, setSavingsTotal] = useState([]);
+  const [goalsTotal, setGoalsTotal] = useState([]);
   const [earningCategories, setEarningCategories] = useState([]);
   const [expenseCategories, setExpenseCategories] = useState([]);
+  const [rawTransactions, setRawTransactions] = useState([]);
 
   // Inputs
   const [title, setTitle] = useState("");
@@ -57,10 +69,19 @@ const Home = () => {
         expense: item.type === "Expenses" ? item.price : null,
       }));
 
+      const earningsTotalData = await getEarningsTotal({ token });
+      const expensesTotalData = await getExpensesTotal({ token });
+      const savingsTotalData = await getUserSavings({ token });
+      const goalsTotalData = await getUserGoals({ token });
       const earningCategoriesData = await get_EarningCategories({ token });
       const expenseCategoriesData = await get_ExpenseCategories({ token });
 
       setTransactions(chartData);
+      setRawTransactions(raw);
+      setEarningsTotal(earningsTotalData?.transactionsTotal[0] ?? []);
+      setExpensesTotal(expensesTotalData?.transactionsTotal[0] ?? []);
+      setSavingsTotal(savingsTotalData.savings);
+      setGoalsTotal(goalsTotalData?.goals);
       setEarningCategories(earningCategoriesData?.categories ?? []);
       setExpenseCategories(expenseCategoriesData?.categories ?? []);
     } catch (error) {
@@ -78,6 +99,22 @@ const Home = () => {
     setPrice(null);
     setCategory("");
   };
+
+  // Helpers
+  const latestEarning = rawTransactions
+    .filter((t) => t.type === "Earnings")
+    .sort((a, b) => b.id - a.id)[0];
+  const latestExpense = rawTransactions
+    .filter((t) => t.type === "Expenses")
+    .sort((a, b) => b.id - a.id)[0];
+  const latestGoal = goalsTotal.sort((a, b) => b.id - a.id)[0];
+
+  const totalEarningsCount = rawTransactions.filter(
+    (t) => t.type === "Earnings",
+  ).length;
+  const totalExpensesCount = rawTransactions.filter(
+    (t) => t.type === "Expenses",
+  ).length;
 
   const handleAddExpense = async (e) => {
     e.preventDefault();
@@ -102,6 +139,24 @@ const Home = () => {
       if (!category || category === null || category === "") return;
 
       await add_Earning({ title, price, category, token });
+      closeModal();
+      await loadTransactions();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleAddGoal = async (e) => {
+    e.preventDefault();
+    try {
+      if (!title || title === null || title === "") {
+        return;
+      }
+      if (!price || price === null || price === "") {
+        return;
+      }
+
+      await addUserGoal({ title, amount: price, token });
       closeModal();
       await loadTransactions();
     } catch (error) {
@@ -152,25 +207,23 @@ const Home = () => {
           />
         }
       >
-        {sampleData.expenses ? (
+        {expensesTotal ? (
           <div className="flex flex-col gap-6">
             <h1 className="text-md font-semibold text-gray-500">
               Total Overall Expenses
             </h1>
             <h1 className="text-5xl text-error-600 font-bold">
-              {sampleData.expenses.total}
+              {formatCurrency(expensesTotal.total)}
             </h1>
             <div className="flex justify-between">
               <div className="flex flex-col">
-                <p className="font-bold text-gray-800">
-                  {sampleData.expenses.thisMonth}
+                <p className="font-bold text-error-800">
+                  {formatCurrency(latestExpense?.price) || 0}
                 </p>
-                <p className="font-semibold text-gray-500">This Month</p>
+                <p className="font-semibold text-gray-500">Recent Expense</p>
               </div>
               <div className="flex gap-2 items-end">
-                <p className="font-bold text-gray-800">
-                  {sampleData.expenses.addedCount}
-                </p>
+                <p className="font-bold text-error-800">{totalExpensesCount}</p>
                 <p className="font-semibold text-gray-500">Expenses Added</p>
               </div>
             </div>
@@ -191,24 +244,24 @@ const Home = () => {
           />
         }
       >
-        {sampleData.earnings ? (
+        {earningsTotal ? (
           <div className="flex flex-col gap-6">
             <h1 className="text-md font-semibold text-gray-500">
               Total Overall Earnings
             </h1>
             <h1 className="text-5xl text-success-600 font-bold">
-              {sampleData.earnings.total}
+              {formatCurrency(earningsTotal.total)}
             </h1>
             <div className="flex justify-between">
               <div className="flex flex-col">
-                <p className="font-bold text-gray-800">
-                  {sampleData.earnings.thisMonth}
+                <p className="font-bold text-success-800">
+                  {formatCurrency(latestEarning?.price) || 0}
                 </p>
-                <p className="font-semibold text-gray-500">This Month</p>
+                <p className="font-semibold text-gray-500">Recent Earning</p>
               </div>
               <div className="flex gap-2 items-end">
-                <p className="font-bold text-gray-800">
-                  {sampleData.earnings.addedCount}
+                <p className="font-bold text-success-800">
+                  {totalExpensesCount}
                 </p>
                 <p className="font-semibold text-gray-500">Earnings Added</p>
               </div>
@@ -219,27 +272,37 @@ const Home = () => {
         )}
       </Card>
 
-      <Card className="w-full" title={"Savings"}>
-        {sampleData.savings ? (
+      <Card
+        className="w-full"
+        title={"Savings"}
+        button={
+          <Button
+            title={"Add Goal"}
+            className="bg-success-500 hover:bg-success-700"
+            onClick={() => setActiveModal("goal")}
+          />
+        }
+      >
+        {savingsTotal ? (
           <div className="flex flex-col gap-6">
             <h1 className="text-md font-semibold text-gray-500">
               Total Overall Savings
             </h1>
             <h1 className="text-5xl text-success-600 font-bold">
-              {sampleData.savings.total}
+              {formatCurrency(savingsTotal.total)}
             </h1>
             <div className="flex justify-between">
               <div className="flex flex-col">
-                <p className="font-bold text-gray-800">
-                  {sampleData.savings.thisMonth}
+                <p className="font-bold text-success-800">
+                  {latestGoal?.title || "None"}
                 </p>
-                <p className="font-semibold text-gray-500">This Month</p>
+                <p className="font-semibold text-gray-500">Recent Goal</p>
               </div>
               <div className="flex gap-2 items-end">
-                <p className="font-bold text-gray-800">
-                  {sampleData.savings.addedCount}
+                <p className="font-bold text-success-800">
+                  {goalsTotal.length}
                 </p>
-                <p className="font-semibold text-gray-500">Savings Added</p>
+                <p className="font-semibold text-gray-500">Goals Added</p>
               </div>
             </div>
           </div>
@@ -325,6 +388,39 @@ const Home = () => {
             </form>
           );
         })()}
+      </Modal>
+
+      {/* Add Goal Modal */}
+      <Modal
+        isOpen={activeModal === "goal"}
+        onClose={closeModal}
+        title={"Add Goal"}
+      >
+        <form onSubmit={handleAddGoal} className="grid grid-cols-2 gap-5">
+          <div>
+            <label className="text-sm font-semibold text-gray-600">Title</label>
+            <input
+              type="text"
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-primary-500"
+            />
+          </div>
+          <div>
+            <label className="text-sm font-semibold text-gray-600">
+              Amount
+            </label>
+            <input
+              type="number"
+              onChange={(e) => setPrice(e.target.value)}
+              className="w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-primary-500"
+            />
+          </div>
+          <Button
+            title={"Submit"}
+            className="bg-success-500 hover:bg-success-700 w-full col-span-2"
+            type="submit"
+          />
+        </form>
       </Modal>
     </div>
   );
