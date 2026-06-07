@@ -9,7 +9,7 @@ CREATE TABLE `Categories`(
     `user_id` INT UNSIGNED NOT NULL,
     `name` VARCHAR(255) NOT NULL,
     `type` VARCHAR(255) NOT NULL,
-    FOREIGN KEY (`user_id`) REFERENCES `Users`(`id`)
+    FOREIGN KEY (`user_id`) REFERENCES `Users`(`id`) ON DELETE CASCADE
 );
 CREATE TABLE `Transactions`(
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -19,7 +19,7 @@ CREATE TABLE `Transactions`(
     `category_id` INT UNSIGNED NOT NULL,
     `user_id` INT UNSIGNED NOT NULL,
     FOREIGN KEY (`category_id`) REFERENCES `Categories`(`id`),
-    FOREIGN KEY (`user_id`) REFERENCES `Users`(`id`)
+    FOREIGN KEY (`user_id`) REFERENCES `Users`(`id`) ON DELETE CASCADE
 );
 CREATE TABLE `Goals`(
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -34,7 +34,7 @@ CREATE TABLE `Savings`(
     `amount` INT NOT NULL,
     `date` DATE NOT NULL,
     `user_id` INT UNSIGNED NOT NULL,
-    FOREIGN KEY (`user_id`) REFERENCES `Users`(`id`)
+    FOREIGN KEY (`user_id`) REFERENCES `Users`(`id`) ON DELETE CASCADE
 );
 ---@block
 SHOW TABLES;

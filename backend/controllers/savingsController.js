@@ -23,7 +23,9 @@ const calculateSavingsTotal = async (userId) => {
     expensesTotal += price;
   }
 
-  const total = Math.abs(earningsTotal - expensesTotal);
+  let total = earningsTotal - expensesTotal;
+
+  if (total <= 0) total = 0;
 
   return { total, earningsTotal, expensesTotal };
 };
