@@ -7,7 +7,7 @@ const {
 } = require("./queries/transactionQueries");
 
 const { findCategory, addCategory } = require("./queries/categoryQueries");
-const { trackSavings } = require("./savingsController");
+const { trackSavings, checkAndUpdateGoals } = require("./savingsController");
 
 const getAllTransactions = async (req, res) => {
   try {
@@ -98,10 +98,12 @@ const addTransaction = async (req, res) => {
     );
 
     const savings = await trackSavings(req.user);
+    const goals = await checkAndUpdateGoals(id, savings.total);
 
-    res.status(200).json({
+    return res.status(200).json({
       transactions,
       savings,
+      goals,
       message: "Transaction added successfully.",
     });
   } catch (error) {

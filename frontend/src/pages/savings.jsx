@@ -117,6 +117,7 @@ const Savings = () => {
                   goal={goal.title}
                   value={savings.total}
                   max={goal.amount}
+                  status={goal.status}
                 />
               </div>
             </div>
@@ -172,6 +173,7 @@ const Savings = () => {
                     goal={goal.title}
                     value={savings.total}
                     max={goal.amount}
+                    status={goal.status}
                   />
                 </div>
               </div>

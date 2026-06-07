@@ -5,6 +5,7 @@ const {
   getAllSavingsQuery,
 } = require("./queries/savingsQueries");
 const { getTransactionsQuery } = require("./queries/transactionQueries");
+const { updateGoalStatusQuery } = require("./queries/savingsQueries");
 
 const calculateSavingsTotal = async (userId) => {
   const earningTransactions = await getTransactionsQuery(userId, "Earnings");
@@ -95,10 +96,21 @@ const getGoals = async (req, res) => {
   }
 };
 
+const checkAndUpdateGoals = async (userId, savingsTotal) => {
+  const goals = await getGoalsQuery(userId);
+
+  const updatePromises = goals
+    .filter((goal) => !goal.status && savingsTotal >= goal.amount)
+    .map((goal) => updateGoalStatusQuery(goal.id));
+
+  await Promise.all(updatePromises);
+};
+
 module.exports = {
   getTotalSavings,
   getAllSavings,
   trackSavings,
   addGoals,
   getGoals,
+  checkAndUpdateGoals,
 };

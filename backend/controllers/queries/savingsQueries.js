@@ -24,9 +24,16 @@ const getAllSavingsQuery = async (user_id) => {
   return rows;
 };
 
+const updateGoalStatusQuery = async (goal_id) => {
+  const query = `UPDATE goals SET status = TRUE WHERE id = ?`;
+  const [result] = await db.execute(query, [goal_id]);
+  return result;
+};
+
 module.exports = {
   addGoalsQuery,
   getGoalsQuery,
   addSavingsQuery,
   getAllSavingsQuery,
+  updateGoalStatusQuery,
 };
