@@ -166,9 +166,12 @@ const Home = () => {
 
   return (
     <div className="main-wrapper px-10 py-20 flex flex-col md:grid gap-5 md:py-10">
-      <Card className="w-full col-span-3" title={"Overall Chart Report"}>
+      <Card
+        className="w-full col-span-3 animate-slide-up"
+        title={"Overall Chart Report"}
+      >
         <div className="h-96">
-          {transactions.length > 0 ? (
+          {transactions.length > 5 ? (
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={transactions}>
                 <CartesianGrid strokeDasharray={"3 3"} />
@@ -191,13 +194,16 @@ const Home = () => {
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <Placeholder />
+            <Placeholder
+              title="Not Enough Data Yet"
+              description="Add 5 transactions to activate chart"
+            />
           )}
         </div>
       </Card>
 
       <Card
-        className="w-full"
+        className="w-full animate-slide-up-delay-1"
         title={"Expenses"}
         button={
           <Button
@@ -234,7 +240,7 @@ const Home = () => {
       </Card>
 
       <Card
-        className="w-full"
+        className="w-full animate-slide-up-delay-1"
         title={"Earnings"}
         button={
           <Button
@@ -273,7 +279,7 @@ const Home = () => {
       </Card>
 
       <Card
-        className="w-full"
+        className="w-full animate-slide-up-delay-1"
         title={"Savings"}
         button={
           <Button

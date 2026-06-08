@@ -97,7 +97,7 @@ const Earnings = () => {
   return (
     <div className="main-wrapper px-10 py-20 flex flex-col md:grid gap-5 md:py-10">
       <Card
-        className="w-full"
+        className="w-full animate-slide-up"
         title={"Total Earnings"}
         button={
           <Button
@@ -124,7 +124,7 @@ const Earnings = () => {
       </Card>
 
       <Card
-        className="w-full"
+        className="w-full animate-slide-up"
         title={"Top Category"}
         button={
           <Button
@@ -164,7 +164,7 @@ const Earnings = () => {
       </Card>
 
       <Card
-        className="w-full"
+        className="w-full animate-slide-up"
         title={"Top Earnings"}
         button={
           <Button
@@ -208,7 +208,10 @@ const Earnings = () => {
         </div>
       </Card>
 
-      <Card className="w-full col-span-3" title={"Earnings Chart"}>
+      <Card
+        className="w-full col-span-3 animate-slide-up-delay-1"
+        title={"Earnings Chart"}
+      >
         <div className="w-full" style={{ height: 300 }}>
           {earnings.length >= 10 ? (
             <ResponsiveContainer width="100%" height="100%">

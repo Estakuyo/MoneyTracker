@@ -81,7 +81,7 @@ const Savings = () => {
 
   return (
     <div className="main-wrapper px-10 py-20 flex flex-col md:grid gap-5 md:py-10">
-      <Card className="w-full" title={"Total Savings"}>
+      <Card className="w-full animate-slide-up" title={"Total Savings"}>
         {savings ? (
           <div className="flex flex-col justify-center items-center py-8 gap-7 text-center">
             <div className="flex flex-col gap-1">
@@ -99,7 +99,7 @@ const Savings = () => {
       </Card>
 
       <Card
-        className="w-full"
+        className="w-full animate-slide-up"
         title={"Savings Goals"}
         button={
           <Button
@@ -124,13 +124,16 @@ const Savings = () => {
           ))
         ) : (
           <Placeholder
-            title="No savings yet"
+            title="No goals yet"
             description="Add your first goal."
           />
         )}
       </Card>
 
-      <Card className="w-full col-span-2" title={"Savings History"}>
+      <Card
+        className="w-full col-span-2 animate-slide-up-delay-1"
+        title={"Savings History"}
+      >
         <div className="w-full" style={{ height: 300 }}>
           {allSavings.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
