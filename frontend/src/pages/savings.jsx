@@ -85,7 +85,7 @@ const Savings = () => {
         {savings ? (
           <div className="flex flex-col justify-center items-center py-8 gap-7 text-center">
             <div className="flex flex-col gap-1">
-              <p className="text-md font-semibold text-gray-500">
+              <p className="text-md font-semibold text-secondary-500">
                 Overall Savings
               </p>
               <h1 className="text-5xl font-bold text-success-500">
@@ -204,21 +204,21 @@ const Savings = () => {
       >
         <form onSubmit={handleAddGoal} className="grid grid-cols-2 gap-5">
           <div>
-            <label className="text-sm font-semibold text-gray-600">Title</label>
+            <label className="text-sm font-semibold text-secondary-600">Title</label>
             <input
               type="text"
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-primary-500"
+              className="w-full rounded-md border border-secondary-300 bg-secondary-50 p-2.5 text-secondary-800 outline-none focus:border-primary-500"
             />
           </div>
           <div>
-            <label className="text-sm font-semibold text-gray-600">
+            <label className="text-sm font-semibold text-secondary-600">
               Amount
             </label>
             <input
               type="number"
               onChange={(e) => setAmount(e.target.value)}
-              className="w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-primary-500"
+              className="w-full rounded-md border border-secondary-300 bg-secondary-50 p-2.5 text-secondary-800 outline-none focus:border-primary-500"
             />
           </div>
           <Button

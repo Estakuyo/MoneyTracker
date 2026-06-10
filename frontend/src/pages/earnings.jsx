@@ -110,7 +110,7 @@ const Earnings = () => {
         {earningsTotal.total ? (
           <div className="flex flex-col justify-center items-center py-8 gap-7 text-center">
             <div className="flex flex-col gap-1">
-              <p className="text-base font-semibold text-gray-500">
+              <p className="text-base font-semibold text-secondary-500">
                 Total Earnings
               </p>
               <h1 className="text-5xl font-bold text-success-500">
@@ -139,10 +139,10 @@ const Earnings = () => {
             categoryTotal.slice(0, 3).map((category, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between gap-4 py-4 border-b last:border-b-0"
+                className="flex items-center justify-between gap-4 py-4 border-b border-secondary-500 last:border-b-0"
               >
                 <div>
-                  <p className="font-medium text-lg text-gray-500">
+                  <p className="font-medium text-lg text-secondary-500">
                     {category.category_name}
                   </p>
                 </div>
@@ -150,7 +150,7 @@ const Earnings = () => {
                   <p className="font-bold text-success-500">
                     {formatCurrency(category.total)}
                   </p>
-                  <p className="text-gray-500 text-sm">Total</p>
+                  <p className="text-secondary-500 text-sm">Total</p>
                 </div>
               </div>
             ))
@@ -179,13 +179,13 @@ const Earnings = () => {
             earnings.slice(0, 3).map((earning, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between gap-4 py-3 border-b last:border-b-0"
+                className="flex items-center justify-between gap-4 py-3 border-b border-secondary-500 last:border-b-0"
               >
                 <div>
-                  <p className="font-medium text-lg text-gray-500">
+                  <p className="font-medium text-lg text-secondary-500">
                     {earning.title}
                   </p>
-                  <p className="mt-1 inline-block text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded">
+                  <p className="mt-1 inline-block text-xs bg-primary-100 text-secondary-500 px-2 py-0.5 rounded">
                     {earning.category_name}
                   </p>
                 </div>
@@ -193,7 +193,7 @@ const Earnings = () => {
                   <p className="font-bold text-success-500">
                     {formatCurrency(earning.price)}
                   </p>
-                  <p className="text-gray-500 text-sm">
+                  <p className="text-secondary-500 text-sm">
                     {formatDate(earning.date)}
                   </p>
                 </div>
@@ -253,7 +253,7 @@ const Earnings = () => {
           {categoryTotal.length > 0 ? (
             <div>
               <div className="text-center mb-2">
-                <p className="text-base text-gray-500">
+                <p className="text-base text-secondary-500">
                   {categoryTotal.length} categories
                 </p>
               </div>
@@ -261,10 +261,10 @@ const Earnings = () => {
                 {categoryTotal.map((category, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between gap-4 py-4 border-b last:border-b-0"
+                    className="flex items-center justify-between gap-4 py-4 border-b border-secondary-500 last:border-b-0"
                   >
                     <div>
-                      <p className="font-medium text-lg text-gray-500">
+                      <p className="font-medium text-lg text-secondary-500">
                         {category.category_name}
                       </p>
                     </div>
@@ -272,7 +272,7 @@ const Earnings = () => {
                       <p className="font-bold text-success-500">
                         {formatCurrency(category.total)}
                       </p>
-                      <p className="text-gray-500 text-sm">Total</p>
+                      <p className="text-secondary-500 text-sm">Total</p>
                     </div>
                   </div>
                 ))}
@@ -297,7 +297,7 @@ const Earnings = () => {
           {earnings.length > 0 ? (
             <div>
               <div className="text-center mb-2">
-                <p className="text-base text-gray-500">
+                <p className="text-base text-secondary-500">
                   {earnings.length} earnings
                 </p>
               </div>
@@ -305,13 +305,13 @@ const Earnings = () => {
                 {earnings.map((earning, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between gap-4 py-3 border-b last:border-b-0"
+                    className="flex items-center justify-between gap-4 py-3 border-b border-secondary-500 last:border-b-0"
                   >
                     <div>
-                      <p className="font-medium text-lg text-gray-500">
+                      <p className="font-medium text-lg text-secondary-500">
                         {earning.title}
                       </p>
-                      <p className="mt-1 inline-block text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded">
+                      <p className="mt-1 inline-block text-xs bg-primary-100 text-secondary-500 px-2 py-0.5 rounded">
                         {earning.category_name}
                       </p>
                     </div>
@@ -319,7 +319,7 @@ const Earnings = () => {
                       <p className="font-bold text-success-500">
                         {formatCurrency(earning.price)}
                       </p>
-                      <p className="text-gray-500 text-sm">
+                      <p className="text-secondary-500 text-sm">
                         {formatDate(earning.date)}
                       </p>
                     </div>
@@ -347,27 +347,27 @@ const Earnings = () => {
           className="grid grid-cols-1 gap-4 md:grid-cols-2"
         >
           <div className="flex flex-col gap-1 md:col-span-2">
-            <label className="text-sm font-semibold text-gray-600">
+            <label className="text-sm font-semibold text-secondary-600">
               Earning Name
             </label>
             <input
               type="text"
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-success-500"
+              className="w-full rounded-md border border-secondary-300 bg-secondary-50 p-2.5 text-secondary-800 outline-none focus:border-success-500"
             />
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-semibold text-gray-600">
+            <label className="text-sm font-semibold text-secondary-600">
               Amount
             </label>
             <input
               type="number"
               onChange={(e) => setPrice(e.target.value)}
-              className="w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-success-500"
+              className="w-full rounded-md border border-secondary-300 bg-secondary-50 p-2.5 text-secondary-800 outline-none focus:border-success-500"
             />
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-semibold text-gray-600">
+            <label className="text-sm font-semibold text-secondary-600">
               Category
             </label>
             {categories.length > 0 ? (
@@ -378,7 +378,7 @@ const Earnings = () => {
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                   placeholder="Select or type category"
-                  className="w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-success-500"
+                  className="w-full rounded-md border border-secondary-300 bg-secondary-50 p-2.5 text-secondary-800 outline-none focus:border-success-500"
                 />
                 <datalist id="earning-category-options">
                   {categories.map((item) => (
@@ -390,11 +390,11 @@ const Earnings = () => {
               <input
                 type="text"
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-success-500"
+                className="w-full rounded-md border border-secondary-300 bg-secondary-50 p-2.5 text-secondary-800 outline-none focus:border-success-500"
               />
             )}
           </div>
-          <div className="flex flex-col gap-1 md:col-span-2 border-t border-gray-200 pt-2.5 mt-2.5">
+          <div className="flex flex-col gap-1 md:col-span-2 border-t border-secondary-200 pt-2.5 mt-2.5">
             <Button
               title={"Save"}
               type="submit"

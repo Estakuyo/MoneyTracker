@@ -215,7 +215,7 @@ const Home = () => {
       >
         {expensesTotal ? (
           <div className="flex flex-col gap-6">
-            <h1 className="text-md font-semibold text-gray-500">
+            <h1 className="text-md font-semibold text-secondary-500">
               Total Overall Expenses
             </h1>
             <h1 className="text-5xl text-error-600 font-bold">
@@ -226,11 +226,11 @@ const Home = () => {
                 <p className="font-bold text-error-800">
                   {formatCurrency(latestExpense?.price) || 0}
                 </p>
-                <p className="font-semibold text-gray-500">Recent Expense</p>
+                <p className="font-semibold text-secondary-500">Recent Expense</p>
               </div>
               <div className="flex gap-2 items-end">
                 <p className="font-bold text-error-800">{totalExpensesCount}</p>
-                <p className="font-semibold text-gray-500">Expenses Added</p>
+                <p className="font-semibold text-secondary-500">Expenses Added</p>
               </div>
             </div>
           </div>
@@ -252,7 +252,7 @@ const Home = () => {
       >
         {earningsTotal ? (
           <div className="flex flex-col gap-6">
-            <h1 className="text-md font-semibold text-gray-500">
+            <h1 className="text-md font-semibold text-secondary-500">
               Total Overall Earnings
             </h1>
             <h1 className="text-5xl text-success-600 font-bold">
@@ -263,13 +263,13 @@ const Home = () => {
                 <p className="font-bold text-success-800">
                   {formatCurrency(latestEarning?.price) || 0}
                 </p>
-                <p className="font-semibold text-gray-500">Recent Earning</p>
+                <p className="font-semibold text-secondary-500">Recent Earning</p>
               </div>
               <div className="flex gap-2 items-end">
                 <p className="font-bold text-success-800">
                   {totalExpensesCount}
                 </p>
-                <p className="font-semibold text-gray-500">Earnings Added</p>
+                <p className="font-semibold text-secondary-500">Earnings Added</p>
               </div>
             </div>
           </div>
@@ -291,7 +291,7 @@ const Home = () => {
       >
         {savingsTotal ? (
           <div className="flex flex-col gap-6">
-            <h1 className="text-md font-semibold text-gray-500">
+            <h1 className="text-md font-semibold text-secondary-500">
               Total Overall Savings
             </h1>
             <h1 className="text-5xl text-success-600 font-bold">
@@ -302,13 +302,13 @@ const Home = () => {
                 <p className="font-bold text-success-800">
                   {latestGoal?.title || "None"}
                 </p>
-                <p className="font-semibold text-gray-500">Recent Goal</p>
+                <p className="font-semibold text-secondary-500">Recent Goal</p>
               </div>
               <div className="flex gap-2 items-end">
                 <p className="font-bold text-success-800">
                   {goalsTotal.length}
                 </p>
-                <p className="font-semibold text-gray-500">Goals Added</p>
+                <p className="font-semibold text-secondary-500">Goals Added</p>
               </div>
             </div>
           </div>
@@ -337,27 +337,27 @@ const Home = () => {
               className="grid grid-cols-1 gap-4 md:grid-cols-2"
             >
               <div className="flex flex-col gap-1 md:col-span-2">
-                <label className="text-sm font-semibold text-gray-600">
+                <label className="text-sm font-semibold text-secondary-600">
                   {isEarning ? "Earning Name" : "Expense Name"}
                 </label>
                 <input
                   type="text"
                   onChange={(e) => setTitle(e.target.value)}
-                  className={`w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-${accentColor}-500`}
+                  className={`w-full rounded-md border border-secondary-300 bg-secondary-50 p-2.5 text-secondary-800 outline-none focus:border-${accentColor}-500`}
                 />
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-sm font-semibold text-gray-600">
+                <label className="text-sm font-semibold text-secondary-600">
                   Amount
                 </label>
                 <input
                   type="number"
                   onChange={(e) => setPrice(e.target.value)}
-                  className={`w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-${accentColor}-500`}
+                  className={`w-full rounded-md border border-secondary-300 bg-secondary-50 p-2.5 text-secondary-800 outline-none focus:border-${accentColor}-500`}
                 />
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-sm font-semibold text-gray-600">
+                <label className="text-sm font-semibold text-secondary-600">
                   Category
                 </label>
                 {categories.length > 0 ? (
@@ -368,7 +368,7 @@ const Home = () => {
                       value={category}
                       onChange={(e) => setCategory(e.target.value)}
                       placeholder="Select or type category"
-                      className={`w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-${accentColor}-500`}
+                      className={`w-full rounded-md border border-secondary-300 bg-secondary-50 p-2.5 text-secondary-800 outline-none focus:border-${accentColor}-500`}
                     />
                     <datalist id={datalistId}>
                       {categories.map((item) => (
@@ -380,11 +380,11 @@ const Home = () => {
                   <input
                     type="text"
                     onChange={(e) => setCategory(e.target.value)}
-                    className={`w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-${accentColor}-500`}
+                    className={`w-full rounded-md border border-secondary-300 bg-secondary-50 p-2.5 text-secondary-800 outline-none focus:border-${accentColor}-500`}
                   />
                 )}
               </div>
-              <div className="flex flex-col gap-1 md:col-span-2 border-t border-gray-200 pt-2.5 mt-2.5">
+              <div className="flex flex-col gap-1 md:col-span-2 border-t border-secondary-200 pt-2.5 mt-2.5">
                 <Button
                   title={"Save"}
                   type="submit"
@@ -404,21 +404,21 @@ const Home = () => {
       >
         <form onSubmit={handleAddGoal} className="grid grid-cols-2 gap-5">
           <div>
-            <label className="text-sm font-semibold text-gray-600">Title</label>
+            <label className="text-sm font-semibold text-secondary-600">Title</label>
             <input
               type="text"
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-primary-500"
+              className="w-full rounded-md border border-secondary-300 bg-secondary-50 p-2.5 text-secondary-800 outline-none focus:border-primary-500"
             />
           </div>
           <div>
-            <label className="text-sm font-semibold text-gray-600">
+            <label className="text-sm font-semibold text-secondary-600">
               Amount
             </label>
             <input
               type="number"
               onChange={(e) => setPrice(e.target.value)}
-              className="w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-gray-800 outline-none focus:border-primary-500"
+              className="w-full rounded-md border border-secondary-300 bg-secondary-50 p-2.5 text-secondary-800 outline-none focus:border-primary-500"
             />
           </div>
           <Button
