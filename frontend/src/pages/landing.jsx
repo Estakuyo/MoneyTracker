@@ -5,14 +5,22 @@ import { ArrowRight } from "lucide-react";
 import { Dot } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { UserContext } from "../context/authContext";
+import { sendContactMessage } from "../services/contact";
 
 import Button from "../components/button";
 
 const Landing = () => {
   const { token } = useContext(UserContext);
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [contactFeedback, setContactFeedback] = useState({
+    type: "",
+    text: "",
+  });
 
   const handleRedirect = () => {
     if (token) {
@@ -32,6 +40,42 @@ const Landing = () => {
       behavior: "smooth",
       block: "center",
     });
+  };
+
+  const handleContactSubmit = async (event) => {
+    event.preventDefault();
+
+    if (!email.trim() || !message.trim()) {
+      setContactFeedback({
+        type: "error",
+        text: "Please provide your email and message.",
+      });
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      setContactFeedback({ type: "", text: "" });
+
+      const data = await sendContactMessage({
+        email: email.trim(),
+        message: message.trim(),
+      });
+
+      setContactFeedback({
+        type: "success",
+        text: data?.message || "Message sent successfully.",
+      });
+      setEmail("");
+      setMessage("");
+    } catch (error) {
+      setContactFeedback({
+        type: "error",
+        text: error.message || "Failed to send message.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -140,7 +184,10 @@ const Landing = () => {
           Have feedback or questions? Send a message and I will get back to you.
         </p>
 
-        <form className="w-full max-w-3xl mt-3 flex flex-col gap-4 text-left">
+        <form
+          onSubmit={handleContactSubmit}
+          className="w-full max-w-3xl mt-3 flex flex-col gap-4 text-left"
+        >
           <div className="flex flex-col gap-2">
             <label htmlFor="contact-email" className="text-base sm:text-lg">
               Email
@@ -149,6 +196,8 @@ const Landing = () => {
               id="contact-email"
               type="email"
               placeholder="you@example.com"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
               className="w-full rounded-xl border border-white/25 bg-black/30 px-4 py-3 text-base sm:text-lg text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-accent-500"
             />
           </div>
@@ -161,13 +210,29 @@ const Landing = () => {
               id="contact-body"
               rows={6}
               placeholder="Write your message here..."
+              value={message}
+              onChange={(event) => setMessage(event.target.value)}
               className="w-full rounded-xl border border-white/25 bg-black/30 px-4 py-3 text-base sm:text-lg text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-accent-500 resize-y"
             />
           </div>
 
+          {contactFeedback.text ? (
+            <p
+              className={`text-sm sm:text-base text-center ${
+                contactFeedback.type === "error"
+                  ? "text-error-300"
+                  : "text-primary-300"
+              }`}
+            >
+              {contactFeedback.text}
+            </p>
+          ) : null}
+
           <Button
-            title="Send Message"
-            className="mt-2 py-3 px-8 bg-primary-500 hover:bg-primary-600 text-lg sm:text-xl rounded-3xl self-center"
+            type="submit"
+            title={isSubmitting ? "Sending..." : "Send Message"}
+            disabled={isSubmitting}
+            className="mt-2 py-3 px-8 bg-primary-500 hover:bg-primary-600 disabled:opacity-60 disabled:cursor-not-allowed text-lg sm:text-xl rounded-3xl self-center"
           />
         </form>
       </div>
