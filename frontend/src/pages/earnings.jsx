@@ -19,8 +19,8 @@ import {
 
 import {
   ResponsiveContainer,
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -215,24 +215,45 @@ const Earnings = () => {
         <div className="w-full" style={{ height: 300 }}>
           {earnings.length >= 10 ? (
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={earnings}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <YAxis width={"auto"} fontSize={"12px"} fontWeight={800} />
-                <XAxis hide width={"auto"} fontSize={"12px"} fontWeight={800} />
-                <Line
+              <AreaChart
+                data={earnings}
+                style={{
+                  border: "1px solid #6ee69b",
+                  borderRadius: "8px",
+                }}
+              >
+                <defs>
+                  <linearGradient id="colorEarning" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#1faa59" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#1faa59" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="#e5e7eb"
+                  vertical={false}
+                />
+                <XAxis hide dataKey="title" />
+                <YAxis width="auto" fontSize={12} fontWeight={600} />
+                <Tooltip
+                  labelFormatter={(_, payload) => {
+                    const item = payload?.[0]?.payload;
+                    return item
+                      ? `${item.title} • ${formatDate(item.date)}`
+                      : "";
+                  }}
+                  formatter={(value) => [formatCurrency(value), "earnings"]}
+                />
+                <Area
                   type="monotone"
                   dataKey="price"
-                  stroke="darkgreen"
-                  strokeWidth={3}
+                  stroke="#1faa59"
+                  strokeWidth={2}
+                  fill="url(#colorEarning)"
                   dot={false}
+                  activeDot={{ r: 5 }}
                 />
-                <Tooltip
-                  labelFormatter={(index) => {
-                    const earning = earnings[index];
-                    return earning ? formatDate(earning.date) : "";
-                  }}
-                />
-              </LineChart>
+              </AreaChart>
             </ResponsiveContainer>
           ) : (
             <Placeholder

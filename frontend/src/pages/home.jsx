@@ -3,8 +3,8 @@ import { UserContext } from "../context/authContext";
 
 // Chart
 import {
-  BarChart,
-  Bar,
+  AreaChart,
+  Area,
   CartesianGrid,
   YAxis,
   XAxis,
@@ -62,12 +62,20 @@ const Home = () => {
       const transactionsData = await getAllUserTransactions({ token });
       const raw = transactionsData?.transactions ?? [];
 
-      const chartData = raw.map((item) => ({
-        title: item.title,
-        date: item.date,
-        earnings: item.type === "Earnings" ? item.price : null,
-        expense: item.type === "Expenses" ? item.price : null,
-      }));
+      // Group transactions by date
+      const grouped = raw.reduce((acc, item) => {
+        const date = item.date;
+        if (!acc[date]) {
+          acc[date] = { date, earnings: 0, expense: 0 };
+        }
+        if (item.type === "Earnings") acc[date].earnings += item.price;
+        if (item.type === "Expenses") acc[date].expense += item.price;
+        return acc;
+      }, {});
+
+      const chartData = Object.values(grouped).sort(
+        (a, b) => new Date(a.date) - new Date(b.date),
+      );
 
       const earningsTotalData = await getEarningsTotal({ token });
       const expensesTotalData = await getExpensesTotal({ token });
@@ -171,32 +179,75 @@ const Home = () => {
         title={"Overall Chart Report"}
       >
         <div className="h-96">
-          {transactions.length > 5 ? (
+          {rawTransactions.length >= 20 ? (
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={transactions}>
-                <CartesianGrid strokeDasharray={"3 3"} />
-                <YAxis hide width={"auto"} fontSize={"12px"} fontWeight={800} />
-                <XAxis hide width={"auto"} fontSize={"12px"} fontWeight={800} />
-                <Bar dataKey={"expense"} fill="red" />
-                <Bar dataKey={"earnings"} fill="#1faa59" />
+              <AreaChart
+                data={transactions}
+                style={{
+                  border: "1px solid #6ee69b",
+                  borderRadius: "8px",
+                }}
+              >
+                <defs>
+                  <linearGradient
+                    id="colorEarnings"
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
+                    <stop offset="5%" stopColor="#1faa59" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#1faa59" stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="colorExpense" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis
+                  hide
+                  dataKey="date"
+                  tickFormatter={(val) => formatDate(val)}
+                  tick={{ fontSize: 11 }}
+                  interval="preserveStartEnd"
+                  tickLine={false}
+                />
+                <YAxis hide width="auto" />
+                <Tooltip
+                  labelFormatter={(val) => formatDate(val)}
+                  formatter={(value, name) => [formatCurrency(value), name]}
+                />
                 <Legend
                   verticalAlign="top"
                   height={40}
                   wrapperStyle={{ fontSize: 14 }}
                   iconSize={12}
                 />
-                <Tooltip
-                  labelFormatter={(index) => {
-                    const transaction = transactions[index];
-                    return transaction ? formatDate(transaction.date) : "";
-                  }}
+                <Area
+                  type={"monotone"}
+                  dataKey="earnings"
+                  stroke="#1faa59"
+                  strokeWidth={2}
+                  fill="url(#colorEarnings)"
+                  dot={false}
+                  activeDot={{ r: 5 }}
                 />
-              </BarChart>
+                <Area
+                  type={"monotone"}
+                  dataKey="expense"
+                  stroke="#ef4444"
+                  strokeWidth={2}
+                  fill="url(#colorExpense)"
+                  dot={false}
+                  activeDot={{ r: 5 }}
+                />
+              </AreaChart>
             </ResponsiveContainer>
           ) : (
             <Placeholder
               title="Not Enough Data Yet"
-              description="Add 5 transactions to activate chart"
+              description="Add 20 transactions to activate chart"
             />
           )}
         </div>
@@ -226,11 +277,15 @@ const Home = () => {
                 <p className="font-bold text-error-800">
                   {formatCurrency(latestExpense?.price) || 0}
                 </p>
-                <p className="font-semibold text-secondary-500">Recent Expense</p>
+                <p className="font-semibold text-secondary-500">
+                  Recent Expense
+                </p>
               </div>
               <div className="flex gap-2 items-end">
                 <p className="font-bold text-error-800">{totalExpensesCount}</p>
-                <p className="font-semibold text-secondary-500">Expenses Added</p>
+                <p className="font-semibold text-secondary-500">
+                  Expenses Added
+                </p>
               </div>
             </div>
           </div>
@@ -263,13 +318,17 @@ const Home = () => {
                 <p className="font-bold text-success-800">
                   {formatCurrency(latestEarning?.price) || 0}
                 </p>
-                <p className="font-semibold text-secondary-500">Recent Earning</p>
+                <p className="font-semibold text-secondary-500">
+                  Recent Earning
+                </p>
               </div>
               <div className="flex gap-2 items-end">
                 <p className="font-bold text-success-800">
-                  {totalExpensesCount}
+                  {totalEarningsCount}
                 </p>
-                <p className="font-semibold text-secondary-500">Earnings Added</p>
+                <p className="font-semibold text-secondary-500">
+                  Earnings Added
+                </p>
               </div>
             </div>
           </div>
@@ -404,7 +463,9 @@ const Home = () => {
       >
         <form onSubmit={handleAddGoal} className="grid grid-cols-2 gap-5">
           <div>
-            <label className="text-sm font-semibold text-secondary-600">Title</label>
+            <label className="text-sm font-semibold text-secondary-600">
+              Title
+            </label>
             <input
               type="text"
               onChange={(e) => setTitle(e.target.value)}

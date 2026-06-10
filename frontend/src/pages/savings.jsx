@@ -5,8 +5,8 @@ import Button from "../components/button";
 import ProgressBar from "../components/progressBar";
 import {
   ResponsiveContainer,
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -132,29 +132,41 @@ const Savings = () => {
 
       <Card
         className="w-full col-span-2 animate-slide-up-delay-1"
-        title={"Savings History"}
+        title={"Savings Chart"}
       >
         <div className="w-full" style={{ height: 300 }}>
           {allSavings.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={allSavings}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <YAxis width={"auto"} fontSize={"12px"} fontWeight={800} />
-                <XAxis hide width={"auto"} fontSize={"12px"} fontWeight={800} />
-                <Line
+              <AreaChart
+                data={allSavings}
+                style={{
+                  border: "1px solid #6ee69b",
+                  borderRadius: "8px",
+                }}
+              >
+                <defs>
+                  <linearGradient id="colorSavings" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#1faa59" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#1faa59" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid
+                  strokeDasharray="1 1"
+                  stroke="#94a3b8"
+                  vertical={false}
+                />
+                <XAxis hide dataKey="date" />
+                <YAxis width="auto" fontSize={12} fontWeight={600} />
+                <Area
                   type="monotone"
                   dataKey="amount"
-                  stroke="darkgreen"
-                  strokeWidth={3}
+                  stroke="#1faa59"
+                  strokeWidth={2}
+                  fill="url(#colorSavings)"
                   dot={false}
+                  activeDot={{ r: 5 }}
                 />
-                <Tooltip
-                  labelFormatter={(index) => {
-                    const saving = allSavings[index];
-                    return saving ? formatDate(saving.date) : "";
-                  }}
-                />
-              </LineChart>
+              </AreaChart>
             </ResponsiveContainer>
           ) : (
             <Placeholder />
@@ -204,7 +216,9 @@ const Savings = () => {
       >
         <form onSubmit={handleAddGoal} className="grid grid-cols-2 gap-5">
           <div>
-            <label className="text-sm font-semibold text-secondary-600">Title</label>
+            <label className="text-sm font-semibold text-secondary-600">
+              Title
+            </label>
             <input
               type="text"
               onChange={(e) => setTitle(e.target.value)}

@@ -23,8 +23,8 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid,
-  BarChart,
-  Bar,
+  AreaChart,
+  Area,
 } from "recharts";
 
 const Expenses = () => {
@@ -215,18 +215,45 @@ const Expenses = () => {
         <div className="w-full" style={{ height: 300 }}>
           {expenses.length >= 10 ? (
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={expenses}>
-                <CartesianGrid strokeDasharray={"3 3"} />
-                <YAxis width="auto" fontSize={"12px"} fontWeight={800} />
-                <XAxis hide width={"auto"} fontSize={"12px"} fontWeight={800} />
-                <Bar dataKey={"price"} fill="#ef4444" radius={[10, 10, 0, 0]} />
-                <Tooltip
-                  labelFormatter={(index) => {
-                    const expense = expenses[index];
-                    return expense ? formatDate(expense.date) : "";
-                  }}
+              <AreaChart
+                data={expenses}
+                style={{
+                  border: "1px solid #fca5a5",
+                  borderRadius: "8px",
+                }}
+              >
+                <defs>
+                  <linearGradient id="colorExpense" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="#e5e7eb"
+                  vertical={false}
                 />
-              </BarChart>
+                <XAxis hide dataKey="title" />
+                <YAxis width="auto" fontSize={12} fontWeight={600} />
+                <Tooltip
+                  labelFormatter={(_, payload) => {
+                    const item = payload?.[0]?.payload;
+                    return item
+                      ? `${item.title} • ${formatDate(item.date)}`
+                      : "";
+                  }}
+                  formatter={(value) => [formatCurrency(value), "expense"]}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="price"
+                  stroke="#ef4444"
+                  strokeWidth={2}
+                  fill="url(#colorExpense)"
+                  dot={false}
+                  activeDot={{ r: 5 }}
+                />
+              </AreaChart>
             </ResponsiveContainer>
           ) : (
             <Placeholder
