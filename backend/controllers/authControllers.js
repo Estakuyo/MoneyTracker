@@ -23,7 +23,7 @@ const register = async (req, res) => {
 
     const hashedPassword = await hashPassword(password);
 
-    const user = registerAccount(email, username, hashedPassword);
+    const user = await registerAccount(email, username, hashedPassword);
     return res.status(200).json({ user, message: "Registered Successfully" });
   } catch (err) {
     res.status(500).json(err);

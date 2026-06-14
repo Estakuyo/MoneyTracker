@@ -19,8 +19,9 @@ const loginAccount = async (username) => {
 };
 
 const registerAccount = async (email, username, password) => {
-  const query = "INSERT INTO users(email, username, password) VALUES (?, ?, ?)";
-  const [result] = await db.execute(query, [email, username, password]);
+  const query =
+    "INSERT INTO users(email, username, password, terms_agreement) VALUES (?, ?, ?, ?)";
+  const [result] = await db.execute(query, [email, username, password, true]);
   return result;
 };
 

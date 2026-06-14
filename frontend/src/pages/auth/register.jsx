@@ -6,6 +6,9 @@ import { Eye, EyeOff } from "lucide-react";
 import { validators } from "../../utils/validators";
 import { useFormErrors } from "../../hooks/useFormError";
 
+import Modal from "../../components/Modal";
+import TermsAndAgreement from "../../components/termsAndAgreement";
+
 const Register = () => {
   const { register } = useContext(UserContext);
   const navigate = useNavigate();
@@ -18,6 +21,10 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Terms modal
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -32,6 +39,11 @@ const Register = () => {
     setError("username", usernameError);
     setError("password", passwordError);
     setError("confirmPassword", confirmError);
+
+    if (!agreedToTerms) {
+      setError("terms", "You must agree to the Terms and Agreement.");
+      return;
+    }
 
     if (emailError) {
       setEmail("");
@@ -203,6 +215,32 @@ const Register = () => {
           </div>
         </label>
 
+        {/* Terms checkbox */}
+        <div className="flex flex-col gap-1">
+          <label className="flex items-center gap-1.5 text-sm text-primary-100 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={agreedToTerms}
+              onChange={(e) => {
+                setAgreedToTerms(e.target.checked);
+                if (e.target.checked) clearError("terms");
+              }}
+              className="cursor-pointer"
+            />
+            I agree to the{" "}
+            <button
+              type="button"
+              onClick={() => setIsTermsModalOpen(true)}
+              className="text-accent-400 hover:text-accent-300 hover:underline font-semibold transition-colors cursor-pointer"
+            >
+              Terms and Agreement
+            </button>
+          </label>
+          {errors.terms && (
+            <p className="text-red-400 text-xs pl-0.5">{errors.terms}</p>
+          )}
+        </div>
+
         <button type="submit" className="auth-btn animate-fade-in-delay-4">
           Create Account
         </button>
@@ -217,6 +255,35 @@ const Register = () => {
           </a>
         </div>
       </form>
+
+      {/* Terms & Agreement Modal */}
+      <Modal
+        title="Terms and Agreement"
+        isOpen={isTermsModalOpen}
+        onClose={() => setIsTermsModalOpen(false)}
+      >
+        <TermsAndAgreement />
+        <div className="mt-6 flex justify-end gap-3 border-t border-gray-200 pt-4">
+          <button
+            type="button"
+            onClick={() => setIsTermsModalOpen(false)}
+            className="px-4 py-2 text-sm rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setAgreedToTerms(true);
+              clearError("terms");
+              setIsTermsModalOpen(false);
+            }}
+            className="px-4 py-2 text-sm rounded-md bg-primary-600 text-white hover:bg-primary-700 transition-colors cursor-pointer"
+          >
+            I Agree
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 };
