@@ -97,14 +97,6 @@ const TermsAndAgreement = () => {
           of the revised terms.
         </p>
       </section>
-
-      <section>
-        <h2 className="font-semibold text-primary-700 mb-1">8. Contact</h2>
-        <p>
-          If you have any questions about these terms or how your data is
-          handled, please reach out through the app's support section.
-        </p>
-      </section>
     </div>
   );
 };

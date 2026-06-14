@@ -6,7 +6,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { validators } from "../../utils/validators";
 import { useFormErrors } from "../../hooks/useFormError";
 
-import Modal from "../../components/Modal";
+import Modal from "../../components/modal";
 import TermsAndAgreement from "../../components/termsAndAgreement";
 
 const Register = () => {

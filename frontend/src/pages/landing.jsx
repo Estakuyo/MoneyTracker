@@ -10,6 +10,8 @@ import { UserContext } from "../context/authContext";
 import { sendContactMessage } from "../services/contact";
 
 import Button from "../components/button";
+import Modal from "../components/modal";
+import TermsAndAgreement from "../components/termsAndAgreement";
 
 const Landing = () => {
   const { token } = useContext(UserContext);
@@ -21,6 +23,7 @@ const Landing = () => {
     type: "",
     text: "",
   });
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
 
   const handleRedirect = () => {
     if (token) {
@@ -260,7 +263,32 @@ const Landing = () => {
             linkedin.com/in/johnmartineustaquio
           </a>
         </span>
+        <button
+          type="button"
+          onClick={() => setIsTermsModalOpen(true)}
+          className="mt-2 text-sm text-white/50 hover:text-accent-400 hover:underline transition-colors cursor-pointer"
+        >
+          Terms and Agreement
+        </button>
       </footer>
+
+      {/* Terms & Agreement Modal */}
+      <Modal
+        isOpen={isTermsModalOpen}
+        onClose={() => setIsTermsModalOpen(false)}
+        title="Terms and Agreement"
+      >
+        <TermsAndAgreement />
+        <div className="mt-6 flex justify-end border-t border-gray-200 pt-4">
+          <button
+            type="button"
+            onClick={() => setIsTermsModalOpen(false)}
+            className="px-4 py-2 text-sm rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
+          >
+            Close
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 };
