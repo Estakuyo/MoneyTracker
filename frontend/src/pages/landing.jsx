@@ -3,11 +3,11 @@ import { SquareCheckBig } from "lucide-react";
 import { PiggyBankIcon } from "lucide-react";
 import { ArrowRight } from "lucide-react";
 import { Dot } from "lucide-react";
+import { Facebook, Linkedin } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { UserContext } from "../context/authContext";
-import { sendContactMessage } from "../services/contact";
 
 import Button from "../components/button";
 import Modal from "../components/modal";
@@ -16,13 +16,6 @@ import TermsAndAgreement from "../components/termsAndAgreement";
 const Landing = () => {
   const { token } = useContext(UserContext);
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [contactFeedback, setContactFeedback] = useState({
-    type: "",
-    text: "",
-  });
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
 
   const handleRedirect = () => {
@@ -43,42 +36,6 @@ const Landing = () => {
       behavior: "smooth",
       block: "center",
     });
-  };
-
-  const handleContactSubmit = async (event) => {
-    event.preventDefault();
-
-    if (!email.trim() || !message.trim()) {
-      setContactFeedback({
-        type: "error",
-        text: "Please provide your email and message.",
-      });
-      return;
-    }
-
-    try {
-      setIsSubmitting(true);
-      setContactFeedback({ type: "", text: "" });
-
-      const data = await sendContactMessage({
-        email: email.trim(),
-        message: message.trim(),
-      });
-
-      setContactFeedback({
-        type: "success",
-        text: data?.message || "Message sent successfully.",
-      });
-      setEmail("");
-      setMessage("");
-    } catch (error) {
-      setContactFeedback({
-        type: "error",
-        text: error.message || "Failed to send message.",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
   };
 
   return (
@@ -180,64 +137,38 @@ const Landing = () => {
 
       <div
         id="contact"
-        className="p-10 flex flex-col items-center gap-2.5 text-center border border-white/20 bg-black/20 rounded-2xl max-w-5xl sm:w-full mx-5 mb-20 animate-slide-up"
+        className="p-10 flex flex-col items-center gap-4 text-center border border-white/20 bg-black/20 rounded-2xl max-w-5xl sm:w-full mx-5 mb-20 animate-slide-up"
       >
         <h1 className="text-2xl font-semibold sm:text-4xl">Contact</h1>
-        <p className="text-base sm:text-lg">
-          Have feedback or questions? Send a message and I will get back to you.
-        </p>
+        <div>
+          <p className="text-base sm:text-lg">Have feedback or questions?</p>
+          <p className="text-base sm:text-lg">
+            Send a message in my socials and I will get back to you.
+          </p>
+        </div>
 
-        <form
-          onSubmit={handleContactSubmit}
-          className="w-full max-w-3xl mt-3 flex flex-col gap-4 text-left"
-        >
-          <div className="flex flex-col gap-2">
-            <label htmlFor="contact-email" className="text-base sm:text-lg">
-              Email
-            </label>
-            <input
-              id="contact-email"
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              className="w-full rounded-xl border border-white/25 bg-black/30 px-4 py-3 text-base sm:text-lg text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-accent-500"
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label htmlFor="contact-body" className="text-base sm:text-lg">
-              Message
-            </label>
-            <textarea
-              id="contact-body"
-              rows={6}
-              placeholder="Write your message here..."
-              value={message}
-              onChange={(event) => setMessage(event.target.value)}
-              className="w-full rounded-xl border border-white/25 bg-black/30 px-4 py-3 text-base sm:text-lg text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-accent-500 resize-y"
-            />
-          </div>
-
-          {contactFeedback.text ? (
-            <p
-              className={`text-sm sm:text-base text-center ${
-                contactFeedback.type === "error"
-                  ? "text-error-300"
-                  : "text-primary-300"
-              }`}
-            >
-              {contactFeedback.text}
-            </p>
-          ) : null}
-
-          <Button
-            type="submit"
-            title={isSubmitting ? "Sending..." : "Send Message"}
-            disabled={isSubmitting}
-            className="mt-2 py-3 px-8 bg-primary-500 hover:bg-primary-600 disabled:opacity-60 disabled:cursor-not-allowed text-lg sm:text-xl rounded-3xl self-center"
-          />
-        </form>
+        <div className="flex items-center gap-4 mt-2">
+          <a
+            href="https://www.facebook.com/john.m.eustaquio"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Facebook"
+            className="flex items-center gap-2 border border-white/20 bg-black/20 px-5 py-3 rounded-2xl text-base sm:text-lg hover:bg-black/30 hover:text-accent-400 transition-colors"
+          >
+            <Facebook size={22} />
+            Facebook
+          </a>
+          <a
+            href="https://www.linkedin.com/in/johnmartineustaquio/"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="LinkedIn"
+            className="flex items-center gap-2 border border-white/20 bg-black/20 px-5 py-3 rounded-2xl text-base sm:text-lg hover:bg-black/30 hover:text-accent-400 transition-colors"
+          >
+            <Linkedin size={22} />
+            LinkedIn
+          </a>
+        </div>
       </div>
 
       <footer className="w-full border-t-2 border-t-accent-500 bg-black/30 p-5 text-center">
