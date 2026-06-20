@@ -1,6 +1,20 @@
 const db = require("../../config/db_connection");
 
-const getTransactionsQuery = async (user_id, type) => {
+const getSortClause = (sortOption) => {
+  switch (sortOption) {
+    case 'highest':
+      return ' ORDER BY t.price DESC';
+    case 'lowest':
+      return ' ORDER BY t.price ASC';
+    case 'oldest':
+      return ' ORDER BY t.date ASC';
+    case 'latest':
+    default:
+      return ' ORDER BY t.date DESC';
+  }
+};
+
+const getTransactionsQuery = async (user_id, type, sortOption = 'latest') => {
   const query = `
     SELECT 
         t.id,
@@ -15,12 +29,12 @@ const getTransactionsQuery = async (user_id, type) => {
       FROM transactions t 
       INNER JOIN categories c ON t.category_id = c.id
       INNER JOIN users u ON t.user_id = u.id
-      WHERE t.user_id = ? AND type = ?`;
+      WHERE t.user_id = ? AND type = ?` + getSortClause(sortOption);
   const [rows] = await db.execute(query, [user_id, type]);
   return rows;
 };
 
-const getAllTransactionsQuery = async (user_id) => {
+const getAllTransactionsQuery = async (user_id, sortOption = 'latest') => {
   const query = `SELECT
                     t.id,
                     t.title,
@@ -29,7 +43,7 @@ const getAllTransactionsQuery = async (user_id) => {
                     c.type
                   FROM transactions t
                   INNER JOIN categories c ON t.category_id = c.id
-                  WHERE t.user_id = ?`;
+                  WHERE t.user_id = ?` + getSortClause(sortOption);
   const [rows] = await db.execute(query, [user_id]);
   return rows;
 };

@@ -12,8 +12,9 @@ const { trackSavings, checkAndUpdateGoals } = require("./savingsController");
 const getAllTransactions = async (req, res) => {
   try {
     const id = req.user.id;
+    const sort = req.query.sort;
 
-    const transactions = await getAllTransactionsQuery(id);
+    const transactions = await getAllTransactionsQuery(id, sort);
 
     if (transactions.length === 0) {
       return res.status(200).json({ message: "No transactions yet." });
@@ -29,8 +30,9 @@ const getTransactions = async (req, res) => {
   try {
     const id = req.user.id;
     const type = req.query.type;
+    const sort = req.query.sort;
 
-    const transactions = await getTransactionsQuery(id, type);
+    const transactions = await getTransactionsQuery(id, type, sort);
 
     if (transactions.length === 0) {
       return res.status(200).json({ message: "No transactions yet." });

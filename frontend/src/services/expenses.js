@@ -2,7 +2,7 @@ import expensesApi from "../api/expensesApi";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-export const add_Expenses = async ({ title, price, category, type, token }) => {
+export const add_Expenses = async ({ title, price, category, token }) => {
   const res = await fetch(backendUrl + expensesApi.addExpenses, {
     method: "POST",
     headers: {

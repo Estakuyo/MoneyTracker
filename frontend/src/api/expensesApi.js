@@ -1,5 +1,5 @@
 const expensesApi = {
-  getExpenses: "/transaction?type=Expenses",
+  getExpenses: "/transaction?type=Expenses&sort=highest",
   getExpensesTotal: "/transaction/total?type=Expenses",
   getExpenseCategories: "/transaction/categories?type=Expenses",
   getExpensesCategoryTotal: "/transaction/categories/total?type=Expenses",
