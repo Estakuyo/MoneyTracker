@@ -6,6 +6,7 @@ import Button from "../components/button";
 import Placeholder from "../components/placeholder";
 import Modal from "../components/modal";
 import Skeleton from "../components/skeleton";
+import CategorySelect from "../components/categorySelect";
 import { formatCurrency, formatDate } from "../utils/formatters";
 
 import {
@@ -404,29 +405,12 @@ const Expenses = () => {
             <label className="text-sm font-semibold text-secondary-600">
               Category
             </label>
-            {categories.length > 0 ? (
-              <>
-                <input
-                  type="text"
-                  list="expense-category-options"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  placeholder="Select or type category"
-                  className="w-full rounded-md border border-secondary-300 bg-secondary-50 p-2.5 text-secondary-800 outline-none focus:border-error-500"
-                />
-                <datalist id="expense-category-options">
-                  {categories.map((item) => (
-                    <option key={item.id} value={item.name} />
-                  ))}
-                </datalist>
-              </>
-            ) : (
-              <input
-                type="text"
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full rounded-md border border-secondary-300 bg-secondary-50 p-2.5 text-secondary-800 outline-none focus:border-error-500"
-              />
-            )}
+            <CategorySelect
+              categories={categories}
+              value={category}
+              onChange={setCategory}
+              accentColor={"error"}
+            />
           </div>
           <div className="flex flex-col gap-1 md:col-span-2 border-t border-secondary-200 pt-2.5 mt-2.5">
             <Button
