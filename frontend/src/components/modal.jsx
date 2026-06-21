@@ -2,7 +2,7 @@ const Modal = ({ title, children, isOpen, onClose = () => {} }) => {
   if (isOpen) {
     return (
       <div className="inset-0 z-20 fixed bg-black/50 flex justify-center items-center">
-        <div className="relative w-xs sm:w-xl max-h-9/12 bg-primary-50 py-5 rounded-lg flex flex-col animate-modal-pop">
+        <div className="relative w-sm max-h-11/12 sm:w-xl sm:max-h-9/12 bg-primary-50 py-5 rounded-lg flex flex-col animate-modal-pop">
           <button
             onClick={onClose}
             aria-label="Close modal"

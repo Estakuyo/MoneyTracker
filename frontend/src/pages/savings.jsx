@@ -14,6 +14,7 @@ import {
 } from "recharts";
 import Placeholder from "../components/placeholder";
 import Modal from "../components/modal";
+import Skeleton from "../components/skeleton";
 import { formatCurrency, formatDate } from "../utils/formatters";
 
 import {
@@ -26,6 +27,7 @@ import { UserContext } from "../context/authContext";
 
 const Savings = () => {
   const [activeModal, setActiveModal] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // Inputs
   const [title, setTitle] = useState();
@@ -41,6 +43,7 @@ const Savings = () => {
   const loadSavings = async () => {
     if (!token) return;
     try {
+      setLoading(true);
       const savingsData = await getUserSavings({ token });
       const goalsData = await getUserGoals({ token });
       const allSavingsData = await getAllUserSavings({ token });
@@ -50,6 +53,8 @@ const Savings = () => {
       setAllSavings(allSavingsData.savings);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -82,7 +87,9 @@ const Savings = () => {
   return (
     <div className="main-wrapper px-10 py-20 flex flex-col md:grid gap-5 md:py-10">
       <Card className="w-full animate-slide-up" title={"Total Savings"}>
-        {savings ? (
+        {loading ? (
+          <Skeleton className="h-40 w-full" />
+        ) : savings ? (
           <div className="flex flex-col justify-center items-center py-8 gap-7 text-center">
             <div className="flex flex-col gap-1">
               <p className="text-md font-semibold text-secondary-500">
@@ -109,7 +116,9 @@ const Savings = () => {
           />
         }
       >
-        {goals.length > 0 ? (
+        {loading ? (
+          <Skeleton className="h-40 w-full" />
+        ) : goals.length > 0 ? (
           goals.slice(0, 3).map((goal, index) => (
             <div className="flex flex-col gap-10 py-4" key={index}>
               <div className="flex flex-col gap-2">
@@ -135,7 +144,9 @@ const Savings = () => {
         title={"Savings Chart"}
       >
         <div className="w-full" style={{ height: 300 }}>
-          {allSavings.length > 0 ? (
+          {loading ? (
+            <Skeleton className="h-full w-full" />
+          ) : allSavings.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart
                 data={allSavings}
@@ -214,7 +225,10 @@ const Savings = () => {
         onClose={() => setActiveModal("goals")}
         title={"Add Goal"}
       >
-        <form onSubmit={handleAddGoal} className="grid grid-cols-2 gap-5">
+        <form
+          onSubmit={handleAddGoal}
+          className="sm:grid sm:grid-cols-2 gap-5 flex flex-col"
+        >
           <div>
             <label className="text-sm font-semibold text-secondary-600">
               Title
@@ -235,11 +249,13 @@ const Savings = () => {
               className="w-full rounded-md border border-secondary-300 bg-secondary-50 p-2.5 text-secondary-800 outline-none focus:border-primary-500"
             />
           </div>
-          <Button
-            title={"Submit"}
-            className="bg-success-500 hover:bg-success-700 w-full col-span-2"
-            type="submit"
-          />
+          <div className="flex flex-col gap-1 md:col-span-2 border-t border-secondary-200 pt-2.5 mt-2.5">
+            <Button
+              title={"Submit"}
+              className="bg-success-500 hover:bg-success-700 w-full col-span-2"
+              type="submit"
+            />
+          </div>
         </form>
       </Modal>
     </div>

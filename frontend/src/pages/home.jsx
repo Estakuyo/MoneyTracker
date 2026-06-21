@@ -18,6 +18,7 @@ import Card from "../components/card";
 import Button from "../components/button";
 import Placeholder from "../components/placeholder";
 import Modal from "../components/modal";
+import Skeleton from "../components/skeleton";
 
 import { getAllUserTransactions } from "../services/transactions";
 import {
@@ -34,10 +35,8 @@ import { getUserSavings, getUserGoals, addUserGoal } from "../services/savings";
 import { formatDate, formatCurrency } from "../utils/formatters";
 
 const Home = () => {
-  const sampleDataChart = [];
-  const sampleData = {};
-
   const [activeModal, setActiveModal] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // Outputs
   const [transactions, setTransactions] = useState([]);
@@ -59,6 +58,7 @@ const Home = () => {
   const loadTransactions = async () => {
     if (!token) return;
     try {
+      setLoading(true);
       const transactionsData = await getAllUserTransactions({ token });
       const raw = transactionsData?.transactions ?? [];
 
@@ -94,6 +94,8 @@ const Home = () => {
       setExpenseCategories(expenseCategoriesData?.categories ?? []);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -179,7 +181,9 @@ const Home = () => {
         title={"Overall Chart Report"}
       >
         <div className="h-96">
-          {rawTransactions.length >= 20 ? (
+          {loading ? (
+            <Skeleton className="h-full w-full" />
+          ) : rawTransactions.length >= 20 ? (
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart
                 data={transactions}
@@ -264,7 +268,9 @@ const Home = () => {
           />
         }
       >
-        {expensesTotal ? (
+        {loading ? (
+          <Skeleton className="h-40 w-full" />
+        ) : expensesTotal ? (
           <div className="flex flex-col gap-6">
             <h1 className="text-md font-semibold text-secondary-500">
               Total Overall Expenses
@@ -305,7 +311,9 @@ const Home = () => {
           />
         }
       >
-        {earningsTotal ? (
+        {loading ? (
+          <Skeleton className="h-40 w-full" />
+        ) : earningsTotal ? (
           <div className="flex flex-col gap-6">
             <h1 className="text-md font-semibold text-secondary-500">
               Total Overall Earnings
@@ -348,7 +356,9 @@ const Home = () => {
           />
         }
       >
-        {savingsTotal ? (
+        {loading ? (
+          <Skeleton className="h-40 w-full" />
+        ) : savingsTotal ? (
           <div className="flex flex-col gap-6">
             <h1 className="text-md font-semibold text-secondary-500">
               Total Overall Savings
@@ -461,7 +471,10 @@ const Home = () => {
         onClose={closeModal}
         title={"Add Goal"}
       >
-        <form onSubmit={handleAddGoal} className="grid grid-cols-2 gap-5">
+        <form
+          onSubmit={handleAddGoal}
+          className="sm:grid sm:grid-cols-2 gap-5 flex flex-col"
+        >
           <div>
             <label className="text-sm font-semibold text-secondary-600">
               Title
@@ -482,11 +495,13 @@ const Home = () => {
               className="w-full rounded-md border border-secondary-300 bg-secondary-50 p-2.5 text-secondary-800 outline-none focus:border-primary-500"
             />
           </div>
-          <Button
-            title={"Submit"}
-            className="bg-success-500 hover:bg-success-700 w-full col-span-2"
-            type="submit"
-          />
+          <div className="flex flex-col gap-1 md:col-span-2 border-t border-secondary-200 pt-2.5 mt-2.5">
+            <Button
+              title={"Submit"}
+              className="bg-success-500 hover:bg-success-700 w-full col-span-2"
+              type="submit"
+            />
+          </div>
         </form>
       </Modal>
     </div>

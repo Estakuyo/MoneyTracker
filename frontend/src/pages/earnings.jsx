@@ -5,6 +5,7 @@ import Button from "../components/button";
 import Card from "../components/card";
 import Placeholder from "../components/placeholder";
 import Modal from "../components/modal";
+import Skeleton from "../components/skeleton";
 import { formatCurrency, formatDate } from "../utils/formatters";
 
 import {
@@ -29,6 +30,7 @@ import {
 
 const Earnings = () => {
   const [activeModal, setActiveModal] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // Outputs
   const [earnings, setEarnings] = useState([]);
@@ -46,6 +48,7 @@ const Earnings = () => {
   const loadEarnings = async () => {
     if (!token) return;
     try {
+      setLoading(true);
       const earningsData = await getEarnings({ token });
       const earningsTotalData = await getEarningsTotal({ token });
 
@@ -59,6 +62,8 @@ const Earnings = () => {
       setCategoryTotal(categoryTotalsData?.categoriesTotal ?? []);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -107,7 +112,9 @@ const Earnings = () => {
           />
         }
       >
-        {earningsTotal.total ? (
+        {loading ? (
+          <Skeleton className="h-40 w-full" />
+        ) : earningsTotal.total ? (
           <div className="flex flex-col justify-center items-center py-8 gap-7 text-center">
             <div className="flex flex-col gap-1">
               <p className="text-base font-semibold text-secondary-500">
@@ -135,7 +142,9 @@ const Earnings = () => {
         }
       >
         <div className="flex flex-col">
-          {categoryTotal.length > 0 ? (
+          {loading ? (
+            <Skeleton className="h-40 w-full" />
+          ) : categoryTotal.length > 0 ? (
             categoryTotal.slice(0, 3).map((category, index) => (
               <div
                 key={index}
@@ -175,7 +184,9 @@ const Earnings = () => {
         }
       >
         <div className="flex flex-col">
-          {earnings.length > 0 ? (
+          {loading ? (
+            <Skeleton className="h-40 w-full" />
+          ) : earnings.length > 0 ? (
             earnings.slice(0, 3).map((earning, index) => (
               <div
                 key={index}
@@ -213,7 +224,9 @@ const Earnings = () => {
         title={"Earnings Chart"}
       >
         <div className="w-full" style={{ height: 300 }}>
-          {earnings.length >= 10 ? (
+          {loading ? (
+            <Skeleton className="h-full w-full" />
+          ) : earnings.length >= 10 ? (
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart
                 data={earnings}

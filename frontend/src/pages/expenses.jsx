@@ -5,6 +5,7 @@ import Card from "../components/card";
 import Button from "../components/button";
 import Placeholder from "../components/placeholder";
 import Modal from "../components/modal";
+import Skeleton from "../components/skeleton";
 import { formatCurrency, formatDate } from "../utils/formatters";
 
 import {
@@ -29,6 +30,7 @@ import {
 
 const Expenses = () => {
   const [activeModal, setActiveModal] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // Outputs
   const [expenses, setExpenses] = useState([]);
@@ -46,6 +48,7 @@ const Expenses = () => {
   const loadExpenses = async () => {
     if (!token) return;
     try {
+      setLoading(true);
       const expensesData = await getExpenses({ token });
       const expensesTotalData = await getExpensesTotal({ token });
 
@@ -59,6 +62,8 @@ const Expenses = () => {
       setCategoryTotal(categoryTotalsData?.categoriesTotal ?? []);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -107,7 +112,9 @@ const Expenses = () => {
           />
         }
       >
-        {expensesTotal.total ? (
+        {loading ? (
+          <Skeleton className="h-40 w-full" />
+        ) : expensesTotal.total ? (
           <div className="flex flex-col justify-center items-center py-8 gap-7 text-center">
             <div className="flex flex-col gap-1">
               <p className="text-md font-semibold text-secondary-500">
@@ -135,7 +142,9 @@ const Expenses = () => {
         }
       >
         <div className="flex flex-col">
-          {categoryTotal.length > 0 ? (
+          {loading ? (
+            <Skeleton className="h-40 w-full" />
+          ) : categoryTotal.length > 0 ? (
             categoryTotal.slice(0, 3).map((category, index) => (
               <div
                 key={index}
@@ -175,7 +184,9 @@ const Expenses = () => {
         }
       >
         <div className="flex flex-col">
-          {expenses.length > 0 ? (
+          {loading ? (
+            <Skeleton className="h-40 w-full" />
+          ) : expenses.length > 0 ? (
             expenses.slice(0, 3).map((expense, index) => (
               <div
                 key={index}
@@ -213,7 +224,9 @@ const Expenses = () => {
         title={"Expense Chart"}
       >
         <div className="w-full" style={{ height: 300 }}>
-          {expenses.length >= 10 ? (
+          {loading ? (
+            <Skeleton className="h-full w-full" />
+          ) : expenses.length >= 10 ? (
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart
                 data={expenses}
