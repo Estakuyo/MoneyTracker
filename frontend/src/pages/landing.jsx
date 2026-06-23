@@ -3,7 +3,7 @@ import { SquareCheckBig } from "lucide-react";
 import { PiggyBankIcon } from "lucide-react";
 import { ArrowRight } from "lucide-react";
 import { Dot } from "lucide-react";
-import { Facebook, Linkedin } from "lucide-react";
+import { Facebook, Linkedin, Mail } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
@@ -145,29 +145,46 @@ const Landing = () => {
           <p className="text-base sm:text-lg">
             Send a message in my socials and I will get back to you.
           </p>
+          <p className="text-base sm:text-lg font-bold">
+            Any feedback and suggestions will be much appreciated!
+          </p>
         </div>
 
-        <div className="flex items-center gap-4 mt-2">
-          <a
-            href="https://www.facebook.com/john.m.eustaquio"
-            target="_blank"
-            rel="noreferrer"
-            aria-label="Facebook"
-            className="flex items-center gap-2 border border-white/20 bg-black/20 px-5 py-3 rounded-2xl text-base sm:text-lg hover:bg-black/30 hover:text-accent-400 transition-colors"
-          >
-            <Facebook size={22} />
-            Facebook
-          </a>
-          <a
-            href="https://www.linkedin.com/in/johnmartineustaquio/"
-            target="_blank"
-            rel="noreferrer"
-            aria-label="LinkedIn"
-            className="flex items-center gap-2 border border-white/20 bg-black/20 px-5 py-3 rounded-2xl text-base sm:text-lg hover:bg-black/30 hover:text-accent-400 transition-colors"
-          >
-            <Linkedin size={22} />
-            LinkedIn
-          </a>
+        <div className="flex flex-col gap-4 mt-2">
+          <div className="flex items-center gap-4">
+            <a
+              href="https://www.facebook.com/john.m.eustaquio"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Facebook"
+              className="flex items-center gap-2 border border-white/20 bg-black/20 px-5 py-3 rounded-2xl text-base sm:text-lg hover:bg-black/30 hover:text-accent-400 transition-colors"
+            >
+              <Facebook size={22} />
+              Facebook
+            </a>
+            <a
+              href="https://www.linkedin.com/in/johnmartineustaquio/"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="LinkedIn"
+              className="flex items-center gap-2 border border-white/20 bg-black/20 px-5 py-3 rounded-2xl text-base sm:text-lg hover:bg-black/30 hover:text-accent-400 transition-colors"
+            >
+              <Linkedin size={22} />
+              LinkedIn
+            </a>
+          </div>
+          <div className="max-w-80 mx-auto">
+            <a
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=jmeustaquiodev@gmail.com"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Email"
+              className="flex items-center gap-2 border border-white/20 bg-black/20 px-5 py-3 rounded-2xl text-base sm:text-lg hover:bg-black/30 hover:text-accent-400 transition-colors"
+            >
+              <Mail size={22} />
+              Email
+            </a>
+          </div>
         </div>
       </div>
 

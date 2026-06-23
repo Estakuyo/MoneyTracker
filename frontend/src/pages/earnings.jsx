@@ -8,6 +8,7 @@ import Modal from "../components/modal";
 import Skeleton from "../components/skeleton";
 import CategorySelect from "../components/categorySelect";
 import { formatCurrency, formatDate } from "../utils/formatters";
+import Dropdown from "../components/dropdown";
 
 import {
   add_Earning,
@@ -32,9 +33,11 @@ import {
 const Earnings = () => {
   const [activeModal, setActiveModal] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [sort, setSort] = useState("highest");
 
   // Outputs
   const [earnings, setEarnings] = useState([]);
+  const [earningsModal, setEarningsModal] = useState([]);
   const [earningsTotal, setEarningsTotal] = useState([]);
   const [categories, setCategories] = useState([]);
   const [categoryTotal, setCategoryTotal] = useState([]);
@@ -50,13 +53,15 @@ const Earnings = () => {
     if (!token) return;
     try {
       setLoading(true);
-      const earningsData = await getEarnings({ token });
+      const earningsData = await getEarnings({ token, sort: "highest" });
+      const earningsModalData = await getEarnings({ token, sort });
       const earningsTotalData = await getEarningsTotal({ token });
 
       const categoriesData = await get_EarningCategories({ token });
       const categoryTotalsData = await get_EarningsCategoryTotal({ token });
 
       setEarnings(earningsData?.transactions ?? []);
+      setEarningsModal(earningsModalData?.transactions ?? []);
       setEarningsTotal(earningsTotalData?.transactionsTotal[0] ?? {});
 
       setCategories(categoriesData?.categories ?? []);
@@ -68,9 +73,25 @@ const Earnings = () => {
     }
   };
 
+  const loadSortedEarnings = async () => {
+    if (!token) return;
+    try {
+      const data = await getEarnings({ token, sort });
+      setEarningsModal(data?.transactions ?? []);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     loadEarnings();
   }, [token]);
+
+  useEffect(() => {
+    if (!loading) {
+      loadSortedEarnings();
+    }
+  }, [sort]);
 
   const closeModal = () => {
     setActiveModal(null);
@@ -329,15 +350,29 @@ const Earnings = () => {
         title={"Earning Transactions"}
       >
         <div>
-          {earnings.length > 0 ? (
+          {earningsModal.length > 0 ? (
             <div>
               <div className="text-center mb-2">
                 <p className="text-base text-secondary-500">
-                  {earnings.length} earnings
+                  {earningsModal.length} earnings
                 </p>
               </div>
+              <div className="flex justify-center mb-4">
+                <Dropdown
+                  label={`Sort : ${sort.toUpperCase().charAt(0) + sort.slice(1)}`}
+                  items={[
+                    {
+                      label: "Highest",
+                      onClick: () => setSort("highest"),
+                    },
+                    { label: "Lowest", onClick: () => setSort("lowest") },
+                    { label: "Latest", onClick: () => setSort("latest") },
+                    { label: "Oldest", onClick: () => setSort("oldest") },
+                  ]}
+                />
+              </div>
               <div className="flex flex-col">
-                {earnings.map((earning, index) => (
+                {earningsModal.map((earning, index) => (
                   <div
                     key={index}
                     className="flex items-center justify-between gap-4 py-3 border-b border-secondary-500 last:border-b-0"

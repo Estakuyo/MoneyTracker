@@ -8,6 +8,7 @@ import Modal from "../components/modal";
 import Skeleton from "../components/skeleton";
 import CategorySelect from "../components/categorySelect";
 import { formatCurrency, formatDate } from "../utils/formatters";
+import Dropdown from "../components/dropdown";
 
 import {
   add_Expenses,
@@ -32,9 +33,11 @@ import {
 const Expenses = () => {
   const [activeModal, setActiveModal] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [sort, setSort] = useState("highest");
 
   // Outputs
   const [expenses, setExpenses] = useState([]);
+  const [expensesModal, setExpensesModal] = useState([]);
   const [expensesTotal, setExpensesTotal] = useState([]);
   const [categories, setCategories] = useState([]);
   const [categoryTotal, setCategoryTotal] = useState([]);
@@ -50,13 +53,15 @@ const Expenses = () => {
     if (!token) return;
     try {
       setLoading(true);
-      const expensesData = await getExpenses({ token });
+      const expensesData = await getExpenses({ token, sort: "highest" });
+      const expensesModalData = await getExpenses({ token, sort });
       const expensesTotalData = await getExpensesTotal({ token });
 
       const categoriesData = await get_ExpenseCategories({ token });
       const categoryTotalsData = await get_ExpensesCategoryTotal({ token });
 
       setExpenses(expensesData?.transactions ?? []);
+      setExpensesModal(expensesModalData?.transactions ?? []);
       setExpensesTotal(expensesTotalData?.transactionsTotal[0] ?? {});
 
       setCategories(categoriesData?.categories ?? []);
@@ -68,9 +73,25 @@ const Expenses = () => {
     }
   };
 
+  const loadSortedExpenses = async () => {
+    if (!token) return;
+    try {
+      const data = await getExpenses({ token, sort });
+      setExpensesModal(data?.transactions ?? []);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     loadExpenses();
   }, [token]);
+
+  useEffect(() => {
+    if (!loading) {
+      loadSortedExpenses();
+    }
+  }, [sort]);
 
   const closeModal = () => {
     setActiveModal(null);
@@ -329,15 +350,29 @@ const Expenses = () => {
         title={"Expense Transactions"}
       >
         <div>
-          {expenses.length > 0 ? (
+          {expensesModal.length > 0 ? (
             <div>
               <div className="text-center mb-2">
                 <p className="text-sm text-secondary-500">
-                  {expenses.length} expenses
+                  {expensesModal.length} expenses
                 </p>
               </div>
+              <div className="flex justify-center mb-4">
+                <Dropdown
+                  label={`Sort : ${sort.toUpperCase().charAt(0) + sort.slice(1)}`}
+                  items={[
+                    {
+                      label: "Highest",
+                      onClick: () => setSort("highest"),
+                    },
+                    { label: "Lowest", onClick: () => setSort("lowest") },
+                    { label: "Latest", onClick: () => setSort("latest") },
+                    { label: "Oldest", onClick: () => setSort("oldest") },
+                  ]}
+                />
+              </div>
               <div className="flex flex-col">
-                {expenses.map((expense, index) => (
+                {expensesModal.map((expense, index) => (
                   <div
                     key={index}
                     className="flex items-center justify-between gap-4 py-3 border-b last:border-b-0"

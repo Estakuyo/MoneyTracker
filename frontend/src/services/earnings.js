@@ -20,8 +20,8 @@ export const add_Earning = async ({ title, price, category, token }) => {
   return data;
 };
 
-export const getEarnings = async ({ token }) => {
-  const res = await fetch(backendUrl + earningsApi.getEarnings, {
+export const getEarnings = async ({ token, sort }) => {
+  const res = await fetch(backendUrl + earningsApi.getEarnings(sort), {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

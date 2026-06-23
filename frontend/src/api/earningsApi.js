@@ -1,5 +1,5 @@
 const earningsApi = {
-  getEarnings: "/transaction?type=Earnings&sort=highest",
+  getEarnings: (sort) => `/transaction?type=Earnings&sort=${sort}`,
   getEarningsTotal: "/transaction/total?type=Earnings",
   getEarningCategories: "/transaction/categories?type=Earnings",
   getEarningsCategoryTotal: "/transaction/categories/total?type=Earnings",

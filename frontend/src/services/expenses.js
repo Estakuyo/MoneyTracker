@@ -20,8 +20,8 @@ export const add_Expenses = async ({ title, price, category, token }) => {
   return data;
 };
 
-export const getExpenses = async ({ token }) => {
-  const res = await fetch(backendUrl + expensesApi.getExpenses, {
+export const getExpenses = async ({ token, sort }) => {
+  const res = await fetch(backendUrl + expensesApi.getExpenses(sort), {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
