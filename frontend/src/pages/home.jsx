@@ -20,6 +20,7 @@ import Placeholder from "../components/placeholder";
 import Modal from "../components/modal";
 import Skeleton from "../components/skeleton";
 import CategorySelect from "../components/categorySelect";
+import { Loader2 } from "lucide-react";
 
 import { getAllUserTransactions } from "../services/transactions";
 import {
@@ -38,6 +39,7 @@ import { formatDate, formatCurrency } from "../utils/formatters";
 const Home = () => {
   const [activeModal, setActiveModal] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isAdding, setIsAdding] = useState(false);
 
   // Outputs
   const [transactions, setTransactions] = useState([]);
@@ -134,11 +136,14 @@ const Home = () => {
       if (!price || price === null || price === "") return;
       if (!category || category === null || category === "") return;
 
+      setIsAdding(true);
       await add_Expenses({ title, price, category, token });
       closeModal();
       await loadTransactions();
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsAdding(false);
     }
   };
 
@@ -149,11 +154,14 @@ const Home = () => {
       if (!price || price === null || price === "") return;
       if (!category || category === null || category === "") return;
 
+      setIsAdding(true);
       await add_Earning({ title, price, category, token });
       closeModal();
       await loadTransactions();
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsAdding(false);
     }
   };
 
@@ -167,11 +175,14 @@ const Home = () => {
         return;
       }
 
+      setIsAdding(true);
       await addUserGoal({ title, amount: price, token });
       closeModal();
       await loadTransactions();
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsAdding(false);
     }
   };
 
@@ -439,9 +450,23 @@ const Home = () => {
               </div>
               <div className="flex flex-col gap-1 md:col-span-2 border-t border-secondary-200 pt-2.5 mt-2.5">
                 <Button
-                  title={"Save"}
+                  title={
+                    isAdding ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <Loader2 className="animate-spin w-5 h-5" />
+                        Adding...
+                      </span>
+                    ) : (
+                      "Save"
+                    )
+                  }
                   type="submit"
-                  className={`bg-${accentColor}-500 hover:bg-${accentColor}-700 w-full`}
+                  disabled={isAdding}
+                  className={`w-full ${
+                    isAdding
+                      ? `bg-${accentColor}-500 opacity-70 cursor-not-allowed`
+                      : `bg-${accentColor}-500 hover:bg-${accentColor}-700`
+                  }`}
                 />
               </div>
             </form>
@@ -481,8 +506,22 @@ const Home = () => {
           </div>
           <div className="flex flex-col gap-1 md:col-span-2 border-t border-secondary-200 pt-2.5 mt-2.5">
             <Button
-              title={"Submit"}
-              className="bg-success-500 hover:bg-success-700 w-full col-span-2"
+              title={
+                isAdding ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <Loader2 className="animate-spin w-5 h-5" />
+                    Adding...
+                  </span>
+                ) : (
+                  "Submit"
+                )
+              }
+              disabled={isAdding}
+              className={`w-full col-span-2 ${
+                isAdding
+                  ? "bg-success-500 opacity-70 cursor-not-allowed"
+                  : "bg-success-500 hover:bg-success-700"
+              }`}
               type="submit"
             />
           </div>

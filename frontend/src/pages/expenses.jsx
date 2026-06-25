@@ -9,6 +9,7 @@ import Skeleton from "../components/skeleton";
 import CategorySelect from "../components/categorySelect";
 import { formatCurrency, formatDate } from "../utils/formatters";
 import Dropdown from "../components/dropdown";
+import { Loader2 } from "lucide-react";
 
 import {
   add_Expenses,
@@ -33,6 +34,7 @@ import {
 const Expenses = () => {
   const [activeModal, setActiveModal] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isAdding, setIsAdding] = useState(false);
   const [sort, setSort] = useState("highest");
 
   // Outputs
@@ -113,11 +115,14 @@ const Expenses = () => {
         return;
       }
 
+      setIsAdding(true);
       await add_Expenses({ title, price, category, token });
       closeModal();
       await loadExpenses();
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsAdding(false);
     }
   };
 
@@ -449,9 +454,23 @@ const Expenses = () => {
           </div>
           <div className="flex flex-col gap-1 md:col-span-2 border-t border-secondary-200 pt-2.5 mt-2.5">
             <Button
-              title={"Save"}
+              title={
+                isAdding ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <Loader2 className="animate-spin w-5 h-5" />
+                    Adding...
+                  </span>
+                ) : (
+                  "Save"
+                )
+              }
               type="submit"
-              className="bg-error-500 hover:bg-error-700 w-full"
+              disabled={isAdding}
+              className={`w-full ${
+                isAdding
+                  ? "bg-error-500 opacity-70 cursor-not-allowed"
+                  : "bg-error-500 hover:bg-error-700"
+              }`}
             />
           </div>
         </form>
