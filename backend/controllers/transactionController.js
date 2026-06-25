@@ -9,6 +9,7 @@ const {
 const { findCategory, addCategory } = require("./queries/categoryQueries");
 const { trackSavings, checkAndUpdateGoals } = require("./savingsController");
 
+// For Chart
 const getAllTransactions = async (req, res) => {
   try {
     const id = req.user.id;
@@ -26,6 +27,7 @@ const getAllTransactions = async (req, res) => {
   }
 };
 
+// For Earnings and Expenses
 const getTransactions = async (req, res) => {
   try {
     const id = req.user.id;
@@ -94,6 +96,7 @@ const addTransaction = async (req, res) => {
     const transactions = await addTransactionQuery(
       title,
       price,
+      type,
       date,
       categoryId,
       id,

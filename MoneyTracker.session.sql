@@ -16,11 +16,13 @@ CREATE TABLE `Transactions`(
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `title` VARCHAR(255) NOT NULL,
     `price` INT NOT NULL,
+    `type` VARCHAR(255) NOT NULL,
     `date` DATE NOT NULL,
-    `category_id` INT UNSIGNED NOT NULL,
+    `category_id` INT UNSIGNED NULL,
     `user_id` INT UNSIGNED NOT NULL,
-    FOREIGN KEY (`category_id`) REFERENCES `Categories`(`id`),
-    FOREIGN KEY (`user_id`) REFERENCES `Users`(`id`) ON DELETE CASCADE
+    FOREIGN KEY (`category_id`) REFERENCES `Categories`(`id`) ON DELETE
+    SET NULL ON UPDATE CASCADE,
+        FOREIGN KEY (`user_id`) REFERENCES `Users`(`id`) ON DELETE CASCADE
 );
 CREATE TABLE `Goals`(
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -28,7 +30,7 @@ CREATE TABLE `Goals`(
     `title` VARCHAR(255) NOT NULL,
     `amount` INT NOT NULL,
     `status` BOOLEAN NOT NULL,
-    FOREIGN KEY (`user_id`) REFERENCES `Users`(`id`)
+    FOREIGN KEY (`user_id`) REFERENCES `Users`(`id`) ON DELETE CASCADE
 );
 CREATE TABLE `Savings`(
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
