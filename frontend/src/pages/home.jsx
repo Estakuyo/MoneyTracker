@@ -21,6 +21,8 @@ import Modal from "../components/modal";
 import Skeleton from "../components/skeleton";
 import CategorySelect from "../components/categorySelect";
 import { Loader2 } from "lucide-react";
+import AlertBox from "../components/alertBox";
+import useAlert from "../hooks/useAlert";
 
 import { getAllUserTransactions } from "../services/transactions";
 import {
@@ -57,6 +59,7 @@ const Home = () => {
   const [category, setCategory] = useState("");
 
   const { token } = useContext(UserContext);
+  const { alert, showAlert, clearAlert } = useAlert();
 
   const loadTransactions = async () => {
     if (!token) return;
@@ -140,8 +143,10 @@ const Home = () => {
       await add_Expenses({ title, price, category, token });
       closeModal();
       await loadTransactions();
+      showAlert("Expense added successfully.", "success");
     } catch (error) {
       console.log(error);
+      showAlert("Failed to add expense.", "error");
     } finally {
       setIsAdding(false);
     }
@@ -158,8 +163,10 @@ const Home = () => {
       await add_Earning({ title, price, category, token });
       closeModal();
       await loadTransactions();
+      showAlert("Earning added successfully.", "success");
     } catch (error) {
       console.log(error);
+      showAlert("Failed to add earning.", "error");
     } finally {
       setIsAdding(false);
     }
@@ -179,8 +186,10 @@ const Home = () => {
       await addUserGoal({ title, amount: price, token });
       closeModal();
       await loadTransactions();
+      showAlert("Goal added successfully.", "success");
     } catch (error) {
       console.log(error);
+      showAlert("Failed to add goal.", "error");
     } finally {
       setIsAdding(false);
     }
@@ -188,6 +197,13 @@ const Home = () => {
 
   return (
     <div className="main-wrapper px-10 py-20 flex flex-col md:grid gap-5 md:py-10">
+      {alert && (
+        <AlertBox
+          message={alert.message}
+          type={alert.type}
+          onClose={clearAlert}
+        />
+      )}
       <Card
         className="w-full col-span-3 animate-slide-up"
         title={"Overall Chart Report"}

@@ -71,10 +71,10 @@ const addTransactionQuery = async (
   return result;
 };
 
-const updateTransactionQuery = async (title, price, id, user_id) => {
+const updateTransactionQuery = async (title, price, category_id, id, user_id) => {
   const query =
-    "UPDATE transactions SET title = ?, price = ?  WHERE id = ? AND user_id = ?";
-  const [result] = await db.execute(query, [title, price, id, user_id]);
+    "UPDATE transactions SET title = ?, price = ?, category_id = ? WHERE id = ? AND user_id = ?";
+  const [result] = await db.execute(query, [title, price, category_id, id, user_id]);
   return result;
 };
 

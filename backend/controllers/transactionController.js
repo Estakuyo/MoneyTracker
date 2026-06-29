@@ -120,17 +120,33 @@ const updateTransaction = async (req, res) => {
   try {
     const id = req.user.id;
     const transactionId = req.params.transactionId;
-    const { title, price } = req.body;
+    const { title, price, category, type } = req.body;
+
+    // Resolve category — find existing or create new one
+    const existingCategory = await findCategory(id, category, type);
+    let categoryId;
+    if (existingCategory) {
+      categoryId = existingCategory.id;
+    } else {
+      const newCategory = await addCategory(id, category, type);
+      categoryId = newCategory.insertId;
+    }
 
     const earning = await updateTransactionQuery(
       title,
       price,
+      categoryId,
       transactionId,
       id,
     );
 
+    const savings = await trackSavings(req.user);
+    const goals = await checkAndUpdateGoals(id, savings.total);
+
     return res.status(200).json({
       earning,
+      savings,
+      goals,
       message: "Transaction updated successfully.",
     });
   } catch (error) {
@@ -145,9 +161,15 @@ const deleteTransaction = async (req, res) => {
 
     const earning = await deleteTransactionQuery(transactionId, id);
 
-    return res
-      .status(200)
-      .json({ earning, message: "Transaction deleted successfully." });
+    const savings = await trackSavings(req.user);
+    const goals = await checkAndUpdateGoals(id, savings.total);
+
+    return res.status(200).json({
+      earning,
+      savings,
+      goals,
+      message: "Transaction deleted successfully.",
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

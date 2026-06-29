@@ -11,6 +11,8 @@ import { formatCurrency, formatDate } from "../utils/formatters";
 import Dropdown from "../components/dropdown";
 
 import { Trash2, Pencil, Loader2 } from "lucide-react";
+import AlertBox from "../components/alertBox";
+import useAlert from "../hooks/useAlert";
 import {
   add_Earning,
   getEarnings,
@@ -35,7 +37,11 @@ const Earnings = () => {
   const [activeModal, setActiveModal] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [sort, setSort] = useState("highest");
+  const [selectedEarning, setSelectedEarning] = useState(null);
+  const [confirmDeleteItem, setConfirmDeleteItem] = useState(null);
 
   // Outputs
   const [earnings, setEarnings] = useState([]);
@@ -50,6 +56,7 @@ const Earnings = () => {
   const [category, setCategory] = useState("");
 
   const { token } = useContext(UserContext);
+  const { alert, showAlert, clearAlert } = useAlert();
 
   const loadEarnings = async () => {
     if (!token) return;
@@ -100,6 +107,55 @@ const Earnings = () => {
     setTitle("");
     setPrice(null);
     setCategory("");
+    setSelectedEarning(null);
+  };
+
+  const handleDeleteEarning = async () => {
+    if (!confirmDeleteItem) return;
+    try {
+      setIsDeleting(true);
+      await deleteEarning({ transactionId: confirmDeleteItem.id, token });
+      setConfirmDeleteItem(null);
+      await loadEarnings();
+      showAlert("Earning deleted successfully.", "success");
+    } catch (error) {
+      console.log(error);
+      showAlert("Failed to delete earning.", "error");
+    } finally {
+      setIsDeleting(false);
+      setActiveModal("earnings");
+    }
+  };
+
+  const handleEditEarning = (earning) => {
+    setSelectedEarning(earning);
+    setTitle(earning.title);
+    setPrice(earning.price);
+    setCategory(earning.category_name ?? "");
+    setActiveModal("edit");
+  };
+
+  const handleUpdateEarning = async (e) => {
+    e.preventDefault();
+    if (!title || !price || !category) return;
+    try {
+      setIsUpdating(true);
+      await updateEarning({
+        transactionId: selectedEarning.id,
+        title,
+        price,
+        category,
+        token,
+      });
+      closeModal();
+      await loadEarnings();
+      showAlert("Earning updated successfully.", "success");
+    } catch (error) {
+      console.log(error);
+      showAlert("Failed to update earning.", "error");
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   const handleAddEarning = async (e) => {
@@ -119,8 +175,10 @@ const Earnings = () => {
       await add_Earning({ title, price, category, token });
       closeModal();
       await loadEarnings();
+      showAlert("Earning added successfully.", "success");
     } catch (error) {
       console.log(error);
+      showAlert("Failed to add earning.", "error");
     } finally {
       setIsAdding(false);
     }
@@ -128,6 +186,13 @@ const Earnings = () => {
 
   return (
     <div className="main-wrapper px-10 py-20 flex flex-col md:grid gap-5 md:py-10">
+      {alert && (
+        <AlertBox
+          message={alert.message}
+          type={alert.type}
+          onClose={clearAlert}
+        />
+      )}
       <Card
         className="w-full animate-slide-up"
         title={"Total Earnings"}
@@ -390,13 +455,34 @@ const Earnings = () => {
                         {earning.category_name}
                       </p>
                     </div>
-                    <div className="text-right">
-                      <p className="font-bold text-success-500">
-                        {formatCurrency(earning.price)}
-                      </p>
-                      <p className="text-secondary-500 text-sm">
-                        {formatDate(earning.date)}
-                      </p>
+                    <div className="flex items-center gap-3">
+                      <div className="text-right">
+                        <p className="font-bold text-success-500">
+                          {formatCurrency(earning.price)}
+                        </p>
+                        <p className="text-secondary-500 text-sm">
+                          {formatDate(earning.date)}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleEditEarning(earning)}
+                          className="p-1.5 rounded-md bg-primary-500 text-white hover:bg-primary-700 transition-colors duration-150"
+                          title="Edit"
+                        >
+                          <Pencil size={16} />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setActiveModal(null);
+                            setConfirmDeleteItem(earning);
+                          }}
+                          className="p-1.5 rounded-md bg-error-500 text-white hover:bg-error-700 transition-colors duration-150"
+                          title="Delete"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -474,6 +560,136 @@ const Earnings = () => {
             />
           </div>
         </form>
+      </Modal>
+
+      {/* Edit Earning Modal */}
+      <Modal
+        isOpen={activeModal === "edit"}
+        onClose={closeModal}
+        title={"Edit Earning"}
+      >
+        <form
+          onSubmit={handleUpdateEarning}
+          className="grid grid-cols-1 gap-4 md:grid-cols-2"
+        >
+          <div className="flex flex-col gap-1 md:col-span-2">
+            <label className="text-sm font-semibold text-secondary-600">
+              Earning Name
+            </label>
+            <input
+              type="text"
+              defaultValue={selectedEarning?.title}
+              key={selectedEarning?.id + "-title"}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full rounded-md border border-secondary-300 bg-secondary-50 p-2.5 text-secondary-800 outline-none focus:border-success-500"
+            />
+          </div>
+          <div className="flex flex-col gap-1 md:col-span-2">
+            <label className="text-sm font-semibold text-secondary-600">
+              Amount
+            </label>
+            <input
+              type="number"
+              defaultValue={selectedEarning?.price}
+              key={selectedEarning?.id + "-price"}
+              onChange={(e) => setPrice(e.target.value)}
+              className="w-full rounded-md border border-secondary-300 bg-secondary-50 p-2.5 text-secondary-800 outline-none focus:border-success-500"
+            />
+          </div>
+          <div className="flex flex-col gap-1 md:col-span-2">
+            <label className="text-sm font-semibold text-secondary-600">
+              Category
+            </label>
+            <CategorySelect
+              key={selectedEarning?.id + "-category"}
+              categories={categories}
+              value={category}
+              onChange={setCategory}
+              accentColor={"success"}
+            />
+          </div>
+          <div className="flex flex-col gap-1 md:col-span-2 border-t border-secondary-200 pt-2.5 mt-2.5">
+            <Button
+              title={
+                isUpdating ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <Loader2 className="animate-spin w-5 h-5" />
+                    Saving...
+                  </span>
+                ) : (
+                  "Save Changes"
+                )
+              }
+              type="submit"
+              disabled={isUpdating}
+              className={`w-full ${
+                isUpdating
+                  ? "bg-success-500 opacity-70 cursor-not-allowed"
+                  : "bg-success-500 hover:bg-success-700"
+              }`}
+            />
+          </div>
+        </form>
+      </Modal>
+
+      {/* Confirm Delete Modal */}
+      <Modal
+        isOpen={!!confirmDeleteItem}
+        onClose={() => {
+          setConfirmDeleteItem(null);
+          setActiveModal("earnings");
+        }}
+        title="Delete Earning"
+      >
+        <div className="flex flex-col gap-5">
+          {/* Transaction info */}
+          <div className="rounded-lg bg-secondary-50 border border-secondary-200 px-4 py-3 flex gap-1.5">
+            <div>
+              <p className="font-semibold text-secondary-800 text-lg">
+                {confirmDeleteItem?.title}
+              </p>
+              <span className="inline-block text-xs bg-primary-100 text-secondary-500 px-2 py-0.5 rounded w-fit">
+                {confirmDeleteItem?.category_name}
+              </span>
+            </div>
+            <div className="flex flex-1 flex-col text-right justify-center gap-1">
+              <p className="font-bold text-success-600">
+                {formatCurrency(confirmDeleteItem?.price)}
+              </p>
+              <p className="text-secondary-400 text-sm">
+                {formatDate(confirmDeleteItem?.date)}
+              </p>
+            </div>
+          </div>
+          <p className="text-secondary-600 text-sm text-center">
+            Are you sure you want to delete this earning? This action cannot be
+            undone.
+          </p>
+          <div className="flex gap-3">
+            <button
+              onClick={() => {
+                setConfirmDeleteItem(null);
+                setActiveModal("earnings");
+              }}
+              className="flex-1 rounded-xl py-2.5 px-4 border border-secondary-300 text-secondary-600 font-semibold hover:bg-secondary-100 transition-colors duration-150"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleDeleteEarning}
+              disabled={isDeleting}
+              className="flex-1 rounded-xl py-2.5 px-4 bg-error-500 text-white font-semibold hover:bg-error-700 transition-colors duration-150 disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" /> Deleting...
+                </>
+              ) : (
+                "Delete"
+              )}
+            </button>
+          </div>
+        </div>
       </Modal>
     </div>
   );

@@ -9,7 +9,9 @@ import Skeleton from "../components/skeleton";
 import CategorySelect from "../components/categorySelect";
 import { formatCurrency, formatDate } from "../utils/formatters";
 import Dropdown from "../components/dropdown";
-import { Loader2 } from "lucide-react";
+import { Loader2, Trash2, Pencil } from "lucide-react";
+import AlertBox from "../components/alertBox";
+import useAlert from "../hooks/useAlert";
 
 import {
   add_Expenses,
@@ -35,7 +37,11 @@ const Expenses = () => {
   const [activeModal, setActiveModal] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [sort, setSort] = useState("highest");
+  const [selectedExpense, setSelectedExpense] = useState(null);
+  const [confirmDeleteItem, setConfirmDeleteItem] = useState(null);
 
   // Outputs
   const [expenses, setExpenses] = useState([]);
@@ -50,6 +56,7 @@ const Expenses = () => {
   const [category, setCategory] = useState("");
 
   const { token } = useContext(UserContext);
+  const { alert, showAlert, clearAlert } = useAlert();
 
   const loadExpenses = async () => {
     if (!token) return;
@@ -100,6 +107,55 @@ const Expenses = () => {
     setTitle("");
     setPrice(null);
     setCategory("");
+    setSelectedExpense(null);
+  };
+
+  const handleDeleteExpense = async () => {
+    if (!confirmDeleteItem) return;
+    try {
+      setIsDeleting(true);
+      await deleteExpense({ transactionId: confirmDeleteItem.id, token });
+      setConfirmDeleteItem(null);
+      await loadExpenses();
+      showAlert("Expense deleted successfully.", "success");
+    } catch (error) {
+      console.log(error);
+      showAlert("Failed to delete expense.", "error");
+    } finally {
+      setIsDeleting(false);
+      setActiveModal("expenses");
+    }
+  };
+
+  const handleEditExpense = (expense) => {
+    setSelectedExpense(expense);
+    setTitle(expense.title);
+    setPrice(expense.price);
+    setCategory(expense.category_name ?? "");
+    setActiveModal("edit");
+  };
+
+  const handleUpdateExpense = async (e) => {
+    e.preventDefault();
+    if (!title || !price || !category) return;
+    try {
+      setIsUpdating(true);
+      await updateExpense({
+        transactionId: selectedExpense.id,
+        title,
+        price,
+        category,
+        token,
+      });
+      closeModal();
+      await loadExpenses();
+      showAlert("Expense updated successfully.", "success");
+    } catch (error) {
+      console.log(error);
+      showAlert("Failed to update expense.", "error");
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   const handleAddExpense = async (e) => {
@@ -119,8 +175,10 @@ const Expenses = () => {
       await add_Expenses({ title, price, category, token });
       closeModal();
       await loadExpenses();
+      showAlert("Expense added successfully.", "success");
     } catch (error) {
       console.log(error);
+      showAlert("Failed to add expense.", "error");
     } finally {
       setIsAdding(false);
     }
@@ -128,6 +186,13 @@ const Expenses = () => {
 
   return (
     <div className="main-wrapper px-10 py-20 flex flex-col md:grid gap-5 md:py-10">
+      {alert && (
+        <AlertBox
+          message={alert.message}
+          type={alert.type}
+          onClose={clearAlert}
+        />
+      )}
       <Card
         className="w-full animate-slide-up"
         title={"Total Expense"}
@@ -390,13 +455,34 @@ const Expenses = () => {
                         {expense.category_name}
                       </p>
                     </div>
-                    <div className="text-right">
-                      <p className="font-bold text-error-500">
-                        {formatCurrency(expense.price)}
-                      </p>
-                      <p className="text-secondary-500 text-sm">
-                        {formatDate(expense.date)}
-                      </p>
+                    <div className="flex items-center gap-3">
+                      <div className="text-right">
+                        <p className="font-bold text-error-500">
+                          {formatCurrency(expense.price)}
+                        </p>
+                        <p className="text-secondary-500 text-sm">
+                          {formatDate(expense.date)}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleEditExpense(expense)}
+                          className="p-1.5 rounded-md bg-primary-500 text-white hover:bg-primary-700 transition-colors duration-150"
+                          title="Edit"
+                        >
+                          <Pencil size={16} />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setActiveModal(null);
+                            setConfirmDeleteItem(expense);
+                          }}
+                          className="p-1.5 rounded-md bg-error-500 text-white hover:bg-error-700 transition-colors duration-150"
+                          title="Delete"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -474,6 +560,136 @@ const Expenses = () => {
             />
           </div>
         </form>
+      </Modal>
+
+      {/* Edit Expense Modal */}
+      <Modal
+        isOpen={activeModal === "edit"}
+        onClose={closeModal}
+        title={"Edit Expense"}
+      >
+        <form
+          onSubmit={handleUpdateExpense}
+          className="grid grid-cols-1 gap-4 md:grid-cols-2"
+        >
+          <div className="flex flex-col gap-1 md:col-span-2">
+            <label className="text-sm font-semibold text-secondary-600">
+              Expense Name
+            </label>
+            <input
+              type="text"
+              defaultValue={selectedExpense?.title}
+              key={selectedExpense?.id + "-title"}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full rounded-md border border-secondary-300 bg-secondary-50 p-2.5 text-secondary-800 outline-none focus:border-error-500"
+            />
+          </div>
+          <div className="flex flex-col gap-1 md:col-span-2">
+            <label className="text-sm font-semibold text-secondary-600">
+              Amount
+            </label>
+            <input
+              type="number"
+              defaultValue={selectedExpense?.price}
+              key={selectedExpense?.id + "-price"}
+              onChange={(e) => setPrice(e.target.value)}
+              className="w-full rounded-md border border-secondary-300 bg-secondary-50 p-2.5 text-secondary-800 outline-none focus:border-error-500"
+            />
+          </div>
+          <div className="flex flex-col gap-1 md:col-span-2">
+            <label className="text-sm font-semibold text-secondary-600">
+              Category
+            </label>
+            <CategorySelect
+              key={selectedExpense?.id + "-category"}
+              categories={categories}
+              value={category}
+              onChange={setCategory}
+              accentColor={"error"}
+            />
+          </div>
+          <div className="flex flex-col gap-1 md:col-span-2 border-t border-secondary-200 pt-2.5 mt-2.5">
+            <Button
+              title={
+                isUpdating ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <Loader2 className="animate-spin w-5 h-5" />
+                    Saving...
+                  </span>
+                ) : (
+                  "Save Changes"
+                )
+              }
+              type="submit"
+              disabled={isUpdating}
+              className={`w-full ${
+                isUpdating
+                  ? "bg-error-500 opacity-70 cursor-not-allowed"
+                  : "bg-error-500 hover:bg-error-700"
+              }`}
+            />
+          </div>
+        </form>
+      </Modal>
+
+      {/* Confirm Delete Modal */}
+      <Modal
+        isOpen={!!confirmDeleteItem}
+        onClose={() => {
+          setConfirmDeleteItem(null);
+          setActiveModal("expenses");
+        }}
+        title="Delete Expense"
+      >
+        <div className="flex flex-col gap-5">
+          {/* Transaction info */}
+          <div className="rounded-lg bg-secondary-50 border border-secondary-200 px-4 py-3 flex gap-1.5">
+            <div>
+              <p className="font-semibold text-secondary-800 text-lg">
+                {confirmDeleteItem?.title}
+              </p>
+              <span className="inline-block text-xs bg-primary-100 text-secondary-500 px-2 py-0.5 rounded w-fit">
+                {confirmDeleteItem?.category_name}
+              </span>
+            </div>
+            <div className="flex flex-1 flex-col text-right justify-center gap-1">
+              <p className="font-bold text-error-600">
+                {formatCurrency(confirmDeleteItem?.price)}
+              </p>
+              <p className="text-secondary-400 text-sm">
+                {formatDate(confirmDeleteItem?.date)}
+              </p>
+            </div>
+          </div>
+          <p className="text-secondary-600 text-sm text-center">
+            Are you sure you want to delete this expense? This action cannot be
+            undone.
+          </p>
+          <div className="flex gap-3">
+            <button
+              onClick={() => {
+                setConfirmDeleteItem(null);
+                setActiveModal("expenses");
+              }}
+              className="flex-1 rounded-xl py-2.5 px-4 border border-secondary-300 text-secondary-600 font-semibold hover:bg-secondary-100 transition-colors duration-150"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleDeleteExpense}
+              disabled={isDeleting}
+              className="flex-1 rounded-xl py-2.5 px-4 bg-error-500 text-white font-semibold hover:bg-error-700 transition-colors duration-150 disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" /> Deleting...
+                </>
+              ) : (
+                "Delete"
+              )}
+            </button>
+          </div>
+        </div>
       </Modal>
     </div>
   );

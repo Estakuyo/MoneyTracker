@@ -88,7 +88,7 @@ export const get_ExpensesCategoryTotal = async ({ token }) => {
   return data;
 };
 
-export const updateExpense = async ({ transactionId, title, price, token }) => {
+export const updateExpense = async ({ transactionId, title, price, category, token }) => {
   const endpoint = expensesApi.updateExpense.replace(
     ":transactionId",
     transactionId,
@@ -100,7 +100,7 @@ export const updateExpense = async ({ transactionId, title, price, token }) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ title, price }),
+    body: JSON.stringify({ title, price, category, type: "Expenses" }),
   });
   const data = await res.json();
 

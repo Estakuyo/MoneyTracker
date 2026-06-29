@@ -16,6 +16,8 @@ import Placeholder from "../components/placeholder";
 import Modal from "../components/modal";
 import Skeleton from "../components/skeleton";
 import { formatCurrency, formatDate } from "../utils/formatters";
+import AlertBox from "../components/alertBox";
+import useAlert from "../hooks/useAlert";
 
 import {
   getUserSavings,
@@ -39,6 +41,7 @@ const Savings = () => {
   const [allSavings, setAllSavings] = useState([]);
 
   const { token } = useContext(UserContext);
+  const { alert, showAlert, clearAlert } = useAlert();
 
   const loadSavings = async () => {
     if (!token) return;
@@ -79,13 +82,22 @@ const Savings = () => {
       await addUserGoal({ title, amount, token });
       closeModal();
       await loadSavings();
+      showAlert("Goal added successfully.", "success");
     } catch (error) {
       console.log(error);
+      showAlert("Failed to add goal.", "error");
     }
   };
 
   return (
     <div className="main-wrapper px-10 py-20 flex flex-col md:grid gap-5 md:py-10">
+      {alert && (
+        <AlertBox
+          message={alert.message}
+          type={alert.type}
+          onClose={clearAlert}
+        />
+      )}
       <Card className="w-full animate-slide-up" title={"Total Savings"}>
         {loading ? (
           <Skeleton className="h-40 w-full" />

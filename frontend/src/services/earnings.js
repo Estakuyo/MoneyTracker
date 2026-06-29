@@ -88,7 +88,7 @@ export const get_EarningsCategoryTotal = async ({ token }) => {
   return data;
 };
 
-export const updateEarning = async ({ transactionId, title, price, token }) => {
+export const updateEarning = async ({ transactionId, title, price, category, token }) => {
   const endpoint = earningsApi.updateEarning.replace(
     ":transactionId",
     transactionId,
@@ -100,7 +100,7 @@ export const updateEarning = async ({ transactionId, title, price, token }) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ title, price }),
+    body: JSON.stringify({ title, price, category, type: "Earnings" }),
   });
   const data = await res.json();
 
